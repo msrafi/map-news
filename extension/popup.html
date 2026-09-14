@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        width: 268px;
+        margin: 0;
+        padding: 14px;
+        font: 13px/1.45 system-ui, sans-serif;
+        background: #10151c;
+        color: #e8ecf1;
+      }
+      h1 {
+        margin: 0 0 2px;
+        font-size: 14px;
+      }
+      p {
+        margin: 0 0 10px;
+        color: #9aa6b5;
+        font-size: 12px;
+      }
+      .count {
+        font-size: 28px;
+        font-weight: 700;
+      }
+      label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin: 12px 0 4px;
+      }
+      button {
+        width: 100%;
+        margin-top: 8px;
+        padding: 8px;
+        border: 1px solid rgba(232, 236, 241, 0.16);
+        border-radius: 8px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+      button.primary {
+        background: #e8c37a;
+        border-color: #e8c37a;
+        color: #16120a;
+        font-weight: 600;
+      }
+      #status {
+        margin: 10px 0 0;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Map News Collector</h1>
+    <p>Keep an X timeline open and scrolling.</p>
+    <div><span class="count" id="count">0</span> <span id="regions"></span></div>
+    <label><input type="checkbox" id="auto" /> Auto-export every minute</label>
+    <button class="primary" id="export">Export new posts now</button>
+    <button id="download">Download all as news.json</button>
+    <button id="clear">Clear stored posts</button>
+    <p id="status"></p>
+    <script src="popup.js"></script>
+  </body>
+</html>

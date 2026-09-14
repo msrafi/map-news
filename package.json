@@ -1,0 +1,35 @@
+{
+  "name": "map-news",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && VITE_BASE=/map-news/ vite build",
+    "lint": "oxlint",
+    "merge": "node scripts/merge-downloads.mjs",
+    "sync:places": "node scripts/sync-places.mjs",
+    "merge:watch": "node scripts/merge-downloads.mjs --watch",
+    "preview": "vite preview",
+    "predeploy": "npm run build:pages",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "date-fns": "^4.4.0",
+    "maplibre-gl": "^6.9.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-map-gl": "^8.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "gh-pages": "^6.3.0",
+    "oxlint": "^1.81.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  }
+}
