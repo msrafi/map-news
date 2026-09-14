@@ -18,6 +18,12 @@ export default function App() {
   const selectedId = selection?.regionId ?? null
   const withRoutes = selection?.withRoutes ?? false
   const { seenIds, markSeen } = useSeenNews()
+  const [, setNow] = useState(0)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 30_000)
+    return () => window.clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -52,6 +58,10 @@ export default function App() {
   }, [regions, seenIds])
 
   const liveCount = Object.values(unseenByRegion).reduce((sum, count) => sum + count, 0)
+  const lastUpdatedAt = visibleItems.reduce<string | null>((latest, item) => {
+    if (!latest || item.publishedAt > latest) return item.publishedAt
+    return latest
+  }, null)
   const allLinks = useMemo(() => buildLinks(visibleItems, null), [visibleItems])
   const selected = regions.find((region) => region.regionId === selectedId) ?? null
   const links = useMemo(
@@ -101,6 +111,7 @@ export default function App() {
         liveCount={liveCount}
         regionCount={regions.length}
         linkCount={allLinks.length}
+        lastUpdatedAt={lastUpdatedAt}
       />
       <main className="stage">
         {error ? <p className="banner">{error}</p> : null}

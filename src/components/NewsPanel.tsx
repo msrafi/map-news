@@ -1,6 +1,7 @@
 import { format, isToday, isYesterday, parseISO } from 'date-fns'
 import { MIN_LINKED_REGIONS } from '../lib/news'
 import { findLocationHits, findRegions } from '../lib/places'
+import { formatUpdated, latestItem } from '../lib/time'
 import type { LocationHit, RegionPin } from '../types'
 
 type NewsPanelProps = {
@@ -47,6 +48,8 @@ function HighlightedText({ text }: { text: string }) {
 }
 
 export function NewsPanel({ region, seenIds, onClose }: NewsPanelProps) {
+  const latest = latestItem(region.items)
+  const updated = latest ? formatUpdated(latest.publishedAt) : null
   const groups = new Map<string, typeof region.items>()
   for (const item of region.items) {
     const heading = headingFor(item.publishedAt)
@@ -62,8 +65,19 @@ export function NewsPanel({ region, seenIds, onClose }: NewsPanelProps) {
           <p className="news-panel__kicker">{region.country}</p>
           <h2>{region.region}</h2>
           <p className="news-panel__meta">
-            {region.items.length} {region.items.length === 1 ? 'report' : 'reports'} · stored by date and time
+            {region.items.length} {region.items.length === 1 ? 'report' : 'reports'}
+            {updated && latest ? (
+              <>
+                {' · last updated '}
+                <time dateTime={latest.publishedAt} title={updated.clock}>
+                  {updated.relative}
+                </time>
+                {' · '}
+                {updated.clock}
+              </>
+            ) : null}
           </p>
+          {latest ? <p className="news-panel__latest">{latest.text}</p> : null}
         </div>
         <button className="news-panel__close" type="button" onClick={onClose} aria-label="Close news panel">
           Close
@@ -77,6 +91,7 @@ export function NewsPanel({ region, seenIds, onClose }: NewsPanelProps) {
               {items.map((item) => {
                 const unread = !seenIds.has(item.id)
                 const linked = findRegions(item.text)
+                const isLatest = latest?.id === item.id
                 return (
                   <li
                     key={item.id}
@@ -84,11 +99,13 @@ export function NewsPanel({ region, seenIds, onClose }: NewsPanelProps) {
                       'news-card',
                       linked.length >= MIN_LINKED_REGIONS ? 'is-linked' : '',
                       unread && linked.length < MIN_LINKED_REGIONS ? 'is-unread' : '',
+                      isLatest ? 'is-latest' : '',
                     ]
                       .filter(Boolean)
                       .join(' ')}
                   >
                     <div className="news-card__top">
+                      {isLatest ? <span className="news-card__badge">Latest</span> : null}
                       <span className="news-card__author">{item.author}</span>
                       <span className="news-card__handle">{item.handle}</span>
                       <time dateTime={item.publishedAt}>{format(parseISO(item.publishedAt), 'HH:mm')}</time>

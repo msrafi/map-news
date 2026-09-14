@@ -1,3 +1,4 @@
+import { formatUpdated } from '../lib/time'
 import type { TimeFilter } from '../types'
 
 const FILTERS: { id: TimeFilter; label: string }[] = [
@@ -13,9 +14,18 @@ type TopBarProps = {
   liveCount: number
   regionCount: number
   linkCount: number
+  lastUpdatedAt: string | null
 }
 
-export function TopBar({ filter, onFilterChange, liveCount, regionCount, linkCount }: TopBarProps) {
+export function TopBar({
+  filter,
+  onFilterChange,
+  liveCount,
+  regionCount,
+  linkCount,
+  lastUpdatedAt,
+}: TopBarProps) {
+  const updated = lastUpdatedAt ? formatUpdated(lastUpdatedAt) : null
   return (
     <header className="topbar">
       <div className="topbar__brand">
@@ -29,6 +39,15 @@ export function TopBar({ filter, onFilterChange, liveCount, regionCount, linkCou
         {regionCount} {regionCount === 1 ? 'region' : 'regions'}
         {liveCount > 0 ? ` · ${liveCount} unread` : ''}
         {linkCount > 0 ? ` · ${linkCount} connected` : ''}
+        {updated ? (
+          <>
+            {' · '}
+            last news{' '}
+            <time dateTime={lastUpdatedAt ?? undefined} title={updated.clock}>
+              {updated.relative}
+            </time>
+          </>
+        ) : null}
       </p>
       <p className="topbar__legend" aria-hidden="true">
         <span className="topbar__swatch is-local" /> local

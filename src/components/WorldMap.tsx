@@ -2,6 +2,7 @@ import { LngLatBounds } from 'maplibre-gl'
 import { useEffect, useMemo, useRef } from 'react'
 import Map, { Layer, Marker, NavigationControl, Source, type MapRef } from 'react-map-gl/maplibre'
 import { linkCoordinates, pathCoordinates } from '../lib/news'
+import { formatUpdated, latestItem } from '../lib/time'
 import type { NewsLink, NewsSpot, RegionPin } from '../types'
 
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/dark'
@@ -159,26 +160,44 @@ export function WorldMap({
           const pinClass = ['region-pin__btn', live ? 'is-live' : '', linked ? 'is-linked' : '']
             .filter(Boolean)
             .join(' ')
+          const latest = latestItem(region.items)
+          const updated = latest ? formatUpdated(latest.publishedAt) : null
+          const open = region.regionId === selectedId
           return (
             <Marker
               key={region.regionId}
               longitude={region.lng}
               latitude={region.lat}
               anchor="center"
-              style={{ zIndex: region.regionId === selectedId ? 2 : live || linked ? 1 : 0 }}
+              style={{ zIndex: open ? 4 : live || linked ? 1 : 0 }}
               onClick={(event) => {
                 event.originalEvent.stopPropagation()
                 onSelect(region.regionId)
               }}
             >
-              <button
-                className={pinClass}
-                type="button"
-                aria-label={`${region.region}: ${count} news items`}
-              >
-                <span className="region-pin__pulse" />
-                <span className="region-pin__count">{count}</span>
-              </button>
+              <div className={open ? 'region-pin is-open' : 'region-pin'}>
+                <button
+                  className={pinClass}
+                  type="button"
+                  aria-label={
+                    updated && latest
+                      ? `${region.region}: last news ${updated.relative}. ${latest.text}`
+                      : `${region.region}: ${count} news items`
+                  }
+                >
+                  <span className="region-pin__pulse" />
+                  <span className="region-pin__count">{count}</span>
+                </button>
+                {latest && updated ? (
+                  <div className="region-pin__card">
+                    <p className="region-pin__place">{region.region}</p>
+                    <time dateTime={latest.publishedAt}>
+                      {updated.relative} · {updated.clock}
+                    </time>
+                    <p className="region-pin__news">{latest.text}</p>
+                  </div>
+                ) : null}
+              </div>
             </Marker>
           )
         })}
