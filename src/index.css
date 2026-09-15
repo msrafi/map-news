@@ -106,6 +106,20 @@ a {
   background: var(--link);
 }
 
+.topbar__routes {
+  display: inline-flex;
+  gap: 0.18rem;
+}
+
+.topbar__age {
+  padding: 0.05rem 0.32rem;
+  border-radius: 999px;
+  background: var(--alert);
+  color: #fff;
+  font-size: 0.63rem;
+  font-weight: 600;
+}
+
 .topbar__filters {
   display: flex;
   gap: 0.4rem;
@@ -175,6 +189,55 @@ a {
   position: relative;
   background: none;
   border: 0;
+  line-height: 0;
+}
+
+/* Age reads at a glance: newest pins stay bright, day-old ones recede. */
+.region-pin.is-today {
+  opacity: 0.72;
+}
+
+.region-pin.is-old {
+  opacity: 0.45;
+}
+
+.region-pin.is-today:hover,
+.region-pin.is-old:hover,
+.region-pin.is-open {
+  opacity: 1;
+}
+
+.region-pin__age {
+  position: absolute;
+  top: calc(100% - 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.05rem 0.32rem;
+  border-radius: 999px;
+  background: rgba(8, 11, 15, 0.9);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.63rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.region-pin.is-fresh .region-pin__age {
+  background: var(--alert);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+.region-pin.is-recent .region-pin__age {
+  color: var(--ink);
+}
+
+.region-pin.is-fresh .region-pin__btn {
+  box-shadow: 0 0 0 3px rgba(224, 90, 58, 0.55), 0 8px 18px rgba(0, 0, 0, 0.35);
 }
 
 .region-pin__card {
@@ -434,6 +497,26 @@ a {
   color: var(--ink);
 }
 
+.market__age {
+  padding: 0.02rem 0.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.market__row.is-fresh .market__age {
+  background: var(--alert);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+.market__row.is-old {
+  opacity: 0.6;
+}
+
 .market__empty {
   padding: 1rem;
   color: var(--muted);
@@ -538,9 +621,99 @@ a {
   border-color: rgba(224, 90, 58, 0.45);
 }
 
+/* Recency at a glance: an accent rail on fresh stories, older ones recede. */
+.news-card.is-fresh {
+  border-left: 3px solid var(--alert);
+  background: rgba(224, 90, 58, 0.07);
+}
+
+.news-card.is-recent {
+  border-left: 3px solid rgba(232, 195, 122, 0.6);
+}
+
+.news-card.is-old {
+  opacity: 0.62;
+}
+
+.news-card__age {
+  padding: 0.02rem 0.34rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.news-card.is-fresh .news-card__age {
+  background: var(--alert);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
 .news-card.is-linked {
   border-color: rgba(94, 200, 197, 0.55);
   background: rgba(94, 200, 197, 0.08);
+}
+
+/* Each route owns a hue, set inline as --route so the card matches its map line. */
+.news-card.is-linked[style*='--route'] {
+  border-color: color-mix(in srgb, var(--route) 55%, transparent);
+  background: color-mix(in srgb, var(--route) 10%, transparent);
+}
+
+.news-card.is-linked[style*='--route'] .news-card__route,
+.news-card.is-linked[style*='--route'] a {
+  color: var(--route);
+}
+
+.news-card.is-focused {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.story-popup .maplibregl-popup-content {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+}
+
+.story-popup .maplibregl-popup-content p {
+  margin: 0;
+  padding-right: 0.7rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.story-popup .maplibregl-popup-close-button {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.story-popup .maplibregl-popup-tip {
+  border-top-color: var(--panel);
+  border-bottom-color: var(--panel);
+}
+
+.news-card__swatch {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.35rem;
+  border-radius: 999px;
+  background: var(--route);
+  vertical-align: middle;
+}
+
+/* A connected story recolours its border, so restore the recency rail after it. */
+.news-card.is-linked.is-fresh {
+  border-left-color: var(--alert);
+}
+
+.news-card.is-linked.is-recent {
+  border-left-color: rgba(232, 195, 122, 0.6);
 }
 
 .news-card.is-linked .news-card__route,

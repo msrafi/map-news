@@ -52,7 +52,7 @@ await run(NODE, ['scripts/merge-downloads.mjs'])
 
 console.log(`
 App:        http://localhost:5173
-Feed:       watching Downloads every 20s
+Feed:       watching Downloads every 10s
 Extension:  chrome://extensions → Developer mode → Load unpacked → extension/
             Open https://x.com/FirstSquawk with Auto-export every minute on.
 

@@ -19,9 +19,10 @@ async function render() {
   autoEl.checked = stored[AUTO_KEY] !== false
 
   const last = stored[LAST_EXPORT_KEY]
+  const version = chrome.runtime.getManifest().version
   statusEl.textContent = last
-    ? `${pending} not exported yet · last export ${new Date(last).toLocaleTimeString()}`
-    : `${pending} not exported yet`
+    ? `${pending} not exported yet · last export ${new Date(last).toLocaleTimeString()} · v${version}`
+    : `${pending} not exported yet · v${version}`
 }
 
 autoEl.addEventListener('change', () => {

@@ -1,46 +1,68 @@
 import { LngLatBounds } from 'maplibre-gl'
-import { useEffect, useMemo, useRef } from 'react'
-import Map, { Layer, Marker, NavigationControl, Source, type MapRef } from 'react-map-gl/maplibre'
-import { linkCoordinates, pathCoordinates } from '../lib/news'
-import { formatUpdated, latestItem } from '../lib/time'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Map, {
+  Layer,
+  Marker,
+  NavigationControl,
+  Popup,
+  Source,
+  type MapLayerMouseEvent,
+  type MapRef,
+} from 'react-map-gl/maplibre'
+import { LINK_COLORS, linkCoordinates, pathCoordinates } from '../lib/news'
+import { formatUpdated, freshnessOf, latestItem, shortAge } from '../lib/time'
 import type { NewsLink, NewsSpot, RegionPin } from '../types'
 
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/dark'
 
-type SpotRef = { id: string; spot: NewsSpot }
+type SpotRef = { id: string; itemId: string; text: string; spot: NewsSpot }
+
+/** Layers a click can land on, and the headline a hit should surface. */
+const STORY_LAYERS = ['news-link-line', 'news-spot-line']
+
+type StoryPopup = { itemId: string; text: string; lat: number; lng: number }
 
 type WorldMapProps = {
   regions: RegionPin[]
   links: NewsLink[]
+  linkColors: Map<string, string>
   spots: SpotRef[]
   selectedId: string | null
   unseenByRegion: Record<string, number>
   linkedRegionIds: Set<string>
   onSelect: (regionId: string) => void
+  onFocusStory: (itemId: string | null) => void
 }
 
 export function WorldMap({
   regions,
   links,
+  linkColors,
   spots,
   selectedId,
   unseenByRegion,
   linkedRegionIds,
   onSelect,
+  onFocusStory,
 }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
   const selected = regions.find((region) => region.regionId === selectedId)
+  const [popup, setPopup] = useState<StoryPopup | null>(null)
 
   const linkData = useMemo(
     () => ({
       type: 'FeatureCollection' as const,
       features: links.map((link) => ({
         type: 'Feature' as const,
-        properties: { id: link.id },
+        properties: {
+          itemId: link.id,
+          text: link.text,
+          color: linkColors.get(link.id) ?? LINK_COLORS[0],
+        },
         geometry: { type: 'LineString' as const, coordinates: linkCoordinates(link.regions) },
       })),
     }),
-    [links],
+    [linkColors, links],
   )
 
   // Tethers the region pin to the exact place a headline datelines, e.g. an epicentre.
@@ -48,9 +70,9 @@ export function WorldMap({
     () => ({
       type: 'FeatureCollection' as const,
       features: selected
-        ? spots.map(({ id, spot }) => ({
+        ? spots.map(({ id, itemId, text, spot }) => ({
             type: 'Feature' as const,
-            properties: { id },
+            properties: { id, itemId, text },
             geometry: {
               type: 'LineString' as const,
               coordinates: pathCoordinates([selected, spot]),
@@ -60,6 +82,35 @@ export function WorldMap({
     }),
     [selected, spots],
   )
+
+  const handleMapClick = useCallback(
+    (event: MapLayerMouseEvent) => {
+      const hit = event.features?.[0]
+      if (!hit?.properties) {
+        setPopup(null)
+        onFocusStory(null)
+        return
+      }
+      const { itemId, text } = hit.properties as { itemId?: string; text?: string }
+      if (!itemId) return
+      setPopup({ itemId, text: text ?? '', lat: event.lngLat.lat, lng: event.lngLat.lng })
+      onFocusStory(itemId)
+    },
+    [onFocusStory],
+  )
+
+  // Lines are thin, so tell people they are clickable before they try.
+  const handleMapMove = useCallback((event: MapLayerMouseEvent) => {
+    const map = event.target
+    map.getCanvas().style.cursor = event.features?.length ? 'pointer' : ''
+  }, [])
+
+  // Changing region or filter can retire a line; its popup should go with it.
+  const drawnStoryIds = useMemo(
+    () => new Set([...links.map((link) => link.id), ...spots.map(({ itemId }) => itemId)]),
+    [links, spots],
+  )
+  const visiblePopup = popup && drawnStoryIds.has(popup.itemId) ? popup : null
 
   useEffect(() => {
     if (!selected) return
@@ -98,6 +149,9 @@ export function WorldMap({
         mapStyle={MAP_STYLE}
         reuseMaps
         style={{ width: '100%', height: '100%' }}
+        interactiveLayerIds={STORY_LAYERS}
+        onClick={handleMapClick}
+        onMouseMove={handleMapMove}
       >
         <NavigationControl position="bottom-right" showCompass={false} />
         <Source id="news-links" type="geojson" data={linkData}>
@@ -106,7 +160,7 @@ export function WorldMap({
             type="line"
             layout={{ 'line-cap': 'round', 'line-join': 'round' }}
             paint={{
-              'line-color': '#5ec8c5',
+              'line-color': ['get', 'color'],
               'line-width': selectedId ? 1.8 : 1.2,
               'line-opacity': selectedId ? 0.85 : 0.5,
             }}
@@ -126,7 +180,7 @@ export function WorldMap({
               'text-ignore-placement': true,
             }}
             paint={{
-              'text-color': '#5ec8c5',
+              'text-color': ['get', 'color'],
               'text-opacity': selectedId ? 0.98 : 0.7,
             }}
           />
@@ -138,12 +192,31 @@ export function WorldMap({
             layout={{ 'line-cap': 'round' }}
             paint={{
               'line-color': '#e8c45f',
-              'line-width': 1.4,
-              'line-opacity': 0.75,
-              'line-dasharray': [2, 2],
+              'line-width': 2,
+              'line-opacity': 0.8,
+              // Round caps on a near-zero dash give a dotted trail.
+              'line-dasharray': [0.1, 2.2],
             }}
           />
         </Source>
+        {visiblePopup ? (
+          <Popup
+            longitude={visiblePopup.lng}
+            latitude={visiblePopup.lat}
+            anchor="bottom"
+            offset={12}
+            closeButton
+            closeOnClick={false}
+            onClose={() => {
+              setPopup(null)
+              onFocusStory(null)
+            }}
+            className="story-popup"
+            maxWidth="260px"
+          >
+            <p>{visiblePopup.text}</p>
+          </Popup>
+        ) : null}
         {spots.map(({ id, spot }) => (
           <Marker key={id} longitude={spot.lng} latitude={spot.lat} anchor="center" style={{ zIndex: 3 }}>
             <span className="spot-pin" title={spot.label}>
@@ -163,19 +236,22 @@ export function WorldMap({
           const latest = latestItem(region.items)
           const updated = latest ? formatUpdated(latest.publishedAt) : null
           const open = region.regionId === selectedId
+          const freshness = freshnessOf(region.latestAt)
+          // Fresh pins sit above older ones so a crowded map still reads newest-first.
+          const layer = open ? 6 : freshness === 'fresh' ? 5 : freshness === 'recent' ? 4 : 3
           return (
             <Marker
               key={region.regionId}
               longitude={region.lng}
               latitude={region.lat}
               anchor="center"
-              style={{ zIndex: open ? 4 : live || linked ? 1 : 0 }}
+              style={{ zIndex: freshness === 'old' && !open && !live && !linked ? 1 : layer }}
               onClick={(event) => {
                 event.originalEvent.stopPropagation()
                 onSelect(region.regionId)
               }}
             >
-              <div className={open ? 'region-pin is-open' : 'region-pin'}>
+              <div className={['region-pin', `is-${freshness}`, open ? 'is-open' : ''].filter(Boolean).join(' ')}>
                 <button
                   className={pinClass}
                   type="button"
@@ -188,6 +264,7 @@ export function WorldMap({
                   <span className="region-pin__pulse" />
                   <span className="region-pin__count">{count}</span>
                 </button>
+                <span className="region-pin__age">{shortAge(region.latestAt)}</span>
                 {latest && updated ? (
                   <div className="region-pin__card">
                     <p className="region-pin__place">{region.region}</p>

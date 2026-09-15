@@ -2,22 +2,41 @@ const STORAGE_KEY = 'mapNewsItems'
 const EXPORTED_KEY = 'mapNewsExported'
 const AUTO_KEY = 'mapNewsAuto'
 const LAST_EXPORT_KEY = 'mapNewsLastExport'
-const ALARM = 'map-news-export'
+const EXPORT_ALARM = 'map-news-export'
+const REFRESH_ALARM = 'map-news-refresh'
 
-function startAlarm() {
-  chrome.alarms.create(ALARM, { periodInMinutes: 1 })
+function startAlarms() {
+  chrome.alarms.create(EXPORT_ALARM, { periodInMinutes: 1 })
+  chrome.alarms.create(REFRESH_ALARM, { delayInMinutes: 2, periodInMinutes: 2 })
 }
 
-chrome.runtime.onInstalled.addListener(startAlarm)
-chrome.runtime.onStartup.addListener(startAlarm)
+chrome.runtime.onInstalled.addListener(() => {
+  startAlarms()
+  // Reloading the extension orphans content scripts in open tabs; refresh to re-inject.
+  refreshTimelineTabs()
+})
+chrome.runtime.onStartup.addListener(startAlarms)
+
+async function refreshTimelineTabs() {
+  for (const tab of await timelineTabs()) {
+    if (tab.id) chrome.tabs.reload(tab.id)
+  }
+}
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name !== ALARM) return
   const { [AUTO_KEY]: auto } = await chrome.storage.local.get(AUTO_KEY)
   if (auto === false) return
-  await scanOpenTabs()
-  await exportNewItems()
+  if (alarm.name === EXPORT_ALARM) {
+    await scanOpenTabs()
+    await exportNewItems()
+    return
+  }
+  if (alarm.name === REFRESH_ALARM) await refreshTimelineTabs()
 })
+
+function timelineTabs() {
+  return chrome.tabs.query({ url: ['https://x.com/*', 'https://twitter.com/*'] })
+}
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === 'export-now') {
@@ -30,7 +49,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 })
 
 async function scanOpenTabs() {
-  const tabs = await chrome.tabs.query({ url: ['https://x.com/*', 'https://twitter.com/*'] })
+  const tabs = await timelineTabs()
   await Promise.all(
     tabs.map(async (tab) => {
       if (!tab.id) return

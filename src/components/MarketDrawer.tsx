@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns'
+import { freshnessOf, shortAge } from '../lib/time'
 import type { MarketDetail, MarketStory } from '../types'
 
 type MarketDrawerProps = {
@@ -51,11 +52,16 @@ export function MarketDrawer({ stories, open, onToggle, onSelectRegion }: Market
       <ul className="market__list">
         {stories.map((story) => (
           <li key={story.item.id}>
-            <button type="button" className="market__row" onClick={() => onSelectRegion(story.item.regionId)}>
+            <button
+              type="button"
+              className={`market__row is-${freshnessOf(story.item.publishedAt)}`}
+              onClick={() => onSelectRegion(story.item.regionId)}
+            >
               <span className="market__meta">
                 <time dateTime={story.item.publishedAt}>
                   {format(parseISO(story.item.publishedAt), 'HH:mm')}
                 </time>
+                <span className="market__age">{shortAge(story.item.publishedAt)}</span>
                 <span className="market__region">{story.item.region}</span>
               </span>
               {story.details.length > 0 ? (

@@ -1,3 +1,4 @@
+import { LINK_COLORS } from '../lib/news'
 import { formatUpdated } from '../lib/time'
 import type { TimeFilter } from '../types'
 
@@ -51,7 +52,13 @@ export function TopBar({
       </p>
       <p className="topbar__legend" aria-hidden="true">
         <span className="topbar__swatch is-local" /> local
-        <span className="topbar__swatch is-connected" /> connected
+        <span className="topbar__routes">
+          {LINK_COLORS.slice(0, 4).map((color) => (
+            <span key={color} className="topbar__swatch" style={{ background: color }} />
+          ))}
+        </span>
+        connected
+        <span className="topbar__age">now</span> under 1h · pins fade as they age
       </p>
       <div className="topbar__filters" role="tablist" aria-label="Time range">
         {FILTERS.map((item) => (

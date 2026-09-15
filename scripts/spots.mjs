@@ -1,13 +1,22 @@
-// Resolves precise datelines like "78 KM NORTH-NORTHEAST OF TOBELO, INDONESIA"
-// into coordinates, using Nominatim for the anchor town and a great-circle offset
-// for the distance and bearing. Results are cached so repeat runs stay offline.
+// Resolves the exact places a headline names into coordinates, so the map can point
+// at them instead of only at the region pin. Two sources:
+//   1. USGS-style datelines - "78 KM NORTH-NORTHEAST OF TOBELO, INDONESIA"
+//   2. Named sub-locations  - "urgent alert for Abha and Jazan"
+// Anchors are geocoded through Nominatim and cached, so repeat runs stay offline.
 import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 
 const CACHE_FILE = fileURLToPath(new URL('./geocache.json', import.meta.url))
+const PLACES_FILE = fileURLToPath(new URL('../src/data/places.json', import.meta.url))
 const NOMINATIM = 'https://nominatim.openstreetmap.org/search'
 const USER_AGENT = 'map-news/1.0 (personal hobby project)'
 const RATE_LIMIT_MS = 1100
+
+/** Caps network work per run so the merge watcher stays responsive. */
+const LOOKUP_BUDGET = 25
+
+/** Most headlines name one or two places; more than this is a sign of a bad parse. */
+const MAX_PLACES_PER_ITEM = 4
 
 const BEARINGS = {
   N: 0,
@@ -47,6 +56,41 @@ const BEARINGS = {
 const DATELINE_RE =
   /(\d+(?:\.\d+)?)\s*KM\s+([NSEW][A-Z-]*)\s+OF\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ .'-]{1,30}?)(?:,\s*([A-Za-zÀ-ÿ ]{2,30}?))?(?=[,.;]|\s+ACCORDING|\s*$)/i
 
+/** A capitalised run following a locative preposition; inner caps keep "Ras Al-Arah" whole. */
+const NAMED_PLACE_RE =
+  /\b(?:for|in|near|at|from|over|around|across)\s+([A-Z][A-Za-zÀ-ÿ'-]{2,}(?:\s+(?:and|&)\s+[A-Z][A-Za-zÀ-ÿ'-]{2,}|\s+[A-Z][A-Za-zÀ-ÿ'-]{2,}|,\s*[A-Z][A-Za-zÀ-ÿ'-]{2,}){0,3})/g
+
+/** Capitalised words that follow a preposition but never name a place. */
+const NOT_PLACES = new Set([
+  'january',
+  'february',
+  'march',
+  'april',
+  'may',
+  'june',
+  'july',
+  'august',
+  'september',
+  'october',
+  'november',
+  'december',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
+  'congress',
+  'parliament',
+  'senate',
+  'state tv',
+  'communist party',
+  'migration',
+  'christmas',
+  'ramadan',
+])
+
 const EARTH_RADIUS_KM = 6371
 
 function destinationPoint(lat, lng, km, bearingDeg) {
@@ -79,9 +123,22 @@ async function readCache() {
   }
 }
 
+let knownKeys = null
+
+async function gazetteerKeys() {
+  if (knownKeys) return knownKeys
+  const places = JSON.parse(await readFile(PLACES_FILE, 'utf8'))
+  knownKeys = new Set()
+  for (const place of places) {
+    for (const key of place.keys) knownKeys.add(key.toLowerCase())
+  }
+  return knownKeys
+}
+
 let lastCall = 0
 
-async function geocode(query, cache) {
+/** Looks a place up once; `null` is cached too so junk is never queried twice. */
+async function geocode(query, cache, placesOnly) {
   const key = query.toLowerCase()
   if (key in cache) return cache[key]
 
@@ -93,9 +150,12 @@ async function geocode(query, cache) {
   const response = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
   if (!response.ok) throw new Error(`geocode failed (${response.status})`)
 
-  const results = await response.json()
-  const hit = results[0]
-  cache[key] = hit ? { lat: Number(hit.lat), lng: Number(hit.lon), name: hit.display_name } : null
+  const hit = (await response.json())[0]
+  // A town or district is a place; a shop or an office block is not.
+  const usable = hit && (!placesOnly || hit.class === 'place' || hit.class === 'boundary')
+  cache[key] = usable
+    ? { lat: Number(hit.lat), lng: Number(hit.lon), name: hit.display_name }
+    : null
   return cache[key]
 }
 
@@ -116,35 +176,95 @@ export function parseDateline(text) {
   }
 }
 
-/** Adds a `spot` to any item whose headline carries a precise dateline. */
+function tidy(name) {
+  return name
+    .replace(/[^A-Za-zÀ-ÿ' -]/g, '')
+    .replace(/[-\s]+$/, '')
+    .trim()
+}
+
+/**
+ * Pulls sub-locations out of a headline. Only mixed-case text is mined: in an
+ * all-caps wire headline every word looks like a proper noun.
+ */
+export async function parseNamedPlaces(rawText) {
+  const text = rawText.replace(/[’‘`]/g, "'")
+  const letters = text.replace(/[^A-Za-z]/g, '')
+  if (!letters || text === text.toUpperCase()) return []
+
+  const known = await gazetteerKeys()
+  const names = []
+
+  for (const match of text.matchAll(NAMED_PLACE_RE)) {
+    for (const part of match[1].split(/\s+and\s+|\s*,\s*|\s+&\s+/)) {
+      // "Saudi Arabia's Khamis Mushait" - the place is the part after the possessive.
+      const tail = part.includes("'s ") ? part.slice(part.indexOf("'s ") + 3) : part
+      const name = tidy(tail)
+      const lower = name.toLowerCase()
+      if (name.length < 3) continue
+      if (NOT_PLACES.has(lower) || known.has(lower)) continue
+      if (!names.includes(name)) names.push(name)
+    }
+  }
+
+  return names.slice(0, MAX_PLACES_PER_ITEM)
+}
+
+/** Adds `spots`: the exact places a headline points at, beyond its region pin. */
 export async function addSpots(items) {
   const cache = await readCache()
   const before = Object.keys(cache).length
+  let budget = LOOKUP_BUDGET
   let added = 0
 
+  const spend = () => budget > 0 && budget--
+
   for (const item of items) {
-    if (item.spot) continue
+    // Migrate the single-spot shape this script used to write.
+    if (item.spot && !item.spots) {
+      item.spots = [{ ...item.spot, kind: 'dateline' }]
+      delete item.spot
+    }
+    if (item.spots) continue
+
+    const spots = []
+
     const dateline = parseDateline(item.text)
-    if (!dateline) continue
-
-    let anchor
-    try {
-      anchor = await geocode(dateline.query, cache)
-    } catch {
-      continue
+    if (dateline) {
+      const cached = dateline.query.toLowerCase() in cache
+      if (cached || spend()) {
+        try {
+          const anchor = await geocode(dateline.query, cache, false)
+          if (anchor) {
+            const point = destinationPoint(anchor.lat, anchor.lng, dateline.km, dateline.bearing)
+            spots.push({
+              kind: 'dateline',
+              label: `${dateline.km} km ${dateline.bearingLabel.toLowerCase()} of ${dateline.anchorName}`,
+              lat: point.lat,
+              lng: point.lng,
+            })
+          }
+        } catch {
+          continue
+        }
+      }
     }
-    if (!anchor) continue
 
-    const point = destinationPoint(anchor.lat, anchor.lng, dateline.km, dateline.bearing)
-    item.spot = {
-      label: `${dateline.km} km ${dateline.bearingLabel.toLowerCase()} of ${dateline.anchorName}`,
-      lat: point.lat,
-      lng: point.lng,
-      anchorName: dateline.anchorName,
-      anchorLat: anchor.lat,
-      anchorLng: anchor.lng,
+    for (const name of await parseNamedPlaces(item.text)) {
+      const query = item.country ? `${name}, ${item.country}` : name
+      if (!(query.toLowerCase() in cache) && !spend()) break
+      try {
+        const hit = await geocode(query, cache, true)
+        if (hit) spots.push({ kind: 'place', label: name, lat: hit.lat, lng: hit.lng })
+      } catch {
+        break
+      }
     }
-    added += 1
+
+    if (spots.length > 0) {
+      item.spots = spots
+      added += spots.length
+    }
   }
 
   if (Object.keys(cache).length !== before) {

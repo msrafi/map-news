@@ -8,6 +8,22 @@ export const MIN_LINKED_REGIONS = 2
 /** Keeps the map readable when a wide filter matches hundreds of stories. */
 const MAX_LINKS = 200
 
+/** One hue per route, so a region with several stories does not draw one teal tangle. */
+export const LINK_COLORS = [
+  '#5ec8c5',
+  '#f2a65a',
+  '#9bb7ff',
+  '#e88ab8',
+  '#7fd18a',
+  '#c79bff',
+  '#ffd166',
+  '#ff8f6b',
+]
+
+export function linkColor(index: number): string {
+  return LINK_COLORS[index % LINK_COLORS.length]
+}
+
 export function filterByTime(items: NewsItem[], filter: TimeFilter): NewsItem[] {
   const now = new Date()
   return items.filter((item) => {

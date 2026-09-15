@@ -4,6 +4,26 @@ const PLACES = self.MAP_NEWS_PLACES
 const collected = new Map()
 let saveTimer = null
 let scanTimer = null
+let pillTimer = null
+let observer = null
+
+// Reloading the extension orphans this script: chrome.* still exists but every call
+// throws "Extension context invalidated". Stop working rather than spam the console.
+function connected() {
+  try {
+    return Boolean(chrome.runtime?.id)
+  } catch {
+    return false
+  }
+}
+
+function teardown() {
+  clearTimeout(saveTimer)
+  clearTimeout(scanTimer)
+  clearInterval(pillTimer)
+  observer?.disconnect()
+  observer = null
+}
 
 const MATCHERS = PLACES.flatMap((place) =>
   place.keys.map((key) => {
@@ -62,11 +82,17 @@ function parseArticle(article) {
 }
 
 function save() {
+  if (!connected()) return teardown()
   const items = [...collected.values()].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-  chrome.storage.local.set({ [STORAGE_KEY]: items })
+  try {
+    chrome.storage.local.set({ [STORAGE_KEY]: items })
+  } catch {
+    teardown()
+  }
 }
 
 function scan() {
+  if (!connected()) return teardown()
   let added = 0
   for (const article of document.querySelectorAll('article[data-testid="tweet"]')) {
     const item = parseArticle(article)
@@ -85,21 +111,66 @@ function scheduleScan() {
   scanTimer = setTimeout(scan, 300)
 }
 
-chrome.storage.local.get(STORAGE_KEY).then((stored) => {
-  for (const item of stored[STORAGE_KEY] ?? []) collected.set(item.id, item)
-  scan()
-  new MutationObserver(scheduleScan).observe(document.body, { childList: true, subtree: true })
+// X queues new posts behind a pill instead of inserting them, so the page can sit
+// frozen for half an hour. Clicking the pill is what actually renders them.
+function showQueuedPosts() {
+  const labelled = document.querySelector('[aria-label*="New posts" i]')
+  if (labelled) {
+    labelled.click()
+    return true
+  }
+  for (const button of document.querySelectorAll('button, [role="button"]')) {
+    if (/^show \d+ posts?$/i.test(button.innerText.trim())) {
+      button.click()
+      return true
+    }
+  }
+  return false
+}
+
+// A leftover script from a previous build can still be running here; if anything
+// slips past the guards, shut down instead of throwing on every DOM mutation.
+window.addEventListener('error', (event) => {
+  if (String(event.message).includes('Extension context invalidated')) teardown()
 })
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message.type === 'scan-now') {
-    scan()
-    sendResponse({ count: collected.size })
-  }
-  if (message.type === 'clear') {
-    collected.clear()
-    chrome.storage.local.set({ [STORAGE_KEY]: [] })
-    sendResponse({ count: 0 })
-  }
-  return true
-})
+function start() {
+  if (!connected()) return
+  chrome.storage.local
+    .get(STORAGE_KEY)
+    .then((stored) => {
+      for (const item of stored[STORAGE_KEY] ?? []) collected.set(item.id, item)
+      scan()
+      observer = new MutationObserver(scheduleScan)
+      observer.observe(document.body, { childList: true, subtree: true })
+      pillTimer = setInterval(() => {
+        if (!connected()) return teardown()
+        if (showQueuedPosts()) scheduleScan()
+      }, 15_000)
+    })
+    .catch(teardown)
+
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (!connected()) {
+      teardown()
+      return false
+    }
+    if (message.type === 'scan-now') {
+      showQueuedPosts()
+      scan()
+      sendResponse({ count: collected.size })
+    }
+    if (message.type === 'clear') {
+      collected.clear()
+      chrome.storage.local.set({ [STORAGE_KEY]: [] })
+      sendResponse({ count: 0 })
+    }
+    return true
+  })
+}
+
+try {
+  start()
+} catch {
+  teardown()
+}

@@ -1,11 +1,10 @@
-/** An exact place named in a headline, resolved during merge from a dateline. */
+/** An exact place a headline points at, resolved during merge. */
 export type NewsSpot = {
+  /** `dateline` is an offset epicentre; `place` is a named town or district. */
+  kind: 'dateline' | 'place'
   label: string
   lat: number
   lng: number
-  anchorName: string
-  anchorLat: number
-  anchorLng: number
 }
 
 export type NewsItem = {
@@ -21,7 +20,7 @@ export type NewsItem = {
   text: string
   publishedAt: string
   sourceUrl: string
-  spot?: NewsSpot
+  spots?: NewsSpot[]
 }
 
 export type RegionRef = {

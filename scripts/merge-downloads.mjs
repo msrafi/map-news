@@ -12,7 +12,7 @@ const DOWNLOADS = path.join(homedir(), 'Downloads')
 const INBOX = path.join(DOWNLOADS, 'map-news')
 const ARCHIVE = path.join(INBOX, 'merged')
 const MAX_ITEMS = 500
-const POLL_MS = 20_000
+const POLL_MS = 10_000
 
 const watch = process.argv.includes('--watch')
 const reset = process.argv.includes('--reset')
@@ -102,7 +102,15 @@ await run()
 
 if (watch) {
   console.log(`Watching ${INBOX} and ${DOWNLOADS} every ${POLL_MS / 1000}s. Ctrl+C to stop.`)
+  // Geocoding can outlast one tick; overlapping runs would fight over the same files.
+  let running = false
   setInterval(() => {
-    run().catch((error) => console.error('merge failed:', error.message))
+    if (running) return
+    running = true
+    run()
+      .catch((error) => console.error('merge failed:', error.message))
+      .finally(() => {
+        running = false
+      })
   }, POLL_MS)
 }

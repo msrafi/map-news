@@ -3,5 +3,90 @@
     "lat": 1.726284,
     "lng": 127.9999457,
     "name": "Tobelo, Halmahera Utara, Maluku Utara, Indonesia"
-  }
+  },
+  "abha, saudi arabia": {
+    "lat": 18.2164282,
+    "lng": 42.5043596,
+    "name": "أبها, محافظة أبها, منطقة عسير, 26442, السعودية"
+  },
+  "jazan, saudi arabia": {
+    "lat": 17.333333,
+    "lng": 42.666667,
+    "name": "منطقة جازان, السعودية"
+  },
+  "taif, saudi arabia": {
+    "lat": 21.2702801,
+    "lng": 40.4158308,
+    "name": "الطائف, محافظة الطائف, منطقة مكة المكرمة, 26511, السعودية"
+  },
+  "yanbu, saudi arabia": {
+    "lat": 24.089019,
+    "lng": 38.0687076,
+    "name": "ينبع, محافظة ينبع, منطقة المدينة المنورة, 46424, السعودية"
+  },
+  "southern iran, iran": {
+    "lat": 33.474544,
+    "lng": 47.67945,
+    "name": "دهستان کوهدشت جنوبی, بخش مرکزی کوهدشت, شهرستان کوهدشت, استان لرستان, ایران"
+  },
+  "gop, united states": null,
+  "najran, saudi arabia": {
+    "lat": 18,
+    "lng": 45.666667,
+    "name": "منطقة نجران, السعودية"
+  },
+  "china's, china": null,
+  "stryi, ukraine": {
+    "lat": 49.255875,
+    "lng": 23.8530863,
+    "name": "Стрий, Стрийська міська громада, Стрийський район, Львівська область, Україна"
+  },
+  "washington's, united states": null,
+  "isfahan, iran": {
+    "lat": 32.6707877,
+    "lng": 51.6650002,
+    "name": "اصفهان, بخش مرکزی شهرستان اصفهان, شهرستان اصفهان, استان اصفهان, ایران"
+  },
+  "khamis mushait, saudi arabia": {
+    "lat": 18.3,
+    "lng": 42.733333,
+    "name": "خميس مشيط, محافظة خميس مشيط, منطقة عسير, 62411, السعودية"
+  },
+  "khamis mushait governorate, saudi arabia": null,
+  "djibouti, yemen": null,
+  "dhubab, yemen": {
+    "lat": 13.059672,
+    "lng": 43.511694,
+    "name": "مديرية ذباب, محافظة تعز, اليمن"
+  },
+  "mocha, yemen": {
+    "lat": 13.3179164,
+    "lng": 43.2501093,
+    "name": "المخا, مديرية قضاء المخاء, محافظة تعز, اليمن"
+  },
+  "lithuanian, belgium": null,
+  "iran's, yemen": null,
+  "turkmenistan, iran": null,
+  "armenia, iran": null,
+  "europe, germany": null,
+  "nuremberg, germany": {
+    "lat": 49.453872,
+    "lng": 11.077298,
+    "name": "Nürnberg, Bayern, Deutschland"
+  },
+  "presidential palace, iran": null,
+  "doonbeg, united states": null,
+  "yes, ukraine": null,
+  "qeshm island, iran": {
+    "lat": 26.7687296,
+    "lng": 55.8476653,
+    "name": "جزیره قشم, استان هرمزگان, ایران"
+  },
+  "ras al-arah, yemen": {
+    "lat": 12.6462971,
+    "lng": 43.9132795,
+    "name": "رأس العارة, مديرية المضاربة والعارة, محافظة لحج, اليمن"
+  },
+  "al-tabba al-sawda, yemen": null,
+  "jabal al-mun'im, yemen": null
 }

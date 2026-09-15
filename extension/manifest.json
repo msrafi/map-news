@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Map News Collector",
-  "version": "1.1.0",
+  "version": "1.4.0",
   "description": "Collects visible posts from an X timeline and exports them as news.json for the Map News app.",
   "permissions": ["storage", "downloads", "alarms", "tabs"],
   "background": {

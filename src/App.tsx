@@ -5,16 +5,17 @@ import { TopBar } from './components/TopBar'
 import { WorldMap } from './components/WorldMap'
 import { useSeenNews } from './hooks/useSeenNews'
 import { findMarketStories } from './lib/market'
-import { buildLinks, filterByTime, groupByRegion, loadNews } from './lib/news'
+import { buildLinks, filterByTime, groupByRegion, linkColor, loadNews } from './lib/news'
 import type { NewsItem, TimeFilter } from './types'
 
 export default function App() {
   const [items, setItems] = useState<NewsItem[]>([])
   const [error, setError] = useState<string | null>(null)
-  const [filter, setFilter] = useState<TimeFilter>('all')
+  const [filter, setFilter] = useState<TimeFilter>('today')
   // Routes and location pointers belong to map clicks; the market drawer just opens the region.
   const [selection, setSelection] = useState<{ regionId: string; withRoutes: boolean } | null>(null)
   const [marketOpen, setMarketOpen] = useState(true)
+  const [focusedStoryId, setFocusedStoryId] = useState<string | null>(null)
   const selectedId = selection?.regionId ?? null
   const withRoutes = selection?.withRoutes ?? false
   const { seenIds, markSeen } = useSeenNews()
@@ -64,17 +65,29 @@ export default function App() {
   }, null)
   const allLinks = useMemo(() => buildLinks(visibleItems, null), [visibleItems])
   const selected = regions.find((region) => region.regionId === selectedId) ?? null
-  const links = useMemo(
+  const regionLinks = useMemo(
     () =>
-      selectedId && withRoutes
-        ? allLinks.filter((link) => link.regions.some((region) => region.id === selectedId))
-        : [],
-    [allLinks, selectedId, withRoutes],
+      selectedId ? allLinks.filter((link) => link.regions.some((region) => region.id === selectedId)) : [],
+    [allLinks, selectedId],
   )
+  // Colour by position in the region's own list so the map line and its card agree.
+  const linkColors = useMemo(() => {
+    const colors = new Map<string, string>()
+    regionLinks.forEach((link, index) => colors.set(link.id, linkColor(index)))
+    return colors
+  }, [regionLinks])
+  const links = withRoutes ? regionLinks : []
   const spots = useMemo(
     () =>
       selected && withRoutes
-        ? selected.items.flatMap((item) => (item.spot ? [{ id: item.id, spot: item.spot }] : []))
+        ? selected.items.flatMap((item) =>
+            (item.spots ?? []).map((spot, index) => ({
+              id: `${item.id}-${index}`,
+              itemId: item.id,
+              text: item.text,
+              spot,
+            })),
+          )
         : [],
     [selected, withRoutes],
   )
@@ -94,7 +107,9 @@ export default function App() {
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') setSelection(null)
+      if (event.key !== 'Escape') return
+      setFocusedStoryId(null)
+      setSelection(null)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -118,11 +133,16 @@ export default function App() {
         <WorldMap
           regions={regions}
           links={links}
+          linkColors={linkColors}
           spots={spots}
           selectedId={selectedId}
           unseenByRegion={unseenByRegion}
           linkedRegionIds={linkedRegionIds}
-          onSelect={(regionId) => setSelection({ regionId, withRoutes: true })}
+          onSelect={(regionId) => {
+            setFocusedStoryId(null)
+            setSelection({ regionId, withRoutes: true })
+          }}
+          onFocusStory={setFocusedStoryId}
         />
         <MarketDrawer
           stories={marketStories}
@@ -131,7 +151,13 @@ export default function App() {
           onSelectRegion={(regionId) => setSelection({ regionId, withRoutes: false })}
         />
         {selected ? (
-          <NewsPanel region={selected} seenIds={seenIds} onClose={() => setSelection(null)} />
+          <NewsPanel
+            region={selected}
+            seenIds={seenIds}
+            linkColors={linkColors}
+            focusedStoryId={focusedStoryId}
+            onClose={() => setSelection(null)}
+          />
         ) : null}
       </main>
     </div>

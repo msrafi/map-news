@@ -30,11 +30,20 @@ The map reads `public/news.json`. New posts come from the Chrome extension in `e
 3. Click the extension icon, turn on **Auto-export every minute**.
 4. In Chrome, turn off **Ask where to save each file**, or every export opens a save dialog.
 
-With `npm start` running, drops land in `~/Downloads/map-news/`, get merged into `public/news.json` every 20 seconds (newest 500 posts), and consumed files move to `~/Downloads/map-news/merged/`. The first merge on macOS may ask the terminal to read Downloads; allow it once.
+With `npm start` running, drops land in `~/Downloads/map-news/`, get merged into `public/news.json` every 10 seconds (newest 500 posts), and consumed files move to `~/Downloads/map-news/merged/`. The first merge on macOS may ask the terminal to read Downloads; allow it once.
+
+Leave the X tab open. X holds new posts behind a "show new posts" pill rather than inserting them, so a tab left alone can look frozen. The content script clicks that pill every 15 seconds, and with auto-export on the extension reloads every open X tab every 2 minutes so the newest posts actually render.
+
+Run only one merge watcher. `npm start` already includes one, so a separate `npm run merge:watch` in another terminal will race it for the same files.
 
 A headline is only kept if a place keyword in `src/data/places.json` matches. After editing that file, `npm start` (or `npm run sync:places`) copies it into the extension.
 
-Merging also resolves precise datelines such as `78 KM NORTH-NORTHEAST OF TOBELO, INDONESIA`: the anchor town is geocoded once through Nominatim, the distance and bearing are applied as a great-circle offset, and the result is stored on the post as `spot`. Lookups are cached in `scripts/geocache.json`. Clicking a region pin (not a stock-drawer row) draws that spot and any cross-region routes.
+Merging also resolves the exact places a headline points at and stores them on the post as `spots`. Two kinds:
+
+- **Datelines** such as `78 KM NORTH-NORTHEAST OF TOBELO, INDONESIA`. The anchor town is geocoded and the distance and bearing applied as a great-circle offset.
+- **Named sub-locations** such as `urgent alert for Abha and Jazan`. Only mixed-case headlines are mined, since every word in an all-caps wire headline looks like a proper noun. Candidates must follow a locative preposition, and each is geocoded within the post's own country and kept only if it resolves to a populated place or an administrative boundary. That country-and-class check is what keeps "Congress" or "Lithuanian" out.
+
+Lookups go through Nominatim and are cached in `scripts/geocache.json`, misses included, so a name is only ever queried once. Each run spends at most 25 new lookups to keep the watcher responsive; the rest are picked up on later runs. Clicking a region pin (not a stock-drawer row) draws these spots as dotted trails from the pin, alongside any cross-region routes.
 
 Manual pieces, if you need them:
 
