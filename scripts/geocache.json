@@ -526,5 +526,65 @@
   "petno, united states": null,
   "petno": null,
   "approved name, united states": null,
-  "approved name": null
+  "approved name": null,
+  "doug petno, united states": null,
+  "doug petno": null,
+  "key east-west pipeline, russia": null,
+  "bab al-mandab strait, israel": null,
+  "bab al-mandab strait": null,
+  "yanbu port, saudi arabia": {
+    "lat": 24.0802586,
+    "lng": 38.0659117,
+    "name": "ميناء ينبع التجاري, ينبع, محافظة ينبع, منطقة المدينة المنورة, السعودية"
+  },
+  "barents sea, russia": null,
+  "barents sea": {
+    "lat": 74.3478217,
+    "lng": 37.809937,
+    "name": "Баренцево море"
+  },
+  "norwegian sea, russia": null,
+  "norwegian sea": {
+    "lat": 68.6716711,
+    "lng": 2.0008195,
+    "name": "Norwegian Sea"
+  },
+  "mecca, saudi arabia": {
+    "lat": 21.420847,
+    "lng": 39.826869,
+    "name": "محافظة مكة المكرمة, منطقة مكة المكرمة, السعودية"
+  },
+  "jeddah, saudi arabia": {
+    "lat": 21.5504432,
+    "lng": 39.1742363,
+    "name": "جدة, محافظة جدة, منطقة مكة المكرمة, 23124, السعودية"
+  },
+  "abha, kuwait": null,
+  "abha": {
+    "lat": 18.2164282,
+    "lng": 42.5043596,
+    "name": "أبها, محافظة أبها, منطقة عسير, 26442, السعودية"
+  },
+  "taif, kuwait": null,
+  "taif": {
+    "lat": 21.2702801,
+    "lng": 40.4158308,
+    "name": "الطائف, محافظة الطائف, منطقة مكة المكرمة, 26511, السعودية"
+  },
+  "hormuz, iran": {
+    "lat": 27.068024,
+    "lng": 56.4641698,
+    "name": "جزیره هرمز, دهستان هرمز, بخش هرمز, شهرستان قشم, استان هرمزگان, ایران"
+  },
+  "joliet, united states": {
+    "lat": 41.5263603,
+    "lng": -88.0840212,
+    "name": "Joliet, Will County, Illinois, United States"
+  },
+  "persian gulf strait, iran": null,
+  "persian gulf strait": null,
+  "pickaxe mountain, iran": null,
+  "pickaxe mountain": null,
+  "arctic, finland": null,
+  "arctic": null
 }

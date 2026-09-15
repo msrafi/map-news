@@ -52,22 +52,43 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false
+    let inFlight = false
 
-    function refresh() {
-      loadNews()
+    function refresh(force = false) {
+      // Overlapping fetches would fight over the cache validators.
+      if (inFlight) return
+      inFlight = true
+      loadNews(force)
         .then((news) => {
-          if (!cancelled) setItems(news)
+          // null means the feed has not changed since the last fetch.
+          if (!cancelled && news) setItems(news)
+          if (!cancelled) setError(null)
         })
         .catch((err: unknown) => {
           if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load news')
         })
+        .finally(() => {
+          inFlight = false
+        })
     }
 
-    refresh()
-    const timer = window.setInterval(refresh, 20_000)
+    refresh(true)
+    const timer = window.setInterval(refresh, 5_000)
+
+    // A backgrounded tab throttles timers, so catch up the moment it is looked at again.
+    function onWake() {
+      if (document.visibilityState === 'visible') refresh()
+    }
+    document.addEventListener('visibilitychange', onWake)
+    window.addEventListener('focus', onWake)
+    window.addEventListener('online', onWake)
+
     return () => {
       cancelled = true
       window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', onWake)
+      window.removeEventListener('focus', onWake)
+      window.removeEventListener('online', onWake)
     }
   }, [])
 

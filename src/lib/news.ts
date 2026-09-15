@@ -132,13 +132,36 @@ function shiftSampleTimestamps(items: NewsItem[]): NewsItem[] {
   }))
 }
 
-export async function loadNews(): Promise<NewsItem[]> {
-  const url = `${import.meta.env.BASE_URL}news.json?t=${Date.now()}`
-  const response = await fetch(url, { cache: 'no-store' })
+/**
+ * Polling is cheap when the server can answer "unchanged": the validators let the
+ * app ask often without re-parsing a 500-item feed. Resolves null when nothing moved.
+ */
+let feedTag: string | null = null
+let feedModified: string | null = null
+
+export async function loadNews(force = false): Promise<NewsItem[] | null> {
+  const headers: HeadersInit = {}
+  if (!force && feedTag) headers['If-None-Match'] = feedTag
+  if (!force && feedModified) headers['If-Modified-Since'] = feedModified
+
+  const response = await fetch(`${import.meta.env.BASE_URL}news.json`, {
+    cache: 'no-store',
+    headers,
+  })
+  if (response.status === 304) return null
   if (!response.ok) {
     throw new Error(`Could not load news feed (${response.status})`)
   }
-  const data: unknown = await response.json()
+
+  const tag = response.headers.get('ETag')
+  const modified = response.headers.get('Last-Modified')
+  // A server without validators still lands here, so fall back to comparing the body.
+  const body = await response.text()
+  if (!force && tag && tag === feedTag) return null
+  feedTag = tag
+  feedModified = modified
+
+  const data: unknown = JSON.parse(body)
   if (!Array.isArray(data)) {
     throw new Error('News feed is not a list')
   }

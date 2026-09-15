@@ -1,8 +1,12 @@
 const STORAGE_KEY = 'mapNewsItems'
 const AUTO_KEY = 'mapNewsAuto'
 /** Chrome throttles timers in a background tab, so this is a backup to the 2-minute alarm. */
-const PULL_MS = 120_000
+const PULL_MS = 60_000
 const REFRESH_MS = 120_000
+/** A new post should leave the tab right away rather than waiting for the next pull. */
+const EXPORT_DEBOUNCE_MS = 3_000
+/** Scan and ship what is on screen before the reload wipes it. */
+const PRE_RELOAD_MS = 4_000
 const PLACES = self.MAP_NEWS_PLACES
 
 const collected = new Map()
@@ -10,6 +14,7 @@ let saveTimer = null
 let scanTimer = null
 let pullTimer = null
 let refreshTimer = null
+let exportTimer = null
 let observer = null
 
 // Reloading the extension orphans this script: chrome.* still exists but every call
@@ -27,6 +32,7 @@ function teardown() {
   clearTimeout(scanTimer)
   clearInterval(pullTimer)
   clearTimeout(refreshTimer)
+  clearTimeout(exportTimer)
   observer?.disconnect()
   observer = null
 }
@@ -119,6 +125,23 @@ function save() {
   }
 }
 
+function exportTick() {
+  if (!connected()) return teardown()
+  chrome.storage.local
+    .get(AUTO_KEY)
+    .then((stored) => {
+      if (stored[AUTO_KEY] === false) return
+      return chrome.runtime.sendMessage({ type: 'export-tick' })
+    })
+    .catch(teardown)
+}
+
+/** Posts arrive in bursts, so a short wait batches them into one download. */
+function queueExport() {
+  clearTimeout(exportTimer)
+  exportTimer = setTimeout(exportTick, EXPORT_DEBOUNCE_MS)
+}
+
 function scan() {
   if (!connected()) {
     teardown()
@@ -135,7 +158,7 @@ function scan() {
   if (added === 0) return 0
   clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
-    save().catch(teardown)
+    save().then(queueExport).catch(teardown)
   }, 500)
   return added
 }
@@ -145,22 +168,8 @@ function pull() {
   const queued = showQueuedPosts()
   const run = () => {
     if (!connected()) return teardown()
-    const added = scan()
-    const exportTick = () => {
-      chrome.storage.local
-        .get(AUTO_KEY)
-        .then((stored) => {
-          if (stored[AUTO_KEY] === false) return
-          return chrome.runtime.sendMessage({ type: 'export-tick' })
-        })
-        .catch(teardown)
-    }
-    if (added > 0) {
-      clearTimeout(saveTimer)
-      save().then(exportTick).catch(teardown)
-      return
-    }
-    exportTick()
+    // A scan that finds something queues its own export.
+    if (scan() === 0) exportTick()
   }
   // X inserts the queued posts after the pill click; give the DOM a beat to catch up.
   if (queued) setTimeout(run, 800)
@@ -204,6 +213,8 @@ function start() {
       scan()
       observer = new MutationObserver(scheduleScan)
       observer.observe(document.body, { childList: true, subtree: true })
+      // A reloaded timeline is usually still empty at document_idle.
+      setTimeout(pull, 5_000)
       pullTimer = setInterval(pull, PULL_MS)
       // Background tabs throttle short intervals; a 2-minute reload still runs.
       refreshTimer = setTimeout(() => {
@@ -212,10 +223,16 @@ function start() {
           .get(AUTO_KEY)
           .then((stored) => {
             if (stored[AUTO_KEY] === false) return
-            location.reload()
+            // Ship what is on screen first: the reload throws this page away.
+            showQueuedPosts()
+            scan()
+            save().then(exportTick).catch(teardown)
+            setTimeout(() => {
+              if (connected()) location.reload()
+            }, PRE_RELOAD_MS)
           })
           .catch(teardown)
-      }, REFRESH_MS)
+      }, REFRESH_MS - PRE_RELOAD_MS)
     })
     .catch(teardown)
 

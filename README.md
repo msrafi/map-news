@@ -27,12 +27,15 @@ The map reads `public/news.json`. New posts come from the Chrome extension in `e
 
 1. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, pick the `extension/` folder.
 2. Open `https://x.com/FirstSquawk` and leave that tab open.
-3. Click the extension icon, turn on **Auto-export every 2 minutes**.
-4. In Chrome, turn off **Ask where to save each file**, or every export opens a save dialog.
+3. Click the extension icon, turn on **Auto-export every 2 minutes**.4. In Chrome, turn off **Ask where to save each file**, or every export opens a save dialog.
 
 With `npm start` running, drops land in `~/Downloads/map-news/`, get merged into `public/news.json` every 10 seconds (newest 500 posts), and consumed files move to `~/Downloads/map-news/merged/`. The first merge on macOS may ask the terminal to read Downloads; allow it once.
 
-Leave the X tab open. X holds new posts behind a "show new posts" pill rather than inserting them, so a tab left alone can look frozen. Every 2 minutes the content script clicks that pill, scans the page, and (with auto-export on) writes a drop into Downloads, then reloads the tab so the newest posts actually render. Chrome throttles short timers in background tabs, so the 2-minute cycle is also scheduled as a Chrome alarm (which can wake the extension). Turning auto-export on reloads open X tabs immediately. The map itself fetches `public/news.json` every 20 seconds.
+Leave the X tab open. X holds new posts behind a "show new posts" pill rather than inserting them, so a tab left alone can look frozen. The content script clicks that pill and scans on every DOM change; when a scan finds something new it exports within about 3 seconds instead of waiting for a timer. On top of that it pulls once a minute, and every 2 minutes it scans, exports, and only then reloads the tab, so nothing on screen is lost to the reload. Chrome throttles short timers in background tabs, so the same 2-minute cycle also runs as a Chrome alarm. Turning auto-export on reloads open X tabs immediately.
+
+The watcher merges new downloads into `public/news.json` every 2 seconds, and the app polls that file every 2 seconds with a conditional request, so an unchanged feed costs an empty `304` and only a real change is parsed. The app also refetches the moment the tab regains focus or the network comes back, since a background tab has its timers throttled. End to end, a post on X reaches the map in roughly 5–10 seconds.
+
+Posts with no recognisable place are dropped, which is why a headline can be on X but not in the app. Add the missing keyword to `src/data/places.json` (or the company to `src/data/companies.json`) and run `npm run sync:places`.
 
 Run only one merge watcher. `npm start` already includes one, so a separate `npm run merge:watch` in another terminal will race it for the same files.
 
@@ -68,7 +71,7 @@ Options parsing recognizes compact trade alerts such as `$TDOC 7c @.04`, `$ASTS 
 
 **US stocks** — index, futures, equity-move, and named-company headlines (`src/data/companies.json` maps names like `ORACLE` to `ORCL`, and bare cashtags are read directly) — is a second drawer, opened from its tab in the map's top-left corner. Stock and option posts stay off the map (no pins, routes, or spots) even when they name a city. Both drawers sit side by side when open, and neither is part of the column. Clicking a stock headline opens a tooltip beside it with the full post, its parsed numbers, and a link to the original; Escape or a click outside closes it.
 
-Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.8.0.
+Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.8.1.
 
 ## Deploy to GitHub Pages
 

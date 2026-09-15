@@ -43,7 +43,7 @@ self.MAP_NEWS_PLACES = [
   {"id":"lagos","keys":["lagos","nigeria"],"region":"Lagos","city":"Lagos","country":"Nigeria","lat":6.5244,"lng":3.3792},
   {"id":"johannesburg","keys":["johannesburg","south africa"],"region":"Johannesburg","city":"Johannesburg","country":"South Africa","lat":-26.2041,"lng":28.0473},
   {"id":"cape-town","keys":["cape town"],"region":"Cape Town","city":"Cape Town","country":"South Africa","lat":-33.9249,"lng":18.4241},
-  {"id":"washington","keys":["washington","white house","federal reserve","fomc","powell","united states","trump"],"region":"Washington","city":"Washington","country":"United States","lat":38.9072,"lng":-77.0369},
+  {"id":"washington","keys":["washington","white house","federal reserve","fomc","powell","united states","trump","senate","congress","capitol hill","house of representatives","pentagon","state department","supreme court"],"region":"Washington","city":"Washington","country":"United States","lat":38.9072,"lng":-77.0369},
   {"id":"new-york","keys":["new york","wall street","nasdaq","dow jones","s&p 500"],"region":"New York","city":"New York","country":"United States","lat":40.7128,"lng":-74.006},
   {"id":"los-angeles","keys":["los angeles"],"region":"Los Angeles","city":"Los Angeles","country":"United States","lat":34.0522,"lng":-118.2437},
   {"id":"mexico-city","keys":["mexico city","mexico","mexican"],"region":"Mexico City","city":"Mexico City","country":"Mexico","lat":19.4326,"lng":-99.1332},

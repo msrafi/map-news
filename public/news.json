@@ -1,5 +1,329 @@
 [
   {
+    "author": "Flowseidon",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@kiantrades",
+    "id": "x-2099945109152510366",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:35:03.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/kiantrades/status/2099945109152510366",
+    "text": "I miss my Tesla"
+  },
+  {
+    "author": "WALL ST JESUS (FZN)",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@WallStJesus",
+    "id": "x-2099944342676725911",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:32:01.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/WallStJesus/status/2099944342676725911",
+    "text": "$XLY"
+  },
+  {
+    "author": "Cheddar Flow",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@CheddarFlow",
+    "id": "x-2099943483670683668",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:28:36.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/CheddarFlow/status/2099943483670683668",
+    "text": "This is not good for \n$SPY\n Bulls\n\nThe 750 strike is starting to rapidly gain exposure - There's already a $2.1 BILLION put wall there"
+  },
+  {
+    "author": "FinancialJuice",
+    "city": "Riyadh",
+    "country": "Saudi Arabia",
+    "handle": "@financialjuice",
+    "id": "x-2099941387105902646",
+    "lat": 24.7136,
+    "lng": 46.6753,
+    "publishedAt": "2026-09-15T19:20:16.000Z",
+    "region": "Riyadh",
+    "regionId": "riyadh",
+    "sourceUrl": "https://x.com/financialjuice/status/2099941387105902646",
+    "text": "Danger has passed in Khamis Mushait - Saudi Civil Defense.",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Khamis Mushait",
+        "lat": 18.3,
+        "lng": 42.733333
+      }
+    ]
+  },
+  {
+    "author": "FinancialJuice",
+    "city": "Riyadh",
+    "country": "Saudi Arabia",
+    "handle": "@financialjuice",
+    "id": "x-2099941065620861340",
+    "lat": 24.7136,
+    "lng": 46.6753,
+    "publishedAt": "2026-09-15T19:18:59.000Z",
+    "region": "Riyadh",
+    "regionId": "riyadh",
+    "sourceUrl": "https://x.com/financialjuice/status/2099941065620861340",
+    "text": "Danger has passed in Jazan - Saudi Civil Defense.",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Jazan",
+        "lat": 17.333333,
+        "lng": 42.666667
+      }
+    ]
+  },
+  {
+    "author": "First Squawk",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@FirstSquawk",
+    "id": "x-2099940916735902029",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:18:24.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/FirstSquawk/status/2099940916735902029",
+    "text": "JPMORGAN'S DOUG PETNO — KEY TAKEAWAYS\n\n• JPMORGAN CO-PRESIDENT DOUG PETNO: JAMIE DIMON IS NOT STEPPING BACK.\n\n• PETNO: NOTHING IS FLASHING RED IN THE US ECONOMY FOR CONSUMERS OR CORPORATES, WITH VERY LITTLE FLASHING YELLOW.\n\n• JPMORGAN SEES NO SYSTEMIC RISKS THAT ARE CURRENTLY"
+  },
+  {
+    "author": "First Squawk",
+    "city": "London",
+    "country": "United Kingdom",
+    "handle": "@FirstSquawk",
+    "id": "x-2099940511473938550",
+    "lat": 51.5074,
+    "lng": -0.1278,
+    "publishedAt": "2026-09-15T19:16:47.000Z",
+    "region": "London",
+    "regionId": "london",
+    "sourceUrl": "https://x.com/FirstSquawk/status/2099940511473938550",
+    "text": "UK ‘ACTIVELY’ EXPLORING JOINING CANADA-LED GLOBAL DEFENCE BANK - FT"
+  },
+  {
+    "author": "EnhancedMarket",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@EnhancedMarket",
+    "id": "x-2099940229876429120",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:15:40.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/EnhancedMarket/status/2099940229876429120",
+    "text": "Just got rear ended by a Tesla in “FSD” mode apparently in my 911 Turbo S😅😅"
+  },
+  {
+    "author": "First Squawk",
+    "city": "Riyadh",
+    "country": "Saudi Arabia",
+    "handle": "@FirstSquawk",
+    "id": "x-2099940075434082578",
+    "lat": 24.7136,
+    "lng": 46.6753,
+    "publishedAt": "2026-09-15T19:15:03.000Z",
+    "region": "Riyadh",
+    "regionId": "riyadh",
+    "sourceUrl": "https://x.com/FirstSquawk/status/2099940075434082578",
+    "text": "SAUDI CIVIL DEFENSE ISSUES EARLY WARNINGS FOR POTENTIAL DANGER IN JAZAN, ABHA AND KHAMIS MUSHAIT.",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Jazan",
+        "lat": 17.333333,
+        "lng": 42.666667
+      },
+      {
+        "kind": "place",
+        "label": "Abha",
+        "lat": 18.2164282,
+        "lng": 42.5043596
+      },
+      {
+        "kind": "place",
+        "label": "Khamis Mushait",
+        "lat": 18.3,
+        "lng": 42.733333
+      }
+    ]
+  },
+  {
+    "author": "FinancialJuice",
+    "city": "Riyadh",
+    "country": "Saudi Arabia",
+    "handle": "@financialjuice",
+    "id": "x-2099940038708523170",
+    "lat": 24.7136,
+    "lng": 46.6753,
+    "publishedAt": "2026-09-15T19:14:54.000Z",
+    "region": "Riyadh",
+    "regionId": "riyadh",
+    "sourceUrl": "https://x.com/financialjuice/status/2099940038708523170",
+    "text": "Early warning issued in Khamis Mushait to alert of potential danger - Saudi Civil Defense.",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Khamis Mushait",
+        "lat": 18.3,
+        "lng": 42.733333
+      }
+    ]
+  },
+  {
+    "author": "FinancialJuice",
+    "city": "Riyadh",
+    "country": "Saudi Arabia",
+    "handle": "@financialjuice",
+    "id": "x-2099939535123517576",
+    "lat": 24.7136,
+    "lng": 46.6753,
+    "publishedAt": "2026-09-15T19:12:54.000Z",
+    "region": "Riyadh",
+    "regionId": "riyadh",
+    "sourceUrl": "https://x.com/financialjuice/status/2099939535123517576",
+    "text": "Saudi: Warning issued in the Jazan province."
+  },
+  {
+    "author": "Warren Buffett 📈 $SPY 👑",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@OptionsBuffett",
+    "id": "x-2099938959333945465",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:10:37.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/OptionsBuffett/status/2099938959333945465",
+    "text": "I AM THE BEST TRADER ON X 🏆\n\n\n$ABBV\n 5,000%✅\n\n$MRK\n 4,000%✅\n\n$META\n 3,200%✅\n\n$TGT\n 3,000%✅\n\n$GOOGL\n 2,200%✅\n\n$PG\n 2,100%✅\n\n$ABBV\n 2,000%✅\n\n$TSLA\n 1,970%✅\n\n$MSFT\n 1,800%✅\n\n$FDX\n 1,750%✅\n\n$ABBV\n 1,560% ✅\n\n$AMZN\n 1,520% ✅\n\n$AAPL\n 1,300%✅\n\n$IBM\n 1,250%✅\n\n$AAPL\n 1,200% ✅\n\n$TSLA\n 1,200%✅\n\n$AAPL"
+  },
+  {
+    "author": "First Squawk",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@FirstSquawk",
+    "id": "x-2099938496345780408",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:08:47.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/FirstSquawk/status/2099938496345780408",
+    "text": "CRYPTO STOCKS EXTEND SELLOFF AS COINBASE AND CIRCLE SLIDE AROUND 10% AFTER U.S. SENATE FAILS TO ADVANCE KEY CRYPTO REGULATION BILL."
+  },
+  {
+    "author": "First Squawk",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@FirstSquawk",
+    "id": "x-2099937735192797536",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-15T19:05:45.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/FirstSquawk/status/2099937735192797536",
+    "text": "U.S. SENATE FAILS TO ADVANCE THE CLARITY ACT, WITH LAWMAKERS VOTING 50-49 AGAINST MOVING THE CRYPTO REGULATORY BILL FORWARD.\n\nTHE VOTE DEALS A SETBACK TO EFFORTS TO ESTABLISH A U.S. REGULATORY FRAMEWORK FOR CRYPTOCURRENCIES."
+  },
+  {
+    "author": "FinancialJuice",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@financialjuice",
+    "id": "x-2099937676782604795",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-15T19:05:31.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/financialjuice/status/2099937676782604795",
+    "text": "US Senate votes 50-49 against advancing the Clarity act."
+  },
+  {
+    "author": "Moon Trades",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@MoonTrades7",
+    "id": "x-2099937593886478390",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:05:11.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/MoonTrades7/status/2099937593886478390",
+    "text": "ADDING HEAVY\n\n🚨 \n$MDA\n 30 CALL 9/18 @ .70"
+  },
+  {
+    "author": "*Walter Bloomberg",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@DeItaone",
+    "id": "x-2099936747173875826",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:01:50.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/DeItaone/status/2099936747173875826",
+    "text": "NVIDIA CEO JENSEN HUANG: DO NOT NEED NEW LAWS OR REGULATIONS FOR AI SAFETY - SALESFORCE EVENT\n\nNVIDIA CEO: ON AI SAFETY, SAYS COMPANIES SHOULD PACE THEMSELVES UNTIL THEY ARE ARE CONFIDENT THEY ARE RELEASING SOMETHING THE MARKET WOULD APPRECIATE"
+  },
+  {
+    "author": "First Squawk",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@FirstSquawk",
+    "id": "x-2099936699187183875",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-15T19:01:38.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/FirstSquawk/status/2099936699187183875",
+    "text": "US SENATE BLOCKS LANDMARK CRYPTO"
+  },
+  {
+    "author": "FinancialJuice",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@financialjuice",
+    "id": "x-2099936590638264440",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-15T19:01:12.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/financialjuice/status/2099936590638264440",
+    "text": "US Senate blocks landmark Crypto bill."
+  },
+  {
+    "author": "Cheddar Flow",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@CheddarFlow",
+    "id": "x-2099936322336989555",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T19:00:08.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/CheddarFlow/status/2099936322336989555",
+    "text": "$SPY\n Unusual $750M Dark Pool Print 🔮"
+  },
+  {
     "author": "First Squawk",
     "city": "Washington",
     "country": "United States",
@@ -26,6 +350,20 @@
     "regionId": "washington",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099935503642776043",
     "text": "TRUMP SAYS THE KENNEDY CENTER BOARD AGREED ALMOST UNANIMOUSLY TO CLOSE THE BUILDING FOR SAFETY REASONS."
+  },
+  {
+    "author": "The Option Haven",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@theoptionhaven",
+    "id": "x-2099935155435831422",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-15T18:55:30.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/theoptionhaven/status/2099935155435831422",
+    "text": "Clarity act on track to fail! \nBreaking news and stock was moving fast, but \n@Alertsify\n execution moved faster!!!\n\n\n$MSTR\n \n$COIN\n \n\n\n@EnhancedMarket\n \n@mzozulia1"
   },
   {
     "author": "FinancialJuice",
@@ -68,6 +406,20 @@
     "regionId": "new-york",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099933772963791021",
     "text": "JPMORGAN'S PETNO: DEALMAKING ACTIVITY REMAINS STRONG AND ROBUST."
+  },
+  {
+    "author": "TrendSpider",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@TrendSpider",
+    "id": "x-2099933747101519878",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-15T18:49:54.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/TrendSpider/status/2099933747101519878",
+    "text": "BREAKING: The Digital Asset Market Clarity Act has failed to advance in the Senate."
   },
   {
     "author": "First Squawk",
@@ -138,6 +490,34 @@
     "regionId": "new-york",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099932479641817107",
     "text": "JPMORGAN CO-PRESIDENT DOUG PETNO: JAMIE DIMON HAS NO PLANS TO STEP AWAY FROM HIS ROLE."
+  },
+  {
+    "author": "First Squawk",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@FirstSquawk",
+    "id": "x-2099932439208734769",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-15T18:44:43.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/FirstSquawk/status/2099932439208734769",
+    "text": "CLARITY ACT EXPECTED TO FAIL KEY PROCEDURAL VOTE IN THE U.S. SENATE AS LAWMAKERS CONTINUE VOTING."
+  },
+  {
+    "author": "FinancialJuice",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@financialjuice",
+    "id": "x-2099931941826949240",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-15T18:42:44.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/financialjuice/status/2099931941826949240",
+    "text": "🔴 The Clarity Act is on track to fail the procedural hurdle in the Senate."
   },
   {
     "author": "First Squawk",
@@ -1763,7 +2143,15 @@
     "region": "Riyadh",
     "regionId": "riyadh",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099874180313543064",
-    "text": "OIL LOADINGS HAVE BEEN STOPPED AT SAUDI ARABIA'S YANBU PORT AFTER AN ATTACK ON THE EAST-WEST PIPELINE, ACCORDING TO SHIPPING SOURCES."
+    "text": "OIL LOADINGS HAVE BEEN STOPPED AT SAUDI ARABIA'S YANBU PORT AFTER AN ATTACK ON THE EAST-WEST PIPELINE, ACCORDING TO SHIPPING SOURCES.",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Yanbu Port",
+        "lat": 24.0802586,
+        "lng": 38.0659117
+      }
+    ]
   },
   {
     "author": "SniperAlert",
@@ -2765,7 +3153,21 @@
     "region": "Moscow",
     "regionId": "moscow",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099823921268978026",
-    "text": "RUSSIAN TU-95MS STRATEGIC BOMBERS FLY OVER NEUTRAL WATERS OF BARENTS SEA AND NORWEGIAN SEA - RIA"
+    "text": "RUSSIAN TU-95MS STRATEGIC BOMBERS FLY OVER NEUTRAL WATERS OF BARENTS SEA AND NORWEGIAN SEA - RIA",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Barents Sea",
+        "lat": 74.3478217,
+        "lng": 37.809937
+      },
+      {
+        "kind": "place",
+        "label": "Norwegian Sea",
+        "lat": 68.6716711,
+        "lng": 2.0008195
+      }
+    ]
   },
   {
     "author": "Bird_XRPL",
@@ -3087,7 +3489,27 @@
     "region": "Riyadh",
     "regionId": "riyadh",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099791953567334602",
-    "text": "SAUDI CIVIL DEFENSE SAYS DANGER PASSED IN MECCA, TAIF AND JEDDAH"
+    "text": "SAUDI CIVIL DEFENSE SAYS DANGER PASSED IN MECCA, TAIF AND JEDDAH",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Mecca",
+        "lat": 21.420847,
+        "lng": 39.826869
+      },
+      {
+        "kind": "place",
+        "label": "Taif",
+        "lat": 21.2702801,
+        "lng": 40.4158308
+      },
+      {
+        "kind": "place",
+        "label": "Jeddah",
+        "lat": 21.5504432,
+        "lng": 39.1742363
+      }
+    ]
   },
   {
     "author": "First Squawk",
@@ -3101,7 +3523,27 @@
     "region": "Riyadh",
     "regionId": "riyadh",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099789858449568032",
-    "text": "SAUDI CIVIL DEFENSE WARNS OF POSSIBLE THREATS IN MECCA, TAIF, AND JEDDAH - STATE TELEVISION."
+    "text": "SAUDI CIVIL DEFENSE WARNS OF POSSIBLE THREATS IN MECCA, TAIF, AND JEDDAH - STATE TELEVISION.",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Mecca",
+        "lat": 21.420847,
+        "lng": 39.826869
+      },
+      {
+        "kind": "place",
+        "label": "Taif",
+        "lat": 21.2702801,
+        "lng": 40.4158308
+      },
+      {
+        "kind": "place",
+        "label": "Jeddah",
+        "lat": 21.5504432,
+        "lng": 39.1742363
+      }
+    ]
   },
   {
     "author": "First Squawk",
@@ -3322,6 +3764,18 @@
         "label": "Khamis Mushait",
         "lat": 18.3,
         "lng": 42.733333
+      },
+      {
+        "kind": "place",
+        "label": "Abha",
+        "lat": 18.2164282,
+        "lng": 42.5043596
+      },
+      {
+        "kind": "place",
+        "label": "Taif",
+        "lat": 21.2702801,
+        "lng": 40.4158308
       }
     ]
   },
@@ -4167,7 +4621,15 @@
     "region": "Tehran",
     "regionId": "tehran",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099594168263942208",
-    "text": "TWO IRANIAN FISHING BOATS WERE HIT BY DRONES IN SOUTHERN IRAN, SEVERAL FISHERMEN ARE MISSING - STATE BROADCASTER IRIB."
+    "text": "TWO IRANIAN FISHING BOATS WERE HIT BY DRONES IN SOUTHERN IRAN, SEVERAL FISHERMEN ARE MISSING - STATE BROADCASTER IRIB.",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Southern Iran",
+        "lat": 33.474544,
+        "lng": 47.67945
+      }
+    ]
   },
   {
     "author": "Vedant Nair",
@@ -4559,15 +5021,9 @@
     "spots": [
       {
         "kind": "place",
-        "label": "Irgc",
-        "lat": 37.3456348,
-        "lng": 46.0566142
-      },
-      {
-        "kind": "place",
-        "label": "Fars",
-        "lat": 28.6692545,
-        "lng": 54.0641546
+        "label": "Hormuz",
+        "lat": 27.068024,
+        "lng": 56.4641698
       }
     ]
   },
@@ -5673,7 +6129,15 @@
     "region": "Illinois",
     "regionId": "illinois",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099499958126981247",
-    "text": "EXXONMOBIL: INVESTIGATING CAUSE OF POWER OUTAGE AT 264K BPD REFINERY IN JOLIET, ILLINOIS"
+    "text": "EXXONMOBIL: INVESTIGATING CAUSE OF POWER OUTAGE AT 264K BPD REFINERY IN JOLIET, ILLINOIS",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Joliet",
+        "lat": 41.5263603,
+        "lng": -88.0840212
+      }
+    ]
   },
   {
     "author": "First Squawk",
@@ -6562,7 +7026,21 @@
     "region": "Riyadh",
     "regionId": "riyadh",
     "sourceUrl": "https://x.com/FirstSquawk/status/2099415607766905052",
-    "text": "SAUDI CIVIL DEFENCE ALERTS OF POTENTIAL DANGER IN KHAMIS MUSHAIT AND ABHA AREAS - STATE TV"
+    "text": "SAUDI CIVIL DEFENCE ALERTS OF POTENTIAL DANGER IN KHAMIS MUSHAIT AND ABHA AREAS - STATE TV",
+    "spots": [
+      {
+        "kind": "place",
+        "label": "Khamis Mushait",
+        "lat": 18.3,
+        "lng": 42.733333
+      },
+      {
+        "kind": "place",
+        "label": "Abha",
+        "lat": 18.2164282,
+        "lng": 42.5043596
+      }
+    ]
   },
   {
     "author": "First Squawk",
@@ -7027,341 +7505,5 @@
         "lng": 23.8530863
       }
     ]
-  },
-  {
-    "author": "First Squawk",
-    "city": "Washington",
-    "country": "United States",
-    "handle": "@FirstSquawk",
-    "id": "x-2099374988201742808",
-    "lat": 38.9072,
-    "lng": -77.0369,
-    "publishedAt": "2026-09-14T05:49:36.000Z",
-    "region": "Washington",
-    "regionId": "washington",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099374988201742808",
-    "text": "Trump says Canada is the “worst country to deal with”, while claiming Ottawa is eager to reach a new deal with Washington."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Brussels",
-    "country": "Belgium",
-    "handle": "@FirstSquawk",
-    "id": "x-2099373137959989352",
-    "lat": 50.8503,
-    "lng": 4.3517,
-    "publishedAt": "2026-09-14T05:42:15.000Z",
-    "region": "Brussels",
-    "regionId": "brussels",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099373137959989352",
-    "text": "Canadian PM Mark Carney says Canada is not seeking EU membership, but plans to begin discussions on a unique alliance with the European Union, deepening ties between Ottawa and Brussels."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Beijing",
-    "country": "China",
-    "handle": "@FirstSquawk",
-    "id": "x-2099371964309881062",
-    "lat": 39.9042,
-    "lng": 116.4074,
-    "publishedAt": "2026-09-14T05:37:35.000Z",
-    "region": "Beijing",
-    "regionId": "beijing",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099371964309881062",
-    "text": "China is set to lay out a new five-year strategy for the new-energy vehicle sector, shaping the next phase of growth and development for the country’s EV industry."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Tokyo",
-    "country": "Japan",
-    "handle": "@FirstSquawk",
-    "id": "x-2099365228878430647",
-    "lat": 35.6762,
-    "lng": 139.6503,
-    "publishedAt": "2026-09-14T05:10:49.000Z",
-    "region": "Tokyo",
-    "regionId": "tokyo",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099365228878430647",
-    "text": "Japan is considering tighter regulations on regenerative medicine treatments as their use expands, raising concerns over safety and oversight, according to Kyodo News."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Helsinki",
-    "country": "Finland",
-    "handle": "@FirstSquawk",
-    "id": "x-2099363183173734498",
-    "lat": 60.1699,
-    "lng": 24.9384,
-    "publishedAt": "2026-09-14T05:02:41.000Z",
-    "region": "Helsinki",
-    "regionId": "helsinki",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099363183173734498",
-    "text": "FINLAND (AUG) CPI MOM ACTUAL:  -0.2%  VS 0.2% PREVIOUS"
-  },
-  {
-    "author": "First Squawk",
-    "city": "Helsinki",
-    "country": "Finland",
-    "handle": "@FirstSquawk",
-    "id": "x-2099363163628281943",
-    "lat": 60.1699,
-    "lng": 24.9384,
-    "publishedAt": "2026-09-14T05:02:37.000Z",
-    "region": "Helsinki",
-    "regionId": "helsinki",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099363163628281943",
-    "text": "FINLAND (AUG)  CPI YOY ACTUAL:  2.2%  VS 2.1% PREVIOUS"
-  },
-  {
-    "author": "First Squawk",
-    "city": "London",
-    "country": "United Kingdom",
-    "handle": "@FirstSquawk",
-    "id": "x-2099361260005724264",
-    "lat": 51.5074,
-    "lng": -0.1278,
-    "publishedAt": "2026-09-14T04:55:03.000Z",
-    "region": "London",
-    "regionId": "london",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099361260005724264",
-    "text": "A surge in oil prices is reviving expectations of a Bank of England rate hike this year, as higher energy costs threaten to keep inflation elevated, according to the Financial Times."
-  },
-  {
-    "author": "First Squawk",
-    "city": "London",
-    "country": "United Kingdom",
-    "handle": "@FirstSquawk",
-    "id": "x-2099360110317551807",
-    "lat": 51.5074,
-    "lng": -0.1278,
-    "publishedAt": "2026-09-14T04:50:29.000Z",
-    "region": "London",
-    "regionId": "london",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099360110317551807",
-    "text": "Essar has struck a deal to acquire 118 petrol stations in the UK, in a move that expands the Indian energy group’s retail footprint in the British market, according to the Financial Times."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Washington",
-    "country": "United States",
-    "handle": "@FirstSquawk",
-    "id": "x-2099358040973824254",
-    "lat": 38.9072,
-    "lng": -77.0369,
-    "publishedAt": "2026-09-14T04:42:15.000Z",
-    "region": "Washington",
-    "regionId": "washington",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099358040973824254",
-    "text": "Warsh and Trump appear headed for a clash over U.S. interest rates, as investors increasingly expect the Fed to raise rates, according to the Financial Times."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Tokyo",
-    "country": "Japan",
-    "handle": "@FirstSquawk",
-    "id": "x-2099357721342710089",
-    "lat": 35.6762,
-    "lng": 139.6503,
-    "publishedAt": "2026-09-14T04:40:59.000Z",
-    "region": "Tokyo",
-    "regionId": "tokyo",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099357721342710089",
-    "text": "Japan’s central bank is approaching a pivotal rate decision, with markets closely watching whether the BOJ moves ahead with further policy tightening."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Tokyo",
-    "country": "Japan",
-    "handle": "@FirstSquawk",
-    "id": "x-2099355809620885926",
-    "lat": 35.6762,
-    "lng": 139.6503,
-    "publishedAt": "2026-09-14T04:33:23.000Z",
-    "region": "Tokyo",
-    "regionId": "tokyo",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099355809620885926",
-    "text": "JAPAN INDUSTRIAL PRODUCTION (M/M) JUL F: 0.2% (PREV 0.1%)"
-  },
-  {
-    "author": "First Squawk",
-    "city": "Tokyo",
-    "country": "Japan",
-    "handle": "@FirstSquawk",
-    "id": "x-2099355771616301194",
-    "lat": 35.6762,
-    "lng": 139.6503,
-    "publishedAt": "2026-09-14T04:33:14.000Z",
-    "region": "Tokyo",
-    "regionId": "tokyo",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099355771616301194",
-    "text": "JAPAN INDUSTRIAL PRODUCTION (Y/Y): 3.9% (PREV 4.1%)"
-  },
-  {
-    "author": "First Squawk",
-    "city": "Brussels",
-    "country": "Belgium",
-    "handle": "@FirstSquawk",
-    "id": "x-2099354826341859496",
-    "lat": 50.8503,
-    "lng": 4.3517,
-    "publishedAt": "2026-09-14T04:29:29.000Z",
-    "region": "Brussels",
-    "regionId": "brussels",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099354826341859496",
-    "text": "Okinawa governor-elect Koja secures more than 400,000 votes, setting a new record in the prefecture’s gubernatorial election."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Manila",
-    "country": "Philippines",
-    "handle": "@FirstSquawk",
-    "id": "x-2099350782588199324",
-    "lat": 14.5995,
-    "lng": 120.9842,
-    "publishedAt": "2026-09-14T04:13:25.000Z",
-    "region": "Manila",
-    "regionId": "manila",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099350782588199324",
-    "text": "The U.S.-backed Luzon corridor in the Philippines is facing growing scrutiny, with questions emerging over whether the initiative is delivering meaningful benefits to local communities."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Hong Kong",
-    "country": "China",
-    "handle": "@FirstSquawk",
-    "id": "x-2099348700443382174",
-    "lat": 22.3193,
-    "lng": 114.1694,
-    "publishedAt": "2026-09-14T04:05:08.000Z",
-    "region": "Hong Kong",
-    "regionId": "hong-kong",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099348700443382174",
-    "text": "A Hong Kong lawmaker says Apple should bear responsibility for card fraud involving iPhones, putting fresh scrutiny on the tech giant’s role in consumer payment security."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Beijing",
-    "country": "China",
-    "handle": "@FirstSquawk",
-    "id": "x-2099345537216716851",
-    "lat": 39.9042,
-    "lng": 116.4074,
-    "publishedAt": "2026-09-14T03:52:34.000Z",
-    "region": "Beijing",
-    "regionId": "beijing",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099345537216716851",
-    "text": "China’s Finance Ministry auctions seven-year government bonds at a 1.49% yield, according to traders, highlighting current demand and pricing in the sovereign debt market."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Riyadh",
-    "country": "Saudi Arabia",
-    "handle": "@FirstSquawk",
-    "id": "x-2099345398100066345",
-    "lat": 24.7136,
-    "lng": 46.6753,
-    "publishedAt": "2026-09-14T03:52:01.000Z",
-    "region": "Riyadh",
-    "regionId": "riyadh",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099345398100066345",
-    "text": "Saudi Civil Defence warns of a possible threat in the Khamis Mushait and Abha areas, according to a post on X."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Brussels",
-    "country": "Belgium",
-    "handle": "@FirstSquawk",
-    "id": "x-2099342095874162832",
-    "lat": 50.8503,
-    "lng": 4.3517,
-    "publishedAt": "2026-09-14T03:38:54.000Z",
-    "region": "Brussels",
-    "regionId": "brussels",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099342095874162832",
-    "text": "U.S. senators have released the final draft of the Crypto Clarity Act, with the legislation scheduled for a Senate vote on Tuesday."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Beijing",
-    "country": "China",
-    "handle": "@FirstSquawk",
-    "id": "x-2099340324703486265",
-    "lat": 39.9042,
-    "lng": 116.4074,
-    "publishedAt": "2026-09-14T03:31:51.000Z",
-    "region": "Beijing",
-    "regionId": "beijing",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099340324703486265",
-    "text": "Heads of leading U.S. frontier AI labs are increasingly concerned about China’s rapid advances in artificial intelligence, highlighting intensifying competition at the cutting edge of the technology."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Wellington",
-    "country": "New Zealand",
-    "handle": "@FirstSquawk",
-    "id": "x-2099339710397391227",
-    "lat": -41.2865,
-    "lng": 174.7762,
-    "publishedAt": "2026-09-14T03:29:25.000Z",
-    "region": "Wellington",
-    "regionId": "wellington",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099339710397391227",
-    "text": "The New Zealand dollar falls below 0.5800 against the U.S. dollar as dovish signals from the RBNZ weigh on the currency and reinforce expectations for a softer monetary policy stance."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Hong Kong",
-    "country": "China",
-    "handle": "@FirstSquawk",
-    "id": "x-2099338167400943716",
-    "lat": 22.3193,
-    "lng": 114.1694,
-    "publishedAt": "2026-09-14T03:23:17.000Z",
-    "region": "Hong Kong",
-    "regionId": "hong-kong",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099338167400943716",
-    "text": "Hong Kong’s five-year plan will maintain its capitalist system and existing governing model, Chief Executive John Lee says, reaffirming the city’s policy direction under the “one country, two systems” framework."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Beijing",
-    "country": "China",
-    "handle": "@FirstSquawk",
-    "id": "x-2099335790929252404",
-    "lat": 39.9042,
-    "lng": 116.4074,
-    "publishedAt": "2026-09-14T03:13:50.000Z",
-    "region": "Beijing",
-    "regionId": "beijing",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099335790929252404",
-    "text": "Qatar eyes a bigger role in China’s growing Gulf logistics push as trade routes face disruption."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Seoul",
-    "country": "South Korea",
-    "handle": "@FirstSquawk",
-    "id": "x-2099332956657795565",
-    "lat": 37.5665,
-    "lng": 126.978,
-    "publishedAt": "2026-09-14T03:02:35.000Z",
-    "region": "Seoul",
-    "regionId": "seoul",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099332956657795565",
-    "text": "North Korea says it has tested weapons capable of striking South Korea, describing the systems as having “huge destructive power” amid heightened regional tensions."
-  },
-  {
-    "author": "First Squawk",
-    "city": "Washington",
-    "country": "United States",
-    "handle": "@FirstSquawk",
-    "id": "x-2099331523296285107",
-    "lat": 38.9072,
-    "lng": -77.0369,
-    "publishedAt": "2026-09-14T02:56:53.000Z",
-    "region": "Washington",
-    "regionId": "washington",
-    "sourceUrl": "https://x.com/FirstSquawk/status/2099331523296285107",
-    "text": "House Speaker Mike Johnson says Congress would need to approve President Trump’s proposed $5,000 dividend, indicating the plan cannot move forward without lawmakers’ backing."
   }
 ]

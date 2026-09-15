@@ -12,7 +12,7 @@ const DOWNLOADS = path.join(homedir(), 'Downloads')
 const INBOX = path.join(DOWNLOADS, 'map-news')
 const ARCHIVE = path.join(INBOX, 'merged')
 const MAX_ITEMS = 500
-const POLL_MS = 10_000
+const POLL_MS = 2_000
 
 const watch = process.argv.includes('--watch')
 const reset = process.argv.includes('--reset')

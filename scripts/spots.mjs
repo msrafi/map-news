@@ -62,6 +62,82 @@ const NAMED_PLACE_RE =
   /\b(?:for|in|near|at|from|over|around|across)\s+([A-Z][A-Za-zÀ-ÿ'-]{2,}(?:\s+(?:and|&)\s+[A-Z][A-Za-zÀ-ÿ'-]{2,}|\s+[A-Z][A-Za-zÀ-ÿ'-]{2,}|,\s*[A-Z][A-Za-zÀ-ÿ'-]{2,}){0,3})/g
 
 /**
+ * All-caps copy gives no capitalisation signal, so a locative preposition plus the
+ * list that follows it is the only handle: "... DANGER IN JAZAN, ABHA AND KHAMIS
+ * MUSHAIT." Each item is filtered and then has to geocode as a real place.
+ */
+const ALLCAPS_PLACE_RE =
+  /\b(?:IN|FOR|NEAR|AT|FROM|OVER|AROUND|ACROSS)\s+([A-ZÀ-Ý][A-ZÀ-Ý' -]{2,}(?:,\s*[A-ZÀ-Ý][A-ZÀ-Ý' -]{2,})*)/g
+
+/** Locative and linking words that prefix the place inside a captured run. */
+const RUN_PREFIX_RE = /\b(?:IN|FOR|NEAR|AT|FROM|OVER|AROUND|ACROSS|OF|TO|BY|ON|WITH)\b/
+
+/** "ABHA AREAS" is still Abha; the collective noun is not part of the name. */
+const COLLECTIVE_TAIL_RE =
+  /\s+(AREAS?|REGIONS?|CITIES|TOWNS|PROVINCES|GOVERNORATES|DISTRICTS|SUBURBS|OUTSKIRTS)$/
+
+/** Wire copy ends a line with " - STATE TV" or " – REUTERS"; that is the source. */
+const SOURCE_TAIL_RE = /\s+[-–—]\s+.*$/
+
+/** "LVIV OVERNIGHT" is Lviv; the trailing adverb is timing, not the name. */
+const TIMING_TAIL_RE =
+  /\s+(OVERNIGHT|TONIGHT|TODAY|TOMORROW|YESTERDAY|EARLIER|AGAIN|RECENTLY|SOON|NOW|THIS\s+\w+|LAST\s+\w+|NEXT\s+\w+|MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)$/
+
+/**
+ * Everyday English. All-caps copy capitalises everything, so a run built only of
+ * these words is a phrase, not a name: "POTENTIAL DANGER", "CAUGHT FIRE".
+ */
+const COMMON_WORDS = new Set(
+  `a an the and or but of to in on for with by from as at into onto over under about after before
+   this that these those it its his her their our your my we they he she you us them him me who whom
+   is are was were be been being am has have had do does did will would can could should may might must
+   shall says say said tells told adds added asks asked makes make made take takes taken took goes go
+   went gone gets get got give gives given comes come came sees see seen saw knows know known thinks
+   think wants want needs need uses use used finds find found works work calls call called tries try
+   seems seem feels feel leaves leave left puts put keeps keep kept lets let begins begin began shows
+   show shown hears hear heard plays play runs run ran moves move moved lives live believes believe
+   holds hold held brings bring brought happens happen writes write sits sit stands stand loses lose
+   lost pays pay paid meets meet met includes include continues continue sets learns learn changes
+   change leads lead led understands understand watches watch follows follow stops stop stopped
+   creates create speaks speak spoke reads read allows allow adds spends spend grows grow opens open
+   walks walk wins win won offers offer remembers consider considers appears appear buys buy bought
+   waits wait serves serve dies die sends send sent builds build built stays stay falls fall fell cuts
+   cut reaches reach kills kill killed remains remain suggests raises raise passes passed sells sell
+   sold requires require reports report decides decide pulls pull caught catch damaged damage rises
+   rise rose expects expect issued issues issue announced announce
+   good new news old first last long great little own other others right big high low different small
+   large next early late young important few public private bad same able major minor key strong weak
+   full total final global national local federal general potential current former future several
+   many most more less all both each every some any no not only just also very well back there here
+   now then when where how what which why still yet again soon such own
+   time times year years month months week weeks day days hour hours minute minutes today tomorrow
+   yesterday morning evening night people person man woman men women child children thing things way
+   ways world life hand part parts place places point points case cases fact facts number numbers
+   home homes house fire water power energy land level levels side sides end ends line lines order
+   effect force amount amounts rest top bottom kingdom history humanity success failure bankruptcy
+   danger dangers warning warnings alert alerts risk risks safety emergency evacuation casualties
+   damages threat threats attack attacks strike strikes war conflict crisis response support help aid
+   business market markets trade growth sale sales tax taxes investment investments strategy plan
+   plans policy policies deal deals talks meeting conference report reports data media press statement
+   decision agreement project projects program programme system network service services industry
+   sector economy rate rates share shares stock stocks bond bonds fund funds debt profit
+   profits loss losses earnings revenue demand supply output production capacity resources security
+   defense defence regulation regulations rule rules law laws terms documents evidence review
+   tensions relations partnership partnerships concessions trends shipping soldiers troops forces
+   officials leaders members workers employees customers consumers corporates borrowers jobs countries
+   nations percent billion million trillion bln mln cash value values price prices cost costs budget
+   fuel cars car building development economic pure nominal mineral minerals untapped implemented
+   implement strongly absolutely detention confiscation custody bankruptcy destroying beyond until
+   while though although according amid despite versus if higher lower
+   one two three four five six seven eight nine ten eleven twelve twenty thirty forty fifty hundred
+   thousand fourth fifth sixth seventh eighth ninth tenth half quarter
+   january february march april june july august september october november december
+   monday tuesday wednesday thursday friday saturday sunday`
+    .toLowerCase()
+    .split(/\s+/),
+)
+
+/**
  * Possessive country/owner + place. Catches all-caps "RUSSIA'S SYZRAN OIL REFINERY"
  * ('S) and mixed-case "Saudi Arabia's Abha airport" ('s).
  */
@@ -172,6 +248,15 @@ const NOT_PLACES = new Set([
   'ramadan',
   'partners',
   'deal',
+  // Continent-scale names are too broad to drop a pin on.
+  'middle east',
+  'europe',
+  'asia',
+  'africa',
+  'americas',
+  'north america',
+  'south america',
+  'latin america',
 ])
 
 /**
@@ -185,6 +270,37 @@ function trimToPlaceNoun(name) {
   const trimmed = name.slice(0, found.index + found[0].length).trim()
   // "City" on its own is a noun, not a place; it needs the name in front of it.
   return trimmed.toLowerCase() === found[0].toLowerCase() ? null : trimmed
+}
+
+/**
+ * Cleans one item of an all-caps list into a place name, or `null` when the item
+ * is really the rest of the sentence. `lead` is the item the preposition sits in.
+ */
+function allCapsPlaceName(raw, lead) {
+  // A comma before "AND" leaves the conjunction on the next item.
+  const part = raw.replace(/^AND\s+/, '').replace(SOURCE_TAIL_RE, '')
+  // "POTENTIAL DANGER IN JAZAN" keeps its place last; a later item carrying its
+  // own preposition is prose ("... ABHA, ACCORDING TO TRADERS"), so drop it.
+  const prefixed = RUN_PREFIX_RE.test(part)
+  if (prefixed && !lead) return null
+  // "SAUDI ARABIA'S KHAMIS MUSHAIT" names the place after the owner.
+  const owned = part.includes("'S ") ? part.slice(part.lastIndexOf("'S ") + 3) : part
+  const name = tidy(
+    (prefixed ? owned.split(RUN_PREFIX_RE).pop() : owned)
+      .replace(COLLECTIVE_TAIL_RE, '')
+      .replace(TIMING_TAIL_RE, '')
+      .replace(/'/g, ' '),
+  )
+  const words = name ? name.split(/\s+/) : []
+  if (words.length === 0 || words.length > 3) return null
+  if (words.some((word) => word.length < 2)) return null
+  if (ORG_OR_TITLE_RE.test(name) || ABSTRACT_RE.test(name)) return null
+  // A place name is carried by its head word: "Khamis Mushait", "Barents Sea".
+  // When that word is everyday English the run is a phrase ("HIGHER FUEL").
+  if (COMMON_WORDS.has(words[words.length - 1].toLowerCase())) return null
+  // "THE REGION" is a bare noun; "JAZAN PROVINCE" carries a name with it.
+  if (words.length === 1 && PLACE_WORD_RE.test(name)) return null
+  return name
 }
 
 const EARTH_RADIUS_KM = 6371
@@ -349,6 +465,18 @@ export async function parseNamedPlaces(rawText) {
         const tail = part.includes("'s ") ? part.slice(part.indexOf("'s ") + 3) : part
         const name = tidy(tail)
         if (knownKeys.has(name.toLowerCase())) continue
+        pushCandidate(names, { name, facility: false })
+      }
+    }
+  } else {
+    for (const match of text.matchAll(ALLCAPS_PLACE_RE)) {
+      const parts = match[1].split(/\s*,\s*|\s+AND\s+|\s+&\s+/)
+      // One all-caps run after a preposition could be anything; a list is the
+      // shape that reliably names places ("IN JAZAN, ABHA AND KHAMIS MUSHAIT").
+      if (parts.length < 2) continue
+      for (const [index, part] of parts.entries()) {
+        const name = allCapsPlaceName(part, index === 0)
+        if (!name || knownKeys.has(name.toLowerCase())) continue
         pushCandidate(names, { name, facility: false })
       }
     }
