@@ -79,6 +79,25 @@ const ATTACK_PLACE_RE =
 const FACILITY_SUFFIX_RE =
   /\b((?:[A-Z][A-Za-zÀ-ÿ0-9'-]{2,}(?:\s+[A-Z][A-Za-zÀ-ÿ0-9'-]{2,}){0,2}\s+)?(?:[Oo]il\s+[Rr]efinery|[Gg]as\s+[Rr]efinery|[Rr]efinery|[Oo]il\s+[Tt]erminal|[Gg]as\s+[Tt]erminal|[Ll][Nn][Gg]\s+[Tt]erminal|[Aa]irport|[Aa]irfield|[Aa]ir\s*[Bb]ase|[Nn]aval\s+[Bb]ase|[Mm]ilitary\s+[Bb]ase|[Aa]rmy\s+[Bb]ase|[Pp]ower\s+[Pp]lant|[Nn]uclear\s+(?:[Pp]ower\s+)?[Pp]lant|[Nn]uclear\s+[Ss]ite|[Bb]ridge|[Pp]ort|[Hh]arbour|[Hh]arbor|[Ss]eaport|[Dd]am|[Ff]actory|[Dd]epot|[Pp]ipeline|[Gg]as\s+[Ff]ield|[Oo]il\s+[Ff]ield|[Cc]oal\s+[Mm]ine|[Mm]ine|[Pp]rison|[Pp]alace|[Ee]mbassy|[Ss]tadium|[Uu]niversity|[Hh]ospital|[Mm]osque|[Cc]athedral))\b/g
 
+/** Generic geographic nouns: enough on their own to mark a run as a place. */
+const PLACE_WORD_RE =
+  /\b(region|oblast|province|district|governorate|prefecture|county|city|town|village|island|peninsula|strait|valley|border|coast|canal|desert|sea|gulf|bay|river|lake|delta|basin|mountains?)\b/i
+
+/**
+ * Wire attribution: "BESSENT: ...", "POWELL SAYS ...". A surname after an
+ * organisation's possessive is a spokesperson, never a place.
+ */
+const SPEAKER_AFTER_RE =
+  /^\s*(?::|[,-]?\s*(?:SAYS|SAID|TELLS|TOLD|ADDS|WARNS|NOTES|COMMENTS|says|said|tells|told|adds|warns)\b)/
+
+/** An organisation or a job title, never somewhere to drop a pin. */
+/** Abstract nouns that read like proper names in all-caps copy but map nowhere. */
+const ABSTRACT_RE =
+  /\b(sector|complex|economy|economies|market|markets|industry|policy|policies|budget|sanctions|tariffs?|inflation|output|revenue|exports?|imports?|defence|defense|security|intelligence|media|press|statement|decision|agreement|deal|talks|summit|meeting|war|conflict|crisis|response|plan|programme?|projects?|system|network|grid|fund|funds|reserves?|currency|debt|bonds?|shares?|stocks?|trade|growth|jobs|rates?|prices?|supply|demand|production|capacity|assets?|sales|profits?|earnings)\b/i
+
+const ORG_OR_TITLE_RE =
+  /\b(ministry|ministries|government|parliament|senate|congress|cabinet|court|agency|bureau|authority|commission|committee|council|department|administration|forces|army|navy|guards|police|party|central\s+bank|bank|treasury|federation|union|team|board|office|academy|institute|corp|inc|ltd|plc|group|holdings|president|prime\s+minister|minister|min|secretary|speaker|adviser|advisor|chief|envoy|spokesman|spokeswoman|spokesperson|ambassador|governor|chairman|ceo|official|officials|leader|general|admiral|colonel|judge|senator|lawmaker)\b/i
+
 const FACILITY_WORD_RE =
   /\b(refinery|airport|airfield|bridge|port|harbour|harbor|base|plant|field|mine|dam|terminal|depot|factory|pipeline|stadium|university|hospital|embassy|palace|prison|mosque|cathedral)\b/i
 
@@ -155,6 +174,19 @@ const NOT_PLACES = new Set([
   'deal',
 ])
 
+/**
+ * A possessive run keeps going past the place ("Abha Airport Suspends Flights"),
+ * so cut it at the first facility or geographic noun.
+ */
+function trimToPlaceNoun(name) {
+  const stop = new RegExp(`${FACILITY_WORD_RE.source}|${PLACE_WORD_RE.source}`, 'i')
+  const found = stop.exec(name)
+  if (!found) return name
+  const trimmed = name.slice(0, found.index + found[0].length).trim()
+  // "City" on its own is a noun, not a place; it needs the name in front of it.
+  return trimmed.toLowerCase() === found[0].toLowerCase() ? null : trimmed
+}
+
 const EARTH_RADIUS_KM = 6371
 
 function destinationPoint(lat, lng, km, bearingDeg) {
@@ -184,6 +216,8 @@ function tidy(name) {
     .replace(/[^A-Za-zÀ-ÿ0-9' -]/g, '')
     .replace(/[-\s]+$/g, '')
     .replace(/^\s*the\s+/i, '')
+    // "Washington's" is the owner, not the place.
+    .replace(/['’][Ss]$/, '')
     .trim()
 }
 
@@ -284,6 +318,8 @@ function pushCandidate(list, candidate) {
   if (name.length < 3) return
   const lower = name.toLowerCase()
   if (NOT_PLACES.has(lower)) return
+  // A bare compass word is the tail of a split name ("... , South Carolina").
+  if (/^(north|south|east|west|central|northern|southern|eastern|western)$/i.test(name)) return
   if (list.some((entry) => entry.name.toLowerCase() === lower)) return
   list.push({
     name: titleCase(name),
@@ -322,21 +358,38 @@ export async function parseNamedPlaces(rawText) {
     const owner = match[1]
     const place = tidy(match[2])
     const country = countryByKey.get(owner.toLowerCase())
-    // Skip bare country possessives with no real place ("Russia's partners").
-    if (knownKeys.has(place.toLowerCase()) && !FACILITY_WORD_RE.test(place)) continue
-    pushCandidate(names, { name: place, country, facility: true })
+    // "U.S. TREASURY'S BESSENT: ..." names an official, not a refinery.
+    if (SPEAKER_AFTER_RE.test(text.slice(match.index + match[0].length))) continue
+    if (ORG_OR_TITLE_RE.test(place) || ABSTRACT_RE.test(place)) continue
+
+    const named = trimToPlaceNoun(place)
+    if (!named) continue
+    const hasPlaceNoun = FACILITY_WORD_RE.test(named) || PLACE_WORD_RE.test(named)
+    // Otherwise only a compact multi-word name survives: "Khamis Mushait" is a town,
+    // a lone surname like "Bessent" or "Altman" is not.
+    const wordCount = named.split(/\s+/).length
+    if (!hasPlaceNoun && (wordCount < 2 || wordCount > 3)) continue
+    if (knownKeys.has(named.toLowerCase()) && !FACILITY_WORD_RE.test(named)) continue
+    pushCandidate(names, { name: named, country, facility: true })
   }
 
   for (const match of text.matchAll(FACILITY_SUFFIX_RE)) {
-    pushCandidate(names, { name: match[1], facility: true })
+    const named = trimToPlaceNoun(tidy(match[1]))
+    if (!named || ORG_OR_TITLE_RE.test(named) || ABSTRACT_RE.test(named)) continue
+    if (named.split(/\s+/).length < 2) continue
+    pushCandidate(names, { name: named, facility: true })
   }
 
   for (const match of text.matchAll(ATTACK_PLACE_RE)) {
     const place = tidy(match[1])
+    if (SPEAKER_AFTER_RE.test(text.slice(match.index + match[0].length))) continue
+    if (ORG_OR_TITLE_RE.test(place) || ABSTRACT_RE.test(place)) continue
     // Attack verbs only keep targets that look like facilities or multi-word places.
     if (!FACILITY_WORD_RE.test(place) && !place.includes(' ')) continue
-    if (knownKeys.has(place.toLowerCase())) continue
-    pushCandidate(names, { name: place, facility: true })
+    const named = FACILITY_WORD_RE.test(place) ? trimToPlaceNoun(place) : place
+    if (!named) continue
+    if (knownKeys.has(named.toLowerCase())) continue
+    pushCandidate(names, { name: named, facility: true })
   }
 
   return names.slice(0, MAX_PLACES_PER_ITEM)

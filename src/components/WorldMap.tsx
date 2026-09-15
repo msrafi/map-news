@@ -10,17 +10,26 @@ import Map, {
   type MapRef,
 } from 'react-map-gl/maplibre'
 import { LINK_COLORS, linkCoordinates, pathCoordinates } from '../lib/news'
-import { formatUpdated, freshnessOf, latestItem, shortAge } from '../lib/time'
-import type { NewsLink, NewsSpot, RegionPin } from '../types'
+import { styleUrl, themeOf } from '../lib/mapStyles'
+import { formatStamp, formatUpdated, freshnessOf, isMapBright, latestItem, shortAge } from '../lib/time'
+import type { MapStyleId, NewsLink, NewsSpot, RegionPin } from '../types'
 
-const MAP_STYLE = 'https://tiles.openfreemap.org/styles/dark'
-
-type SpotRef = { id: string; itemId: string; text: string; spot: NewsSpot }
+type SpotRef = { id: string; itemId: string; text: string; publishedAt: string; spot: NewsSpot }
 
 /** Layers a click can land on, and the headline a hit should surface. */
 const STORY_LAYERS = ['news-link-line', 'news-spot-line']
 
 type StoryPopup = { itemId: string; text: string; lat: number; lng: number }
+
+/** A story picked in the feed, resolved to the point the map should call out. */
+type PinnedStory = {
+  id: string
+  text: string
+  label: string
+  publishedAt: string
+  lng: number
+  lat: number
+}
 
 type WorldMapProps = {
   regions: RegionPin[]
@@ -30,8 +39,11 @@ type WorldMapProps = {
   selectedId: string | null
   unseenByRegion: Record<string, number>
   linkedRegionIds: Set<string>
+  pinnedStory: PinnedStory | null
+  mapStyle: MapStyleId
   onSelect: (regionId: string) => void
   onFocusStory: (itemId: string | null) => void
+  onClearPinned: () => void
 }
 
 export function WorldMap({
@@ -42,12 +54,19 @@ export function WorldMap({
   selectedId,
   unseenByRegion,
   linkedRegionIds,
+  pinnedStory,
+  mapStyle,
   onSelect,
   onFocusStory,
+  onClearPinned,
 }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
   const selected = regions.find((region) => region.regionId === selectedId)
   const [popup, setPopup] = useState<StoryPopup | null>(null)
+  const newestAt = useMemo(
+    () => regions.reduce((latest, region) => (region.latestAt > latest ? region.latestAt : latest), ''),
+    [regions],
+  )
 
   const linkData = useMemo(
     () => ({
@@ -58,11 +77,12 @@ export function WorldMap({
           itemId: link.id,
           text: link.text,
           color: linkColors.get(link.id) ?? LINK_COLORS[0],
+          opacity: isMapBright(link.publishedAt, newestAt) ? 0.9 : 0.22,
         },
         geometry: { type: 'LineString' as const, coordinates: linkCoordinates(link.regions) },
       })),
     }),
-    [linkColors, links],
+    [linkColors, links, newestAt],
   )
 
   // Tethers the region pin to the exact place a headline datelines, e.g. an epicentre.
@@ -70,9 +90,14 @@ export function WorldMap({
     () => ({
       type: 'FeatureCollection' as const,
       features: selected
-        ? spots.map(({ id, itemId, text, spot }) => ({
+        ? spots.map(({ id, itemId, text, publishedAt, spot }) => ({
             type: 'Feature' as const,
-            properties: { id, itemId, text },
+            properties: {
+              id,
+              itemId,
+              text,
+              opacity: isMapBright(publishedAt, newestAt) ? 0.85 : 0.22,
+            },
             geometry: {
               type: 'LineString' as const,
               coordinates: pathCoordinates([selected, spot]),
@@ -80,7 +105,7 @@ export function WorldMap({
           }))
         : [],
     }),
-    [selected, spots],
+    [newestAt, selected, spots],
   )
 
   const handleMapClick = useCallback(
@@ -110,10 +135,12 @@ export function WorldMap({
     () => new Set([...links.map((link) => link.id), ...spots.map(({ itemId }) => itemId)]),
     [links, spots],
   )
-  const visiblePopup = popup && drawnStoryIds.has(popup.itemId) ? popup : null
+  const visiblePopup =
+    popup && !pinnedStory && drawnStoryIds.has(popup.itemId) ? popup : null
 
   useEffect(() => {
-    if (!selected) return
+    // A story picked in the feed frames itself, so leave the camera to that effect.
+    if (!selected || pinnedStory) return
     const map = mapRef.current
     if (!map) return
 
@@ -137,16 +164,34 @@ export function WorldMap({
       zoom: Math.max(map.getZoom(), 5),
       duration: 800,
     })
-  }, [selected, spots])
+  }, [pinnedStory, selected, spots])
+
+  // A story opened from the feed gets the camera and drops its own popup.
+  useEffect(() => {
+    if (!pinnedStory) return
+    mapRef.current?.flyTo({
+      center: [pinnedStory.lng, pinnedStory.lat],
+      zoom: Math.max(mapRef.current.getZoom(), 5),
+      duration: 800,
+    })
+  }, [pinnedStory])
 
   return (
-    <div className="world-map">
+    <div
+      className={[
+        'world-map',
+        `is-${themeOf(mapStyle)}`,
+        visiblePopup || pinnedStory ? 'has-popup' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <Map
         ref={mapRef}
         initialViewState={{ longitude: 12, latitude: 18, zoom: 2.15 }}
         minZoom={1.4}
         maxZoom={12}
-        mapStyle={MAP_STYLE}
+        mapStyle={styleUrl(mapStyle)}
         reuseMaps
         style={{ width: '100%', height: '100%' }}
         interactiveLayerIds={STORY_LAYERS}
@@ -162,7 +207,7 @@ export function WorldMap({
             paint={{
               'line-color': ['get', 'color'],
               'line-width': selectedId ? 1.8 : 1.2,
-              'line-opacity': selectedId ? 0.85 : 0.5,
+              'line-opacity': ['get', 'opacity'],
             }}
           />
           <Layer
@@ -181,7 +226,7 @@ export function WorldMap({
             }}
             paint={{
               'text-color': ['get', 'color'],
-              'text-opacity': selectedId ? 0.98 : 0.7,
+              'text-opacity': ['get', 'opacity'],
             }}
           />
         </Source>
@@ -193,7 +238,7 @@ export function WorldMap({
             paint={{
               'line-color': '#e8c45f',
               'line-width': 2,
-              'line-opacity': 0.8,
+              'line-opacity': ['get', 'opacity'],
               // Round caps on a near-zero dash give a dotted trail.
               'line-dasharray': [0.1, 2.2],
             }}
@@ -217,9 +262,48 @@ export function WorldMap({
             <p>{visiblePopup.text}</p>
           </Popup>
         ) : null}
-        {spots.map(({ id, spot }) => (
+        {pinnedStory ? (
+          <>
+            <Marker
+              longitude={pinnedStory.lng}
+              latitude={pinnedStory.lat}
+              anchor="center"
+              style={{ zIndex: 7 }}
+            >
+              <span className="story-pin" aria-hidden="true" />
+            </Marker>
+            <Popup
+              longitude={pinnedStory.lng}
+              latitude={pinnedStory.lat}
+              anchor="bottom"
+              offset={34}
+              closeButton
+              closeOnClick={false}
+              onClose={() => {
+                setPopup(null)
+                onClearPinned()
+              }}
+              className="story-popup is-pinned"
+              maxWidth="280px"
+            >
+              <p className="story-popup__where">
+                {pinnedStory.label}
+                <time dateTime={pinnedStory.publishedAt}>
+                  {formatStamp(pinnedStory.publishedAt)}
+                </time>
+              </p>
+              <p>{pinnedStory.text}</p>
+            </Popup>
+          </>
+        ) : null}
+        {spots.map(({ id, publishedAt, spot }) => (
           <Marker key={id} longitude={spot.lng} latitude={spot.lat} anchor="center" style={{ zIndex: 3 }}>
-            <span className="spot-pin" title={spot.label}>
+            <span
+              className={['spot-pin', isMapBright(publishedAt, newestAt) ? 'is-bright' : 'is-dim']
+                .filter(Boolean)
+                .join(' ')}
+              title={spot.label}
+            >
               <span className="spot-pin__dot" />
               <span className="spot-pin__label">{spot.label}</span>
             </span>
@@ -237,21 +321,31 @@ export function WorldMap({
           const updated = latest ? formatUpdated(latest.publishedAt) : null
           const open = region.regionId === selectedId
           const freshness = freshnessOf(region.latestAt)
+          const bright = isMapBright(region.latestAt, newestAt)
           // Fresh pins sit above older ones so a crowded map still reads newest-first.
-          const layer = open ? 6 : freshness === 'fresh' ? 5 : freshness === 'recent' ? 4 : 3
+          const layer = open ? 6 : bright ? 5 : freshness === 'recent' ? 4 : 3
           return (
             <Marker
               key={region.regionId}
               longitude={region.lng}
               latitude={region.lat}
               anchor="center"
-              style={{ zIndex: freshness === 'old' && !open && !live && !linked ? 1 : layer }}
+              style={{ zIndex: !bright && !open && !live && !linked ? 1 : layer }}
               onClick={(event) => {
                 event.originalEvent.stopPropagation()
                 onSelect(region.regionId)
               }}
             >
-              <div className={['region-pin', `is-${freshness}`, open ? 'is-open' : ''].filter(Boolean).join(' ')}>
+              <div
+                className={[
+                  'region-pin',
+                  `is-${freshness}`,
+                  bright ? 'is-bright' : 'is-dim',
+                  open ? 'is-open' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
                 <button
                   className={pinClass}
                   type="button"

@@ -4,18 +4,28 @@ const AUTO_KEY = 'mapNewsAuto'
 const LAST_EXPORT_KEY = 'mapNewsLastExport'
 const EXPORT_ALARM = 'map-news-export'
 const REFRESH_ALARM = 'map-news-refresh'
+const CYCLE_MINUTES = 2
 
-function startAlarms() {
-  chrome.alarms.create(EXPORT_ALARM, { periodInMinutes: 1 })
-  chrome.alarms.create(REFRESH_ALARM, { delayInMinutes: 2, periodInMinutes: 2 })
+async function startAlarms() {
+  // Recreate so an update actually changes the period; leftover 1-minute alarms would stick.
+  await chrome.alarms.clear(EXPORT_ALARM)
+  await chrome.alarms.clear(REFRESH_ALARM)
+  chrome.alarms.create(EXPORT_ALARM, { delayInMinutes: CYCLE_MINUTES, periodInMinutes: CYCLE_MINUTES })
+  chrome.alarms.create(REFRESH_ALARM, { delayInMinutes: CYCLE_MINUTES, periodInMinutes: CYCLE_MINUTES })
 }
 
+startAlarms()
 chrome.runtime.onInstalled.addListener(() => {
   startAlarms()
   // Reloading the extension orphans content scripts in open tabs; refresh to re-inject.
   refreshTimelineTabs()
 })
 chrome.runtime.onStartup.addListener(startAlarms)
+
+async function autoOn() {
+  const { [AUTO_KEY]: auto } = await chrome.storage.local.get(AUTO_KEY)
+  return auto !== false
+}
 
 async function refreshTimelineTabs() {
   for (const tab of await timelineTabs()) {
@@ -24,11 +34,10 @@ async function refreshTimelineTabs() {
 }
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  const { [AUTO_KEY]: auto } = await chrome.storage.local.get(AUTO_KEY)
-  if (auto === false) return
+  if (!(await autoOn())) return
   if (alarm.name === EXPORT_ALARM) {
     await scanOpenTabs()
-    await exportNewItems()
+    await exportIfIdle()
     return
   }
   if (alarm.name === REFRESH_ALARM) await refreshTimelineTabs()
@@ -38,11 +47,44 @@ function timelineTabs() {
   return chrome.tabs.query({ url: ['https://x.com/*', 'https://twitter.com/*'] })
 }
 
+let exporting = false
+
+async function exportIfIdle() {
+  if (exporting) return 0
+  exporting = true
+  try {
+    return await exportNewItems()
+  } finally {
+    exporting = false
+  }
+}
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === 'export-now') {
     scanOpenTabs()
-      .then(exportNewItems)
+      .then(exportIfIdle)
       .then((count) => sendResponse({ count }))
+    return true
+  }
+  if (message.type === 'export-tick') {
+    chrome.storage.local
+      .get(AUTO_KEY)
+      .then(async (stored) => {
+        if (stored[AUTO_KEY] === false) return 0
+        return exportIfIdle()
+      })
+      .then((count) => sendResponse({ count }))
+      .catch(() => sendResponse({ count: 0 }))
+    return true
+  }
+  if (message.type === 'auto-changed') {
+    if (message.on) {
+      startAlarms().then(() => refreshTimelineTabs())
+    } else {
+      chrome.alarms.clear(EXPORT_ALARM)
+      chrome.alarms.clear(REFRESH_ALARM)
+    }
+    sendResponse({ ok: true })
     return true
   }
   return false

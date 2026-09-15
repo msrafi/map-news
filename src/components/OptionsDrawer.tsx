@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns'
-import { formatUpdated, freshnessOf, shortAge } from '../lib/time'
+import { formatStamp, formatUpdated, freshnessOf, shortAge } from '../lib/time'
 import type { OptionContract, TickerGroup, TickerTrade } from '../types'
 
 type OptionsDrawerProps = {
@@ -69,8 +69,8 @@ export function OptionsDrawer({ group, onClose }: OptionsDrawerProps) {
         {posts.map((post) => (
           <li key={post.id} className={`option-post is-${freshnessOf(post.publishedAt)}`}>
             <div className="drawer__meta">
-              <time dateTime={post.publishedAt}>
-                {format(parseISO(post.publishedAt), 'HH:mm')}
+              <time dateTime={post.publishedAt} title={formatStamp(post.publishedAt)}>
+                {format(parseISO(post.publishedAt), 'd MMM, HH:mm')}
               </time>
               <span className="drawer__age">{shortAge(post.publishedAt)}</span>
               <span className="option-post__when">{formatUpdated(post.publishedAt).relative}</span>
@@ -89,6 +89,9 @@ export function OptionsDrawer({ group, onClose }: OptionsDrawerProps) {
             </a>
           </li>
         ))}
+        {posts.length === 0 ? (
+          <li className="drawer__empty">No tweets for ${group.ticker} yet.</li>
+        ) : null}
       </ul>
     </section>
   )

@@ -2,15 +2,20 @@ import { format, isToday, isYesterday, parseISO } from 'date-fns'
 import { useEffect } from 'react'
 import { MIN_LINKED_REGIONS } from '../lib/news'
 import { findLocationHits, findRegions } from '../lib/places'
-import { formatUpdated, freshnessOf, latestItem, shortAge } from '../lib/time'
+import { formatStamp, formatUpdated, freshnessOf, latestItem, shortAge } from '../lib/time'
 import type { LocationHit, RegionPin } from '../types'
 
 type NewsPanelProps = {
-  region: RegionPin
+  title: string
+  kicker: string
+  items: RegionPin['items']
   seenIds: Set<string>
   linkColors: Map<string, string>
   focusedStoryId: string | null
-  onClose: () => void
+  /** Points the map at the story behind a card. */
+  onSelectStory: (itemId: string) => void
+  /** Absent when the panel is already showing the whole feed. */
+  onClearRegion?: () => void
 }
 
 function headingFor(iso: string): string {
@@ -51,11 +56,14 @@ function HighlightedText({ text }: { text: string }) {
 }
 
 export function NewsPanel({
-  region,
+  title,
+  kicker,
+  items,
   seenIds,
   linkColors,
   focusedStoryId,
-  onClose,
+  onSelectStory,
+  onClearRegion,
 }: NewsPanelProps) {
   // Clicking a line on the map should bring its card into view, not just tint it.
   useEffect(() => {
@@ -65,10 +73,10 @@ export function NewsPanel({
       ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [focusedStoryId])
 
-  const latest = latestItem(region.items)
+  const latest = latestItem(items)
   const updated = latest ? formatUpdated(latest.publishedAt) : null
-  const groups = new Map<string, typeof region.items>()
-  for (const item of region.items) {
+  const groups = new Map<string, typeof items>()
+  for (const item of items) {
     const heading = headingFor(item.publishedAt)
     const list = groups.get(heading) ?? []
     list.push(item)
@@ -76,39 +84,44 @@ export function NewsPanel({
   }
 
   return (
-    <aside className="news-panel" aria-label={`${region.region} news`}>
+    <aside className="news-panel" aria-label={`${title} news`}>
       <header className="news-panel__header">
-        <div>
-          <p className="news-panel__kicker">{region.country}</p>
-          <h2>{region.region}</h2>
+        <div className="news-panel__title">
+          <h2>{title}</h2>
           <p className="news-panel__meta">
-            {region.items.length} {region.items.length === 1 ? 'report' : 'reports'}
+            {items.length}
             {updated && latest ? (
               <>
-                {' · last updated '}
-                <time dateTime={latest.publishedAt} title={updated.clock}>
+                {' · '}
+                <time dateTime={latest.publishedAt} title={`${kicker} · ${updated.clock}`}>
                   {updated.relative}
                 </time>
-                {' · '}
-                {updated.clock}
               </>
             ) : null}
           </p>
-          {latest ? <p className="news-panel__latest">{latest.text}</p> : null}
         </div>
-        <button className="news-panel__close" type="button" onClick={onClose} aria-label="Close news panel">
-          Close
-        </button>
+        {onClearRegion ? (
+          <button
+            className="news-panel__close"
+            type="button"
+            onClick={onClearRegion}
+            aria-label="Show news from every region"
+          >
+            All news
+          </button>
+        ) : null}
       </header>
       <div className="news-panel__scroll">
-        {[...groups.entries()].map(([heading, items]) => (
+        {items.length === 0 ? (
+          <p className="news-panel__empty">No reports in this range.</p>
+        ) : null}
+        {[...groups.entries()].map(([heading, group]) => (
           <section key={heading} className="news-group">
             <h3>{heading}</h3>
             <ul>
-              {items.map((item) => {
+              {group.map((item) => {
                 const unread = !seenIds.has(item.id)
                 const linked = findRegions(item.text)
-                const isLatest = latest?.id === item.id
                 const freshness = freshnessOf(item.publishedAt)
                 const routeColor = linkColors.get(item.id)
                 return (
@@ -120,7 +133,6 @@ export function NewsPanel({
                       `is-${freshness}`,
                       linked.length >= MIN_LINKED_REGIONS ? 'is-linked' : '',
                       unread && linked.length < MIN_LINKED_REGIONS ? 'is-unread' : '',
-                      isLatest ? 'is-latest' : '',
                       focusedStoryId === item.id ? 'is-focused' : '',
                     ]
                       .filter(Boolean)
@@ -132,29 +144,41 @@ export function NewsPanel({
                     }
                   >
                     <div className="news-card__top">
-                      {isLatest ? <span className="news-card__badge">Latest</span> : null}
-                      <span className="news-card__author">{item.author}</span>
-                      <span className="news-card__handle">{item.handle}</span>
+                      <time
+                        dateTime={item.publishedAt}
+                        title={`${formatStamp(item.publishedAt)} · ${item.handle}`}
+                      >
+                        {format(parseISO(item.publishedAt), 'd MMM, HH:mm')}
+                      </time>
                       <span className="news-card__age">{shortAge(item.publishedAt)}</span>
-                      <time dateTime={item.publishedAt}>{format(parseISO(item.publishedAt), 'HH:mm')}</time>
+                      <a
+                        href={item.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Open on X"
+                      >
+                        ↗
+                      </a>
                     </div>
-                    <p>
-                      <HighlightedText text={item.text} />
-                    </p>
-                    {item.spots?.length ? (
-                      <p className="news-card__spot">
-                        {item.spots.map((spot) => spot.label).join(' · ')}
-                      </p>
-                    ) : null}
-                    {linked.length > 0 ? (
-                      <p className="news-card__route">
-                        {routeColor ? <span className="news-card__swatch" /> : null}
-                        {linked.map((place) => place.region).join(linked.length >= MIN_LINKED_REGIONS ? ' → ' : ' · ')}
-                      </p>
-                    ) : null}
-                    <a href={item.sourceUrl} target="_blank" rel="noreferrer">
-                      Open on X
-                    </a>
+                    <button
+                      type="button"
+                      className="news-card__hit"
+                      aria-label={`Show this story on the map: ${item.text}`}
+                      onClick={() => onSelectStory(item.id)}
+                    >
+                      <span className="news-card__text">
+                        <HighlightedText text={item.text} />
+                      </span>
+                      {linked.length > 0 || item.spots?.length ? (
+                        <span className="news-card__route">
+                          {routeColor ? <span className="news-card__swatch" /> : null}
+                          {[
+                            ...linked.map((place) => place.region),
+                            ...(item.spots?.map((spot) => spot.label) ?? []),
+                          ].join(linked.length >= MIN_LINKED_REGIONS ? ' → ' : ' · ')}
+                        </span>
+                      ) : null}
+                    </button>
                   </li>
                 )
               })}

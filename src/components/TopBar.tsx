@@ -1,6 +1,7 @@
 import { LINK_COLORS } from '../lib/news'
+import { MAP_STYLES } from '../lib/mapStyles'
 import { formatUpdated } from '../lib/time'
-import type { TimeFilter } from '../types'
+import type { MapStyleId, TimeFilter } from '../types'
 
 const FILTERS: { id: TimeFilter; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -12,6 +13,8 @@ const FILTERS: { id: TimeFilter; label: string }[] = [
 type TopBarProps = {
   filter: TimeFilter
   onFilterChange: (filter: TimeFilter) => void
+  mapStyle: MapStyleId
+  onMapStyleChange: (style: MapStyleId) => void
   liveCount: number
   regionCount: number
   linkCount: number
@@ -21,6 +24,8 @@ type TopBarProps = {
 export function TopBar({
   filter,
   onFilterChange,
+  mapStyle,
+  onMapStyleChange,
   liveCount,
   regionCount,
   linkCount,
@@ -60,19 +65,35 @@ export function TopBar({
         connected
         <span className="topbar__age">now</span> under 1h · pins fade as they age
       </p>
-      <div className="topbar__filters" role="tablist" aria-label="Time range">
-        {FILTERS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={filter === item.id}
-            className={filter === item.id ? 'chip is-on' : 'chip'}
-            onClick={() => onFilterChange(item.id)}
+      <div className="topbar__tools">
+        <label className="topbar__map">
+          Map
+          <select
+            value={mapStyle}
+            aria-label="Map type"
+            onChange={(event) => onMapStyleChange(event.target.value as MapStyleId)}
           >
-            {item.label}
-          </button>
-        ))}
+            {MAP_STYLES.map((style) => (
+              <option key={style.id} value={style.id}>
+                {style.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="topbar__filters" role="tablist" aria-label="Time range">
+          {FILTERS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={filter === item.id}
+              className={filter === item.id ? 'chip is-on' : 'chip'}
+              onClick={() => onFilterChange(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
       </div>
     </header>
   )

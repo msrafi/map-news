@@ -1,6 +1,5 @@
-import { format, parseISO } from 'date-fns'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { formatUpdated } from '../lib/time'
+import { formatStamp, formatUpdated } from '../lib/time'
 import type { MarketDetail, NewsItem, OptionContract } from '../types'
 
 export type StoryTip = {
@@ -55,7 +54,7 @@ export function StoryTooltip({ tip, onClose }: StoryTooltipProps) {
         <header>
           <span className="story-tip__handle">{tip.item.handle}</span>
           <time dateTime={tip.item.publishedAt}>
-            {format(parseISO(tip.item.publishedAt), 'HH:mm')} · {updated.relative}
+            {formatStamp(tip.item.publishedAt)} · {updated.relative}
           </time>
           <button type="button" onClick={onClose} aria-label="Close">
             ✕

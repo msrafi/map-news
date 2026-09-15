@@ -212,3 +212,20 @@ export function findMarketStories(items: NewsItem[]): MarketStory[] {
 
   return stories.sort((a, b) => b.item.publishedAt.localeCompare(a.item.publishedAt))
 }
+
+const SYMBOL_RE = /^[A-Z]{1,5}(?:\.[A-Z])?$/
+
+/** Cashtags and named companies become tiles; index prose like "Dow Jones" does not. */
+export function tickersOf(story: MarketStory): string[] {
+  const tickers = new Set<string>()
+  for (const detail of story.details) {
+    const label = detail.label.toUpperCase()
+    if (US_QUOTE_LABELS.has(label) || SYMBOL_RE.test(label)) tickers.add(label)
+  }
+  return [...tickers]
+}
+
+export function storiesForTicker(stories: MarketStory[], ticker: string): MarketStory[] {
+  const needle = ticker.toUpperCase()
+  return stories.filter((story) => tickersOf(story).includes(needle))
+}

@@ -1,9 +1,10 @@
 import { format, parseISO } from 'date-fns'
-import { freshnessOf, shortAge } from '../lib/time'
+import { formatStamp, freshnessOf, shortAge } from '../lib/time'
 import type { MarketDetail, MarketStory } from '../types'
 
 type MarketDrawerProps = {
   stories: MarketStory[]
+  ticker?: string | null
   open: boolean
   onToggle: () => void
   onOpenStory: (story: MarketStory, anchor: DOMRect) => void
@@ -31,19 +32,28 @@ function DetailRow({ detail }: { detail: MarketDetail }) {
   )
 }
 
-export function MarketDrawer({ stories, open, onToggle, onOpenStory, activeId }: MarketDrawerProps) {
+export function MarketDrawer({
+  stories,
+  ticker,
+  open,
+  onToggle,
+  onOpenStory,
+  activeId,
+}: MarketDrawerProps) {
+  const heading = ticker ? `$${ticker}` : 'US stocks'
+
   if (!open) {
     return (
       <button className="drawer-tab" type="button" onClick={onToggle}>
-        US stocks <span>{stories.length}</span>
+        {heading} <span>{stories.length}</span>
       </button>
     )
   }
 
   return (
-    <section className="drawer" aria-label="US stock news">
+    <section className="drawer" aria-label={ticker ? `${ticker} stock news` : 'US stock news'}>
       <header className="drawer__header">
-        <h2>US stocks</h2>
+        <h2>{heading}</h2>
         <span className="drawer__count">{stories.length}</span>
         <button type="button" onClick={onToggle} aria-label="Hide US stocks">
           Hide
@@ -71,8 +81,11 @@ export function MarketDrawer({ stories, open, onToggle, onOpenStory, activeId }:
                 </span>
               ) : null}
               <span className="drawer__meta">
-                <time dateTime={story.item.publishedAt}>
-                  {format(parseISO(story.item.publishedAt), 'HH:mm')}
+                <time
+                  dateTime={story.item.publishedAt}
+                  title={formatStamp(story.item.publishedAt)}
+                >
+                  {format(parseISO(story.item.publishedAt), 'd MMM, HH:mm')}
                 </time>
                 <span className="drawer__age">{shortAge(story.item.publishedAt)}</span>
               </span>
@@ -81,7 +94,9 @@ export function MarketDrawer({ stories, open, onToggle, onOpenStory, activeId }:
           </li>
         ))}
         {stories.length === 0 ? (
-          <li className="drawer__empty">No US stock stories in this range.</li>
+          <li className="drawer__empty">
+            {ticker ? `No tweets for $${ticker} in this range.` : 'No US stock stories in this range.'}
+          </li>
         ) : null}
       </ul>
     </section>

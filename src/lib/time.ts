@@ -28,6 +28,17 @@ export function freshnessOf(iso: string, now = Date.now()): Freshness {
   return 'old'
 }
 
+/** Map markers stay bright for the last hour, plus the single newest item if the feed is quieter. */
+export function isMapBright(iso: string, newestAt: string | null, now = Date.now()): boolean {
+  if (newestAt && iso === newestAt) return true
+  return freshnessOf(iso, now) === 'fresh'
+}
+
+/** Absolute stamp for lists and hover cards: "15 Sep 2026, 13:05". */
+export function formatStamp(iso: string): string {
+  return format(parseISO(iso), 'd MMM yyyy, HH:mm')
+}
+
 /** Pin-sized age label: "now", "12m", "5h", "3d". */
 export function shortAge(iso: string, now = Date.now()): string {
   const age = Math.max(0, now - parseISO(iso).getTime())

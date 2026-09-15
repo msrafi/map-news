@@ -1,10 +1,15 @@
 const STORAGE_KEY = 'mapNewsItems'
+const AUTO_KEY = 'mapNewsAuto'
+/** Chrome throttles timers in a background tab, so this is a backup to the 2-minute alarm. */
+const PULL_MS = 120_000
+const REFRESH_MS = 120_000
 const PLACES = self.MAP_NEWS_PLACES
 
 const collected = new Map()
 let saveTimer = null
 let scanTimer = null
-let pillTimer = null
+let pullTimer = null
+let refreshTimer = null
 let observer = null
 
 // Reloading the extension orphans this script: chrome.* still exists but every call
@@ -20,7 +25,8 @@ function connected() {
 function teardown() {
   clearTimeout(saveTimer)
   clearTimeout(scanTimer)
-  clearInterval(pillTimer)
+  clearInterval(pullTimer)
+  clearTimeout(refreshTimer)
   observer?.disconnect()
   observer = null
 }
@@ -103,17 +109,21 @@ function parseArticle(article) {
 }
 
 function save() {
-  if (!connected()) return teardown()
+  if (!connected()) return Promise.resolve()
   const items = [...collected.values()].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
   try {
-    chrome.storage.local.set({ [STORAGE_KEY]: items })
+    return chrome.storage.local.set({ [STORAGE_KEY]: items })
   } catch {
     teardown()
+    return Promise.resolve()
   }
 }
 
 function scan() {
-  if (!connected()) return teardown()
+  if (!connected()) {
+    teardown()
+    return 0
+  }
   let added = 0
   for (const article of document.querySelectorAll('article[data-testid="tweet"]')) {
     const item = parseArticle(article)
@@ -122,9 +132,39 @@ function scan() {
       added += 1
     }
   }
-  if (added === 0) return
+  if (added === 0) return 0
   clearTimeout(saveTimer)
-  saveTimer = setTimeout(save, 500)
+  saveTimer = setTimeout(() => {
+    save().catch(teardown)
+  }, 500)
+  return added
+}
+
+function pull() {
+  if (!connected()) return teardown()
+  const queued = showQueuedPosts()
+  const run = () => {
+    if (!connected()) return teardown()
+    const added = scan()
+    const exportTick = () => {
+      chrome.storage.local
+        .get(AUTO_KEY)
+        .then((stored) => {
+          if (stored[AUTO_KEY] === false) return
+          return chrome.runtime.sendMessage({ type: 'export-tick' })
+        })
+        .catch(teardown)
+    }
+    if (added > 0) {
+      clearTimeout(saveTimer)
+      save().then(exportTick).catch(teardown)
+      return
+    }
+    exportTick()
+  }
+  // X inserts the queued posts after the pill click; give the DOM a beat to catch up.
+  if (queued) setTimeout(run, 800)
+  else run()
 }
 
 function scheduleScan() {
@@ -164,10 +204,18 @@ function start() {
       scan()
       observer = new MutationObserver(scheduleScan)
       observer.observe(document.body, { childList: true, subtree: true })
-      pillTimer = setInterval(() => {
+      pullTimer = setInterval(pull, PULL_MS)
+      // Background tabs throttle short intervals; a 2-minute reload still runs.
+      refreshTimer = setTimeout(() => {
         if (!connected()) return teardown()
-        if (showQueuedPosts()) scheduleScan()
-      }, 15_000)
+        chrome.storage.local
+          .get(AUTO_KEY)
+          .then((stored) => {
+            if (stored[AUTO_KEY] === false) return
+            location.reload()
+          })
+          .catch(teardown)
+      }, REFRESH_MS)
     })
     .catch(teardown)
 

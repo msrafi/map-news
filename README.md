@@ -1,6 +1,6 @@
 # Map News
 
-A React world-map news app. Region pins show how many reports are in that place. Opening a pin lists items by date and time. Cross-region stories draw a route; USGS-style datelines get a precise pointer on the map. A fixed left column breaks stock-option alerts down by ticker, and US stock headlines open in a drawer over the map.
+A React world-map news app. Tweets are always listed in a column on the right, newest first. Region pins show how many reports are in that place, and clicking one narrows that column to the region. Clicking a tweet flies the map to that story and rings its point. Cross-region stories draw a route; USGS-style datelines get a precise pointer on the map. A fixed left column breaks stock-option alerts down by ticker, and US stock headlines open in a drawer over the map.
 
 The first screen is the world map. Posts live in `public/news.json` so the app can stay static and host on GitHub Pages.
 
@@ -27,12 +27,12 @@ The map reads `public/news.json`. New posts come from the Chrome extension in `e
 
 1. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, pick the `extension/` folder.
 2. Open `https://x.com/FirstSquawk` and leave that tab open.
-3. Click the extension icon, turn on **Auto-export every minute**.
+3. Click the extension icon, turn on **Auto-export every 2 minutes**.
 4. In Chrome, turn off **Ask where to save each file**, or every export opens a save dialog.
 
 With `npm start` running, drops land in `~/Downloads/map-news/`, get merged into `public/news.json` every 10 seconds (newest 500 posts), and consumed files move to `~/Downloads/map-news/merged/`. The first merge on macOS may ask the terminal to read Downloads; allow it once.
 
-Leave the X tab open. X holds new posts behind a "show new posts" pill rather than inserting them, so a tab left alone can look frozen. The content script clicks that pill every 15 seconds, and with auto-export on the extension reloads every open X tab every 2 minutes so the newest posts actually render.
+Leave the X tab open. X holds new posts behind a "show new posts" pill rather than inserting them, so a tab left alone can look frozen. Every 2 minutes the content script clicks that pill, scans the page, and (with auto-export on) writes a drop into Downloads, then reloads the tab so the newest posts actually render. Chrome throttles short timers in background tabs, so the 2-minute cycle is also scheduled as a Chrome alarm (which can wake the extension). Turning auto-export on reloads open X tabs immediately. The map itself fetches `public/news.json` every 20 seconds.
 
 Run only one merge watcher. `npm start` already includes one, so a separate `npm run merge:watch` in another terminal will race it for the same files.
 
@@ -43,6 +43,8 @@ Merging also resolves the exact places a headline points at and stores them on t
 - **Datelines** such as `78 KM NORTH-NORTHEAST OF TOBELO, INDONESIA`. The anchor town is geocoded and the distance and bearing applied as a great-circle offset.
 - **Named sub-locations** such as `urgent alert for Abha and Jazan`. Mixed-case headlines are mined for places after locative prepositions, then geocoded within the post's own country and kept only if they resolve to a populated place or an administrative boundary. That country-and-class check is what keeps "Congress" or "Lithuanian" out.
 - **Named facilities** such as `RUSSIA'S SYZRAN OIL REFINERY`. All-caps wire copy is handled here: possessives (`RUSSIA'S …`), facility endings (`oil refinery`, `airport`, `bridge`, …), and strike verbs (`HIT …`). The country in the possessive is preferred over the post's region country, so a Kyiv-tagged strike still pins the refinery in Russia.
+
+The possessive pattern is where people get mistaken for places, so a candidate is dropped when it is followed by an attribution (`TREASURY'S BESSENT:` or `… SAYS`), when it contains an institution or job title (`FOREIGN MINISTRY`, `FIN MIN`), or when it is an abstract noun (`FINANCIAL SECTOR`). What survives is a facility, a name plus a geographic noun (`Belgorod Region`, `Java Sea`), or a compact two-or-three-word name like `Khamis Mushait`.
 
 Lookups go through Nominatim and are cached in `scripts/geocache.json`, misses included, so a name is only ever queried once. Each run spends at most 25 new lookups to keep the watcher responsive; the rest are picked up on later runs. Clicking a region pin draws these spots as dotted trails from the pin, alongside any cross-region routes.
 
@@ -60,13 +62,13 @@ Note that X's terms do not permit automated collection, so keep this to light pe
 
 ## Options column
 
-The app is two columns: a 10% options column and the map. The column lists tickers, most recently traded first, each showing how many calls and puts it has and how long ago the last one landed. Picking a ticker opens its news in a drawer over the map: every post that traded it, with the parsed contracts, the full text, and a link to the original. Below 800px the columns stack, map on top.
+The app is three columns: a 10% options column, the map, and a 10% news feed on the right. The column lists tickers, most recently traded first, each showing how many calls and puts it has and how long ago the last one landed. Picking a ticker opens its news in a drawer over the map: every post that traded it, with the parsed contracts, the full text, and a link to the original. Below 800px the columns stack, map on top.
 
 Options parsing recognizes compact trade alerts such as `$TDOC 7c @.04`, `$ASTS 95 calls for Feb`, and `$SPY 724P 10/16exp $2.4M`, extracting the ticker, strike, call/put side, expiry, premium, contract quantity, and notional size when present. A post naming several tickers files one trade under each.
 
-**US stocks** — index, futures, equity-move, and named-company headlines (`src/data/companies.json` maps names like `ORACLE` to `ORCL`, and bare cashtags are read directly) — is a second drawer, opened from its tab in the map's top-left corner. Both drawers sit side by side when open, and neither is part of the column. Clicking a stock headline opens a tooltip beside it with the full post, its parsed numbers, and a link to the original; Escape or a click outside closes it.
+**US stocks** — index, futures, equity-move, and named-company headlines (`src/data/companies.json` maps names like `ORACLE` to `ORCL`, and bare cashtags are read directly) — is a second drawer, opened from its tab in the map's top-left corner. Stock and option posts stay off the map (no pins, routes, or spots) even when they name a city. Both drawers sit side by side when open, and neither is part of the column. Clicking a stock headline opens a tooltip beside it with the full post, its parsed numbers, and a link to the original; Escape or a click outside closes it.
 
-Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.6.0.
+Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.8.0.
 
 ## Deploy to GitHub Pages
 
@@ -93,5 +95,5 @@ Anything that writes this shape works: the extension, a script, or a hand-edited
 ## Stack
 
 - Vite + React + TypeScript
-- MapLibre GL (`react-map-gl/maplibre`) with OpenFreeMap dark vector tiles
+- MapLibre GL (`react-map-gl/maplibre`) with OpenFreeMap vector tiles (dark, dark streets, streets, light, or bright; the choice is saved locally)
 - `date-fns` for time grouping

@@ -27,6 +27,7 @@ async function render() {
 
 autoEl.addEventListener('change', () => {
   chrome.storage.local.set({ [AUTO_KEY]: autoEl.checked })
+  chrome.runtime.sendMessage({ type: 'auto-changed', on: autoEl.checked })
 })
 
 document.getElementById('export').addEventListener('click', async () => {

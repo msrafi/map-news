@@ -103,3 +103,5 @@ export type RegionPin = {
 }
 
 export type TimeFilter = 'all' | 'live' | 'today' | 'week'
+
+export type MapStyleId = 'dark' | 'fiord' | 'liberty' | 'positron' | 'bright'
