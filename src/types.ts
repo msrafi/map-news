@@ -62,6 +62,35 @@ export type MarketStory = {
   details: MarketDetail[]
 }
 
+export type OptionContract = {
+  ticker: string
+  strike: number
+  side: 'call' | 'put'
+  expiry?: string
+  premium?: string
+  contracts?: number
+  notional?: string
+}
+
+export type OptionStory = {
+  item: NewsItem
+  contracts: OptionContract[]
+}
+
+/** A single contract paired with the post it came from. */
+export type TickerTrade = {
+  item: NewsItem
+  contract: OptionContract
+}
+
+export type TickerGroup = {
+  ticker: string
+  trades: TickerTrade[]
+  latestAt: string
+  calls: number
+  puts: number
+}
+
 export type RegionPin = {
   regionId: string
   region: string

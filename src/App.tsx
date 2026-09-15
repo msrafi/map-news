@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { MarketDrawer } from './components/MarketDrawer'
 import { NewsPanel } from './components/NewsPanel'
+import { OptionsDrawer } from './components/OptionsDrawer'
+import { StoryTooltip, type StoryTip } from './components/StoryTooltip'
+import { TickerColumn } from './components/TickerColumn'
 import { TopBar } from './components/TopBar'
 import { WorldMap } from './components/WorldMap'
 import { useSeenNews } from './hooks/useSeenNews'
 import { findMarketStories } from './lib/market'
 import { buildLinks, filterByTime, groupByRegion, linkColor, loadNews } from './lib/news'
+import { findOptionStories, groupByTicker } from './lib/options'
 import type { NewsItem, TimeFilter } from './types'
 
 export default function App() {
@@ -14,8 +18,11 @@ export default function App() {
   const [filter, setFilter] = useState<TimeFilter>('today')
   // Routes and location pointers belong to map clicks; the market drawer just opens the region.
   const [selection, setSelection] = useState<{ regionId: string; withRoutes: boolean } | null>(null)
-  const [marketOpen, setMarketOpen] = useState(true)
+  // The stock drawer covers the map, so it stays shut until it is asked for.
+  const [marketOpen, setMarketOpen] = useState(false)
+  const [selectedTicker, setSelectedTicker] = useState<string | null>(null)
   const [focusedStoryId, setFocusedStoryId] = useState<string | null>(null)
+  const [tip, setTip] = useState<StoryTip | null>(null)
   const selectedId = selection?.regionId ?? null
   const withRoutes = selection?.withRoutes ?? false
   const { seenIds, markSeen } = useSeenNews()
@@ -92,6 +99,12 @@ export default function App() {
     [selected, withRoutes],
   )
   const marketStories = useMemo(() => findMarketStories(visibleItems), [visibleItems])
+  const tickerGroups = useMemo(
+    () => groupByTicker(findOptionStories(visibleItems)),
+    [visibleItems],
+  )
+  // A refresh can retire the open ticker, so resolve it against the current groups.
+  const openTicker = tickerGroups.find((group) => group.ticker === selectedTicker) ?? null
   const linkedRegionIds = useMemo(() => {
     const ids = new Set<string>()
     for (const link of allLinks) {
@@ -110,6 +123,8 @@ export default function App() {
       if (event.key !== 'Escape') return
       setFocusedStoryId(null)
       setSelection(null)
+      setTip(null)
+      setSelectedTicker(null)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -129,36 +144,55 @@ export default function App() {
         lastUpdatedAt={lastUpdatedAt}
       />
       <main className="stage">
-        {error ? <p className="banner">{error}</p> : null}
-        <WorldMap
-          regions={regions}
-          links={links}
-          linkColors={linkColors}
-          spots={spots}
-          selectedId={selectedId}
-          unseenByRegion={unseenByRegion}
-          linkedRegionIds={linkedRegionIds}
-          onSelect={(regionId) => {
-            setFocusedStoryId(null)
-            setSelection({ regionId, withRoutes: true })
+        <TickerColumn
+          groups={tickerGroups}
+          selected={selectedTicker}
+          onSelect={(ticker) => {
+            setSelectedTicker(ticker)
+            setTip(null)
           }}
-          onFocusStory={setFocusedStoryId}
         />
-        <MarketDrawer
-          stories={marketStories}
-          open={marketOpen}
-          onToggle={() => setMarketOpen((value) => !value)}
-          onSelectRegion={(regionId) => setSelection({ regionId, withRoutes: false })}
-        />
-        {selected ? (
-          <NewsPanel
-            region={selected}
-            seenIds={seenIds}
+        <section className="map-area">
+          {error ? <p className="banner">{error}</p> : null}
+          <div className="map-drawers">
+            {openTicker ? (
+              <OptionsDrawer group={openTicker} onClose={() => setSelectedTicker(null)} />
+            ) : null}
+            <MarketDrawer
+              stories={marketStories}
+              open={marketOpen}
+              onToggle={() => setMarketOpen((value) => !value)}
+              onOpenStory={(story, anchor) =>
+                setTip({ item: story.item, details: story.details, contracts: [], anchor })
+              }
+              activeId={tip?.item.id ?? null}
+            />
+          </div>
+          <WorldMap
+            regions={regions}
+            links={links}
             linkColors={linkColors}
-            focusedStoryId={focusedStoryId}
-            onClose={() => setSelection(null)}
+            spots={spots}
+            selectedId={selectedId}
+            unseenByRegion={unseenByRegion}
+            linkedRegionIds={linkedRegionIds}
+            onSelect={(regionId) => {
+              setFocusedStoryId(null)
+              setSelection({ regionId, withRoutes: true })
+            }}
+            onFocusStory={setFocusedStoryId}
           />
-        ) : null}
+          {selected ? (
+            <NewsPanel
+              region={selected}
+              seenIds={seenIds}
+              linkColors={linkColors}
+              focusedStoryId={focusedStoryId}
+              onClose={() => setSelection(null)}
+            />
+          ) : null}
+        </section>
+        {tip ? <StoryTooltip tip={tip} onClose={() => setTip(null)} /> : null}
       </main>
     </div>
   )

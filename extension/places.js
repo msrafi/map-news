@@ -93,7 +93,7 @@ self.MAP_NEWS_PLACES = [
   {"id":"south-carolina","keys":["south carolina","charleston"],"region":"South Carolina","city":"Charleston","country":"United States","lat":32.7765,"lng":-79.9311},
   {"id":"south-dakota","keys":["south dakota","sioux falls"],"region":"South Dakota","city":"Sioux Falls","country":"United States","lat":43.5446,"lng":-96.7311},
   {"id":"tennessee","keys":["tennessee","nashville","memphis"],"region":"Tennessee","city":"Nashville","country":"United States","lat":36.1627,"lng":-86.7816},
-  {"id":"texas","keys":["texas","houston","dallas","austin","san antonio"],"region":"Texas","city":"Houston","country":"United States","lat":29.7604,"lng":-95.3698},
+  {"id":"texas","keys":["texas","houston","dallas","austin","san antonio","abilene","ercot"],"region":"Texas","city":"Houston","country":"United States","lat":29.7604,"lng":-95.3698},
   {"id":"utah","keys":["utah","salt lake city"],"region":"Utah","city":"Salt Lake City","country":"United States","lat":40.7608,"lng":-111.891},
   {"id":"vermont","keys":["vermont","burlington"],"region":"Vermont","city":"Burlington","country":"United States","lat":44.4759,"lng":-73.2121},
   {"id":"virginia","keys":["virginia","richmond"],"region":"Virginia","city":"Richmond","country":"United States","lat":37.5407,"lng":-77.436},

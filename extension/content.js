@@ -32,6 +32,24 @@ const MATCHERS = PLACES.flatMap((place) =>
   }),
 )
 
+const OPTIONS_PLACE = PLACES.find((place) => place.id === 'new-york')
+const OPTION_TRADE_RE = /\$[A-Z]{1,6}\s+\d+(?:\.\d+)?\s*(?:C|P|CALLS?|PUTS?)\b/i
+
+function isOptionTrade(text) {
+  return OPTION_TRADE_RE.test(text.replace(/[\u200B-\u200D\u2060\uFEFF]/g, ''))
+}
+
+const COMPANY_MATCHERS = (self.MAP_NEWS_COMPANIES ?? []).flatMap((company) =>
+  company.names.map((name) => ({
+    pattern: new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i'),
+  })),
+)
+
+// "ORACLE: PROJECTS SUPPLY ERCOT GRID..." names no place but is still US stock news.
+function namesUsCompany(text) {
+  return /\$[A-Z]{1,5}\b/.test(text) || COMPANY_MATCHERS.some((entry) => entry.pattern.test(text))
+}
+
 // Headlines name their subject first, so the earliest mention wins over the longest one.
 function findPlace(text) {
   let best = null
@@ -59,7 +77,10 @@ function parseArticle(article) {
   if (!statusMatch) return null
 
   const text = textEl.innerText.trim()
-  const place = findPlace(text)
+  // Option alerts and corporate headlines often contain no location. Keep them for the
+  // market drawers and use the US market hub only to satisfy the shared NewsItem shape.
+  const place =
+    findPlace(text) ?? (isOptionTrade(text) || namesUsCompany(text) ? OPTIONS_PLACE : null)
   if (!place) return null
 
   const nameEl = article.querySelector('[data-testid="User-Name"]')

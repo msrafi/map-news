@@ -6,7 +6,8 @@ type MarketDrawerProps = {
   stories: MarketStory[]
   open: boolean
   onToggle: () => void
-  onSelectRegion: (regionId: string) => void
+  onOpenStory: (story: MarketStory, anchor: DOMRect) => void
+  activeId: string | null
 }
 
 function changeClass(change: number | undefined): string {
@@ -26,57 +27,63 @@ function DetailRow({ detail }: { detail: MarketDetail }) {
       {detail.changePct !== undefined ? (
         <span className="tick__change">{formatChange(detail.changePct)}</span>
       ) : null}
-      {detail.previous ? <span className="tick__prev">prev {detail.previous}</span> : null}
     </span>
   )
 }
 
-export function MarketDrawer({ stories, open, onToggle, onSelectRegion }: MarketDrawerProps) {
+export function MarketDrawer({ stories, open, onToggle, onOpenStory, activeId }: MarketDrawerProps) {
   if (!open) {
     return (
-      <button className="market-tab" type="button" onClick={onToggle}>
+      <button className="drawer-tab" type="button" onClick={onToggle}>
         US stocks <span>{stories.length}</span>
       </button>
     )
   }
 
   return (
-    <aside className="market" aria-label="Market news">
-      <header className="market__header">
+    <section className="drawer" aria-label="US stock news">
+      <header className="drawer__header">
         <h2>US stocks</h2>
-        <span className="market__count">{stories.length}</span>
-        <button type="button" onClick={onToggle} aria-label="Hide market drawer">
+        <span className="drawer__count">{stories.length}</span>
+        <button type="button" onClick={onToggle} aria-label="Hide US stocks">
           Hide
         </button>
       </header>
-      <ul className="market__list">
+      <ul className="drawer__list">
         {stories.map((story) => (
           <li key={story.item.id}>
             <button
               type="button"
-              className={`market__row is-${freshnessOf(story.item.publishedAt)}`}
-              onClick={() => onSelectRegion(story.item.regionId)}
+              className={[
+                'drawer__row',
+                `is-${freshnessOf(story.item.publishedAt)}`,
+                activeId === story.item.id ? 'is-active' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              onClick={(event) => onOpenStory(story, event.currentTarget.getBoundingClientRect())}
             >
-              <span className="market__meta">
-                <time dateTime={story.item.publishedAt}>
-                  {format(parseISO(story.item.publishedAt), 'HH:mm')}
-                </time>
-                <span className="market__age">{shortAge(story.item.publishedAt)}</span>
-                <span className="market__region">{story.item.region}</span>
-              </span>
               {story.details.length > 0 ? (
-                <span className="market__ticks">
+                <span className="drawer__ticks">
                   {story.details.map((detail) => (
                     <DetailRow key={`${story.item.id}-${detail.label}`} detail={detail} />
                   ))}
                 </span>
               ) : null}
-              <span className="market__text">{story.item.text}</span>
+              <span className="drawer__meta">
+                <time dateTime={story.item.publishedAt}>
+                  {format(parseISO(story.item.publishedAt), 'HH:mm')}
+                </time>
+                <span className="drawer__age">{shortAge(story.item.publishedAt)}</span>
+              </span>
+              <span className="drawer__text">{story.item.text}</span>
             </button>
           </li>
         ))}
-        {stories.length === 0 ? <li className="market__empty">No US stock stories in this range.</li> : null}
+        {stories.length === 0 ? (
+          <li className="drawer__empty">No US stock stories in this range.</li>
+        ) : null}
       </ul>
-    </aside>
+    </section>
   )
 }
