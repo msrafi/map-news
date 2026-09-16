@@ -1,4 +1,5 @@
 // Merges news JSON exported by the Chrome extension into public/news.json.
+// Posts older than 24 hours move to public/news-archive.json.
 // Usage: node scripts/merge-downloads.mjs [--watch] [--reset]
 import { mkdir, readFile, readdir, rename, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
@@ -8,10 +9,11 @@ import { addSpots } from './spots.mjs'
 
 const PROJECT = fileURLToPath(new URL('..', import.meta.url))
 const TARGET = path.join(PROJECT, 'public', 'news.json')
+const HISTORY = path.join(PROJECT, 'public', 'news-archive.json')
 const DOWNLOADS = path.join(homedir(), 'Downloads')
 const INBOX = path.join(DOWNLOADS, 'map-news')
 const ARCHIVE = path.join(INBOX, 'merged')
-const MAX_ITEMS = 500
+const LIVE_MS = 24 * 60 * 60 * 1000
 const POLL_MS = 2_000
 
 const watch = process.argv.includes('--watch')
@@ -59,13 +61,41 @@ async function findDrops() {
   return drops.sort()
 }
 
+function publishedMs(item) {
+  const time = Date.parse(item.publishedAt)
+  return Number.isFinite(time) ? time : 0
+}
+
+function splitLive(items, now = Date.now()) {
+  const live = []
+  const archived = []
+  for (const item of items) {
+    if (now - publishedMs(item) <= LIVE_MS) live.push(item)
+    else archived.push(item)
+  }
+  return {
+    live: live.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
+    archived: archived.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
+  }
+}
+
+async function writeIfChanged(file, items) {
+  const next = `${JSON.stringify(items, null, 2)}\n`
+  try {
+    if ((await readFile(file, 'utf8')) === next) return false
+  } catch {
+    if (items.length === 0) return false
+  }
+  await writeFile(file, next)
+  return true
+}
+
 async function mergeOnce() {
   const drops = await findDrops()
-  if (drops.length === 0) return { added: 0, files: 0, total: null }
-
   const merged = new Map()
   if (!reset) {
     for (const item of await readJsonArray(TARGET)) merged.set(item.id, item)
+    for (const item of await readJsonArray(HISTORY)) merged.set(item.id, item)
   }
   const before = merged.size
 
@@ -73,28 +103,39 @@ async function mergeOnce() {
     for (const item of await readJsonArray(drop)) merged.set(item.id, item)
   }
 
-  const items = [...merged.values()]
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-    .slice(0, MAX_ITEMS)
+  if (drops.length === 0 && merged.size === 0) {
+    return { added: 0, files: 0, live: 0, archived: 0, spots: 0, wrote: false }
+  }
 
+  const items = [...merged.values()].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
   const spots = await addSpots(items)
-  await writeFile(TARGET, `${JSON.stringify(items, null, 2)}\n`)
+  const { live, archived } = splitLive(items)
+  const wroteLive = await writeIfChanged(TARGET, live)
+  const wroteArchive = await writeIfChanged(HISTORY, archived)
 
   await mkdir(ARCHIVE, { recursive: true })
   for (const drop of drops) {
     await rename(drop, path.join(ARCHIVE, path.basename(drop))).catch(() => {})
   }
 
-  return { added: merged.size - before, files: drops.length, total: items.length, spots }
+  return {
+    added: merged.size - before,
+    files: drops.length,
+    live: live.length,
+    archived: archived.length,
+    spots,
+    wrote: wroteLive || wroteArchive,
+  }
 }
 
 async function run() {
-  const { added, files, total, spots } = await mergeOnce()
-  if (files === 0) return
+  const { added, files, live, archived, spots, wrote } = await mergeOnce()
+  if (!wrote && files === 0) return
   const stamp = new Date().toLocaleTimeString()
   const located = spots > 0 ? `, ${spots} precise location(s)` : ''
+  const incoming = files > 0 ? `${files} file(s), ${added} new post(s), ` : ''
   console.log(
-    `[${stamp}] merged ${files} file(s), ${added} new post(s)${located}, ${total} total in public/news.json`,
+    `[${stamp}] ${incoming}${live} in last 24h, ${archived} archived${located}`,
   )
 }
 

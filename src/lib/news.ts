@@ -134,7 +134,7 @@ function shiftSampleTimestamps(items: NewsItem[]): NewsItem[] {
 
 /**
  * Polling is cheap when the server can answer "unchanged": the validators let the
- * app ask often without re-parsing a 500-item feed. Resolves null when nothing moved.
+ * app ask often without re-parsing the live 24-hour feed. Resolves null when nothing moved.
  */
 let feedTag: string | null = null
 let feedModified: string | null = null

@@ -2,7 +2,7 @@
 
 A React world-map news app. Tweets are always listed in a column on the right, newest first. Region pins show how many reports are in that place, and clicking one narrows that column to the region. Clicking a tweet flies the map to that story and rings its point. Cross-region stories draw a route; USGS-style datelines get a precise pointer on the map. A fixed left column breaks stock-option alerts down by ticker, and US stock headlines open in a drawer over the map.
 
-The first screen is the world map. Posts live in `public/news.json` so the app can stay static and host on GitHub Pages.
+The first screen is the world map. The live feed in `public/news.json` holds the last 24 hours. Older posts are moved to `public/news-archive.json` and copied into the browser's local storage, and come back when you pick **This week**, **All**, or a saved ticker.
 
 ## Run locally
 
@@ -29,7 +29,7 @@ The map reads `public/news.json`. New posts come from the Chrome extension in `e
 2. Open `https://x.com/FirstSquawk` and leave that tab open.
 3. Click the extension icon, turn on **Auto-export every 2 minutes**.4. In Chrome, turn off **Ask where to save each file**, or every export opens a save dialog.
 
-With `npm start` running, drops land in `~/Downloads/map-news/`, get merged into `public/news.json` every 10 seconds (newest 500 posts), and consumed files move to `~/Downloads/map-news/merged/`. The first merge on macOS may ask the terminal to read Downloads; allow it once.
+With `npm start` running, drops land in `~/Downloads/map-news/`, get merged every 2 seconds into the last 24 hours in `public/news.json` (older posts go to `public/news-archive.json`), and consumed files move to `~/Downloads/map-news/merged/`. The first merge on macOS may ask the terminal to read Downloads; allow it once.
 
 Leave the X tab open. X holds new posts behind a "show new posts" pill rather than inserting them, so a tab left alone can look frozen. The content script clicks that pill and scans on every DOM change; when a scan finds something new it exports within about 3 seconds instead of waiting for a timer. On top of that it pulls once a minute, and every 2 minutes it scans, exports, and only then reloads the tab, so nothing on screen is lost to the reload. Chrome throttles short timers in background tabs, so the same 2-minute cycle also runs as a Chrome alarm. Turning auto-export on reloads open X tabs immediately.
 

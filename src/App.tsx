@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { MarketDrawer } from './components/MarketDrawer'
 import { NewsPanel } from './components/NewsPanel'
 import { OptionsDrawer } from './components/OptionsDrawer'
@@ -9,6 +9,14 @@ import { WorldMap } from './components/WorldMap'
 import { useSavedSymbols } from './hooks/useSavedSymbols'
 import { useSeenNews } from './hooks/useSeenNews'
 import { findMarketStories, storiesForTicker, tickersOf } from './lib/market'
+import {
+  combineNews,
+  filterNeedsArchive,
+  loadServerArchive,
+  mergeIntoArchive,
+  readArchive,
+  splitLiveItems,
+} from './lib/archive'
 import { buildLinks, filterByTime, groupByRegion, linkColor, loadNews } from './lib/news'
 import { readMapStyle, writeMapStyle } from './lib/mapStyles'
 import { findOptionStories, groupByTicker } from './lib/options'
@@ -26,6 +34,8 @@ function sortTiles(tiles: SymbolTile[]): SymbolTile[] {
 
 export default function App() {
   const [items, setItems] = useState<NewsItem[]>([])
+  const [archive, setArchive] = useState<NewsItem[]>(() => readArchive())
+  const [archiveReady, setArchiveReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<TimeFilter>('today')
   const [mapStyle, setMapStyle] = useState<MapStyleId>(() => readMapStyle())
@@ -39,6 +49,7 @@ export default function App() {
   // Set only by the feed: the map frames this story and marks its point.
   const [pinnedStoryId, setPinnedStoryId] = useState<string | null>(null)
   const [tip, setTip] = useState<StoryTip | null>(null)
+  const itemsRef = useRef(items)
   const selectedId = selection?.regionId ?? null
   const withRoutes = selection?.withRoutes ?? false
   const { seenIds, markSeen } = useSeenNews()
@@ -46,9 +57,22 @@ export default function App() {
   const [, setNow] = useState(0)
 
   useEffect(() => {
+    itemsRef.current = items
+  }, [items])
+
+  useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 30_000)
     return () => window.clearInterval(timer)
   }, [])
+
+  function shelveAged(news: NewsItem[] | null) {
+    const current = itemsRef.current
+    const incoming = news ?? current
+    const { live, archived } = splitLiveItems(incoming)
+    const dropped = current.filter((item) => !live.some((entry) => entry.id === item.id))
+    setArchive(mergeIntoArchive([...archived, ...dropped]))
+    setItems(live)
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -60,9 +84,14 @@ export default function App() {
       inFlight = true
       loadNews(force)
         .then((news) => {
-          // null means the feed has not changed since the last fetch.
-          if (!cancelled && news) setItems(news)
-          if (!cancelled) setError(null)
+          if (cancelled) return
+          if (news) {
+            shelveAged(news)
+          } else {
+            const aged = splitLiveItems(itemsRef.current).archived
+            if (aged.length > 0) shelveAged(null)
+          }
+          setError(null)
         })
         .catch((err: unknown) => {
           if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load news')
@@ -92,12 +121,39 @@ export default function App() {
     }
   }, [])
 
-  const visibleItems = useMemo(() => filterByTime(items, filter), [filter, items])
+  useEffect(() => {
+    const timer = window.setInterval(() => shelveAged(null), 30_000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const wantArchive =
+    filterNeedsArchive(filter) || selectedTicker !== null || selectedStock !== null || marketOpen
+
+  useEffect(() => {
+    if (!wantArchive || archiveReady) return
+    let cancelled = false
+    loadServerArchive()
+      .then((stored) => {
+        if (cancelled) return
+        setArchive(mergeIntoArchive(stored))
+        setArchiveReady(true)
+      })
+      .catch(() => {
+        if (!cancelled) setArchiveReady(true)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [archiveReady, wantArchive])
+
+  const storedItems = useMemo(() => combineNews(items, archive), [archive, items])
+  const catalog = wantArchive ? storedItems : items
+  const visibleItems = useMemo(() => filterByTime(catalog, filter), [catalog, filter])
   const marketStories = useMemo(() => findMarketStories(visibleItems), [visibleItems])
   const optionStories = useMemo(() => findOptionStories(visibleItems), [visibleItems])
   const tickerGroups = useMemo(() => groupByTicker(optionStories), [optionStories])
-  const allOptionStories = useMemo(() => findOptionStories(items), [items])
-  const allMarketStories = useMemo(() => findMarketStories(items), [items])
+  const allOptionStories = useMemo(() => findOptionStories(storedItems), [storedItems])
+  const allMarketStories = useMemo(() => findMarketStories(storedItems), [storedItems])
   const allTickerGroups = useMemo(() => groupByTicker(allOptionStories), [allOptionStories])
 
   useEffect(() => {

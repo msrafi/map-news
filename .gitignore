@@ -11,6 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
+public/news-archive.json
+
+node_modules
+dist
+dist-ssr
+*.local
 
 # Editor directories and files
 .vscode/*
