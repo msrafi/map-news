@@ -1,6 +1,7 @@
 import { format, parseISO } from 'date-fns'
 import { formatStamp, formatUpdated, freshnessOf, shortAge } from '../lib/time'
-import type { OptionContract, TickerGroup, TickerTrade } from '../types'
+import type { NewsMedia, OptionContract, TickerGroup, TickerTrade } from '../types'
+import { MediaStrip } from './MediaStrip'
 
 type OptionsDrawerProps = {
   group: TickerGroup
@@ -12,6 +13,7 @@ type Post = {
   publishedAt: string
   text: string
   sourceUrl: string
+  media?: NewsMedia[]
   contracts: OptionContract[]
 }
 
@@ -28,6 +30,7 @@ function postsOf(trades: TickerTrade[]): Post[] {
         publishedAt: item.publishedAt,
         text: item.text,
         sourceUrl: item.sourceUrl,
+        media: item.media,
         contracts: [contract],
       })
   }
@@ -83,6 +86,8 @@ export function OptionsDrawer({ group, onClose }: OptionsDrawerProps) {
             </div>
 
             <p className="option-post__text">{post.text}</p>
+
+            {post.media?.length ? <MediaStrip media={post.media} /> : null}
 
             <a href={post.sourceUrl} target="_blank" rel="noreferrer">
               Open on X

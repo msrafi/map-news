@@ -106,11 +106,24 @@ async function scanOpenTabs() {
   await new Promise((resolve) => setTimeout(resolve, 600))
 }
 
+/** What has been shipped for a post, so a later change can be spotted. */
+function signatureOf(item) {
+  return item.media?.length ? `m${item.media.length}` : ''
+}
+
+function readExported(raw) {
+  // Older builds stored a plain list of ids, with no signature.
+  if (Array.isArray(raw)) return new Map(raw.map((id) => [id, '']))
+  return new Map(Object.entries(raw ?? {}))
+}
+
 async function exportNewItems() {
   const stored = await chrome.storage.local.get([STORAGE_KEY, EXPORTED_KEY])
   const items = stored[STORAGE_KEY] ?? []
-  const exported = new Set(stored[EXPORTED_KEY] ?? [])
-  const fresh = items.filter((item) => !exported.has(item.id))
+  const exported = readExported(stored[EXPORTED_KEY])
+  // X loads photos after the text, so a post already sent is sent again once it
+  // gains pictures. Without this the first, picture-less copy would be final.
+  const fresh = items.filter((item) => exported.get(item.id) !== signatureOf(item))
   if (fresh.length === 0) return 0
 
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
@@ -121,9 +134,9 @@ async function exportNewItems() {
     saveAs: false,
   })
 
-  for (const item of fresh) exported.add(item.id)
+  for (const item of fresh) exported.set(item.id, signatureOf(item))
   await chrome.storage.local.set({
-    [EXPORTED_KEY]: [...exported].slice(-5000),
+    [EXPORTED_KEY]: Object.fromEntries([...exported].slice(-5000)),
     [LAST_EXPORT_KEY]: new Date().toISOString(),
   })
   return fresh.length

@@ -1,5 +1,33 @@
 [
   {
+    "author": "*Walter Bloomberg",
+    "city": "New York",
+    "country": "United States",
+    "handle": "@DeItaone",
+    "id": "x-2100247846284915024",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "publishedAt": "2026-09-16T15:38:01.000Z",
+    "region": "New York",
+    "regionId": "new-york",
+    "sourceUrl": "https://x.com/DeItaone/status/2100247846284915024",
+    "text": "JPMORGAN MAPS FED DAY: STOCKS COULD SWING 2%\n\nJPMorgan says Fed communication could determine whether stocks rally or sell off after today’s widely expected 25bp hike.\n\nA standard hike with limited guidance could lift the S&P 500 0.25%–0.75%, while a hike paired with a stronger"
+  },
+  {
+    "author": "JTradeX",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@JTradeX_paper",
+    "id": "x-2100246821138227438",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-16T15:33:57.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/JTradeX_paper/status/2100246821138227438",
+    "text": "Thanks for flagging the 2:00 EST FOMC window on \n$SPY\n and \n$QQQ\n! Paper-trading the 2:30 release helps you observe how price gaps often ignore tight stops during these high-volatility prints. How are you adjusting your position size for today's expected range expansion?"
+  },
+  {
     "author": "Flowseidon",
     "city": "New York",
     "country": "United States",
@@ -54,6 +82,20 @@
     "regionId": "washington",
     "sourceUrl": "https://x.com/StockOptions888/status/2100245773225279528",
     "text": "Take this opportunity to review before FOMC\n\nnobody else will give out free game like this ❤️\n\nLet’s crush it today!!!\n\n#sniperforthepeople"
+  },
+  {
+    "author": "Sarah Jenkins",
+    "city": "Washington",
+    "country": "United States",
+    "handle": "@AngelaEreal",
+    "id": "x-2100245762932351344",
+    "lat": 38.9072,
+    "lng": -77.0369,
+    "publishedAt": "2026-09-16T15:29:45.000Z",
+    "region": "Washington",
+    "regionId": "washington",
+    "sourceUrl": "https://x.com/AngelaEreal/status/2100245762932351344",
+    "text": "Sitting out the FOMC volatility today rather than gambling on SPY/QQQ swings is the sane play. You and \n@kenmartinboston\n deliver consistently accurate, objective, and rational analysis, making you both easily my favorite follows."
   },
   {
     "author": "SniperAlert",
@@ -345,6 +387,13 @@
     "id": "x-2100237543740506620",
     "lat": 40.7128,
     "lng": -74.006,
+    "media": [
+      {
+        "alt": "Image",
+        "full": "https://pbs.twimg.com/media/HSWK6eBXgAA5QxJ?format=jpg&name=large",
+        "thumb": "https://pbs.twimg.com/media/HSWK6eBXgAA5QxJ?format=jpg&name=small"
+      }
+    ],
     "publishedAt": "2026-09-16T14:57:05.000Z",
     "region": "New York",
     "regionId": "new-york",
@@ -6964,19 +7013,5 @@
     "regionId": "new-york",
     "sourceUrl": "https://x.com/CheddarFlow/status/2099886851079196840",
     "text": "GIANT $7.3M \n$XOM\n Call (Unusual)"
-  },
-  {
-    "author": "The Trade Brigade",
-    "city": "Washington",
-    "country": "United States",
-    "handle": "@TradeBrigadeCo",
-    "id": "x-2099884670078882037",
-    "lat": 38.9072,
-    "lng": -77.0369,
-    "publishedAt": "2026-09-15T15:34:53.000Z",
-    "region": "Washington",
-    "regionId": "washington",
-    "sourceUrl": "https://x.com/TradeBrigadeCo/status/2099884670078882037",
-    "text": "$SPY\n – Internals side with the bears for now. Ahead of FOMC does this bear flag breakdown? I would think chop is higher probability vs continuing much lower."
   }
 ]

@@ -71,11 +71,13 @@ Options parsing recognizes compact trade alerts such as `$TDOC 7c @.04`, `$ASTS 
 
 **US stocks** — index, futures, equity-move, and named-company headlines (`src/data/companies.json` maps names like `ORACLE` to `ORCL`, and bare cashtags are read directly) — is a second drawer, opened from its tab in the map's top-left corner. Stock and option posts stay off the map (no pins, routes, or spots) even when they name a city. Both drawers sit side by side when open, and neither is part of the column. Clicking a stock headline opens a tooltip beside it with the full post, its parsed numbers, and a link to the original; Escape or a click outside closes it.
 
-Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.9.0.
+Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.9.1.
 
 ## Pictures
 
-Posts with photos carry up to four of them, stored as X's own `pbs.twimg.com` renders rather than copied into the repo, so the feed stays a list of URLs. Each card shows them as 64px thumbnails; clicking one opens the full-size render in a new tab. X loads a photo after its text, so a post is usually collected once without it and picked up on a later scan. A render X has since retired simply drops out of the card. Posts already in the feed gain pictures only when they are scanned again.
+Posts with photos carry up to four of them, stored as X's own `pbs.twimg.com` renders rather than copied into the repo, so the feed stays a list of URLs. They show as 64px thumbnails everywhere a post appears: the news column, the stock drawer, and the options drawer. Clicking one opens the full-size render in a new tab, except in the stock drawer, whose rows are buttons; that post's tooltip shows the picture larger with the link.
+
+X loads a photo after its text, so a post is almost always collected once without it. A later scan picks the photo up and the extension ships that post a second time, which is why exports are deduplicated on content rather than on id alone. A render X has since retired simply drops out of the card. Posts already in the feed gain pictures only if they are scanned again while still on the timeline.
 
 ## Deploy to GitHub Pages
 

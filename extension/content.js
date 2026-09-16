@@ -92,8 +92,9 @@ function sizedUrl(raw, size) {
   }
 }
 
-// Photos on the post itself. A quoted post sits in its own role="link" box and is
-// someone else's picture; avatars and emoji live outside tweetPhoto already.
+// Photos on the post itself. A quoted post is someone else's picture, and it sits in
+// a div[role="link"] box; the photo's own <a> also carries role="link", so the tag
+// matters. Avatars and emoji live outside tweetPhoto already.
 function parseMedia(article) {
   const media = []
   const shots = article.querySelectorAll(
@@ -101,7 +102,7 @@ function parseMedia(article) {
   )
 
   for (const node of shots) {
-    if (node.closest('[role="link"]')) continue
+    if (node.closest('div[role="link"]')) continue
     const raw = node.tagName === 'VIDEO' ? node.getAttribute('poster') : node.getAttribute('src')
     if (!raw || !raw.includes('pbs.twimg.com')) continue
 

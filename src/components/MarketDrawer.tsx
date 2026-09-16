@@ -1,6 +1,7 @@
 import { format, parseISO } from 'date-fns'
 import { formatStamp, freshnessOf, shortAge } from '../lib/time'
 import type { MarketDetail, MarketStory } from '../types'
+import { MediaStrip } from './MediaStrip'
 
 type MarketDrawerProps = {
   stories: MarketStory[]
@@ -90,6 +91,10 @@ export function MarketDrawer({
                 <span className="drawer__age">{shortAge(story.item.publishedAt)}</span>
               </span>
               <span className="drawer__text">{story.item.text}</span>
+              {/* Inside a button, so the full-size link lives in the tooltip instead. */}
+              {story.item.media?.length ? (
+                <MediaStrip media={story.item.media} linked={false} />
+              ) : null}
             </button>
           </li>
         ))}

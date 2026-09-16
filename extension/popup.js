@@ -11,7 +11,9 @@ const statusEl = document.getElementById('status')
 async function render() {
   const stored = await chrome.storage.local.get([STORAGE_KEY, EXPORTED_KEY, AUTO_KEY, LAST_EXPORT_KEY])
   const items = stored[STORAGE_KEY] ?? []
-  const exported = new Set(stored[EXPORTED_KEY] ?? [])
+  // Ids map to what was shipped for them; older builds stored a plain list.
+  const raw = stored[EXPORTED_KEY]
+  const exported = new Set(Array.isArray(raw) ? raw : Object.keys(raw ?? {}))
   const pending = items.filter((item) => !exported.has(item.id)).length
 
   countEl.textContent = String(items.length)
@@ -57,7 +59,7 @@ document.getElementById('clear').addEventListener('click', async () => {
       // Not an X tab.
     }
   }
-  await chrome.storage.local.set({ [STORAGE_KEY]: [], [EXPORTED_KEY]: [] })
+  await chrome.storage.local.set({ [STORAGE_KEY]: [], [EXPORTED_KEY]: {} })
   render()
 })
 

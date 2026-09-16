@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { formatStamp, formatUpdated } from '../lib/time'
 import type { MarketDetail, NewsItem, OptionContract } from '../types'
+import { MediaStrip } from './MediaStrip'
 
 export type StoryTip = {
   item: NewsItem
@@ -62,6 +63,8 @@ export function StoryTooltip({ tip, onClose }: StoryTooltipProps) {
         </header>
 
         <p className="story-tip__text">{tip.item.text}</p>
+
+        {tip.item.media?.length ? <MediaStrip media={tip.item.media} size="lg" /> : null}
 
         {tip.details.length > 0 ? (
           <ul className="story-tip__rows">
