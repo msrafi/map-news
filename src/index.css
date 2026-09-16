@@ -1277,6 +1277,33 @@ a {
   color: var(--link);
 }
 
+/* Thumbnails stay small: the headline is the story, the picture is a hint. */
+.news-card__media {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.35rem;
+}
+
+.news-card__shot {
+  display: block;
+  line-height: 0;
+}
+
+.news-card__shot img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.news-card__shot:hover img,
+.news-card__shot:focus-visible img {
+  border-color: var(--accent);
+}
+
 .news-card__place {
   background: rgba(94, 200, 197, 0.22);
   color: inherit;

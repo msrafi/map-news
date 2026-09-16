@@ -77,6 +77,44 @@ function findPlace(text) {
   return best && best.place
 }
 
+/** Enough to show a post is illustrated without turning the feed into a gallery. */
+const MAX_MEDIA = 4
+
+/** X serves every render off one URL; `name` picks the size. */
+function sizedUrl(raw, size) {
+  try {
+    const url = new URL(raw, location.origin)
+    if (url.hostname !== 'pbs.twimg.com') return raw
+    url.searchParams.set('name', size)
+    return url.toString()
+  } catch {
+    return raw
+  }
+}
+
+// Photos on the post itself. A quoted post sits in its own role="link" box and is
+// someone else's picture; avatars and emoji live outside tweetPhoto already.
+function parseMedia(article) {
+  const media = []
+  const shots = article.querySelectorAll(
+    '[data-testid="tweetPhoto"] img, [data-testid="tweetPhoto"] video[poster]',
+  )
+
+  for (const node of shots) {
+    if (node.closest('[role="link"]')) continue
+    const raw = node.tagName === 'VIDEO' ? node.getAttribute('poster') : node.getAttribute('src')
+    if (!raw || !raw.includes('pbs.twimg.com')) continue
+
+    const thumb = sizedUrl(raw, 'small')
+    if (media.some((entry) => entry.thumb === thumb)) continue
+    const alt = node.getAttribute('alt')
+    media.push({ thumb, full: sizedUrl(raw, 'large'), ...(alt ? { alt } : null) })
+    if (media.length >= MAX_MEDIA) break
+  }
+
+  return media
+}
+
 function parseArticle(article) {
   const textEl = article.querySelector('[data-testid="tweetText"]')
   const timeEl = article.querySelector('time[datetime]')
@@ -97,6 +135,7 @@ function parseArticle(article) {
 
   const nameEl = article.querySelector('[data-testid="User-Name"]')
   const author = nameEl ? nameEl.innerText.split('\n')[0].trim() : statusMatch[1]
+  const media = parseMedia(article)
 
   return {
     id: `x-${statusMatch[2]}`,
@@ -111,6 +150,7 @@ function parseArticle(article) {
     text,
     publishedAt: new Date(timeEl.getAttribute('datetime')).toISOString(),
     sourceUrl: `https://x.com/${statusMatch[1]}/status/${statusMatch[2]}`,
+    ...(media.length > 0 ? { media } : null),
   }
 }
 
@@ -150,10 +190,12 @@ function scan() {
   let added = 0
   for (const article of document.querySelectorAll('article[data-testid="tweet"]')) {
     const item = parseArticle(article)
-    if (item && !collected.has(item.id)) {
-      collected.set(item.id, item)
-      added += 1
-    }
+    if (!item) continue
+    const known = collected.get(item.id)
+    // X loads photos after the text, so a post is usually seen once without them.
+    if (known && (known.media?.length || !item.media)) continue
+    collected.set(item.id, item)
+    added += 1
   }
   if (added === 0) return 0
   clearTimeout(saveTimer)

@@ -1,6 +1,6 @@
 # Map News
 
-A React world-map news app. Tweets are always listed in a column on the right, newest first. Region pins show how many reports are in that place, and clicking one narrows that column to the region. Clicking a tweet flies the map to that story and rings its point. Cross-region stories draw a route; USGS-style datelines get a precise pointer on the map. A fixed left column breaks stock-option alerts down by ticker, and US stock headlines open in a drawer over the map.
+A React world-map news app. Tweets are always listed in a column on the right, newest first, with thumbnails for any pictures they carry. Region pins show how many reports are in that place, and clicking one narrows that column to the region. Clicking a tweet flies the map to that story and rings its point. Cross-region stories draw a route; USGS-style datelines get a precise pointer on the map. A fixed left column breaks stock-option alerts down by ticker, and US stock headlines open in a drawer over the map.
 
 The first screen is the world map. The live feed in `public/news.json` holds the last 24 hours. Older posts are moved to `public/news-archive.json` and copied into the browser's local storage, and come back when you pick **This week**, **All**, or a saved ticker.
 
@@ -71,7 +71,11 @@ Options parsing recognizes compact trade alerts such as `$TDOC 7c @.04`, `$ASTS 
 
 **US stocks** — index, futures, equity-move, and named-company headlines (`src/data/companies.json` maps names like `ORACLE` to `ORCL`, and bare cashtags are read directly) — is a second drawer, opened from its tab in the map's top-left corner. Stock and option posts stay off the map (no pins, routes, or spots) even when they name a city. Both drawers sit side by side when open, and neither is part of the column. Clicking a stock headline opens a tooltip beside it with the full post, its parsed numbers, and a link to the original; Escape or a click outside closes it.
 
-Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.8.1.
+Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.9.0.
+
+## Pictures
+
+Posts with photos carry up to four of them, stored as X's own `pbs.twimg.com` renders rather than copied into the repo, so the feed stays a list of URLs. Each card shows them as 64px thumbnails; clicking one opens the full-size render in a new tab. X loads a photo after its text, so a post is usually collected once without it and picked up on a later scan. A render X has since retired simply drops out of the card. Posts already in the feed gain pictures only when they are scanned again.
 
 ## Deploy to GitHub Pages
 

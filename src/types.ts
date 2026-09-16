@@ -7,6 +7,15 @@ export type NewsSpot = {
   lng: number
 }
 
+/** A picture attached to a post, kept as X's own renders rather than copied locally. */
+export type NewsMedia = {
+  /** Small render, sized for the feed thumbnail. */
+  thumb: string
+  /** Full render, opened when the thumbnail is clicked. */
+  full: string
+  alt?: string
+}
+
 export type NewsItem = {
   id: string
   regionId: string
@@ -21,6 +30,7 @@ export type NewsItem = {
   publishedAt: string
   sourceUrl: string
   spots?: NewsSpot[]
+  media?: NewsMedia[]
 }
 
 export type RegionRef = {

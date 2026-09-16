@@ -1,9 +1,9 @@
 import { format, isToday, isYesterday, parseISO } from 'date-fns'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { MIN_LINKED_REGIONS } from '../lib/news'
 import { findLocationHits, findRegions } from '../lib/places'
 import { formatStamp, formatUpdated, freshnessOf, latestItem, shortAge } from '../lib/time'
-import type { LocationHit, RegionPin } from '../types'
+import type { LocationHit, NewsMedia, RegionPin } from '../types'
 
 type NewsPanelProps = {
   title: string
@@ -52,6 +52,18 @@ function HighlightedText({ text }: { text: string }) {
         ),
       )}
     </>
+  )
+}
+
+/** X can retire a render, so a picture that fails to load leaves no gap behind. */
+function Thumbnail({ media }: { media: NewsMedia }) {
+  const [broken, setBroken] = useState(false)
+  if (broken) return null
+
+  return (
+    <a className="news-card__shot" href={media.full} target="_blank" rel="noreferrer">
+      <img src={media.thumb} alt={media.alt ?? ''} loading="lazy" onError={() => setBroken(true)} />
+    </a>
   )
 }
 
@@ -179,6 +191,13 @@ export function NewsPanel({
                         </span>
                       ) : null}
                     </button>
+                    {item.media?.length ? (
+                      <div className="news-card__media">
+                        {item.media.map((media) => (
+                          <Thumbnail key={media.thumb} media={media} />
+                        ))}
+                      </div>
+                    ) : null}
                   </li>
                 )
               })}

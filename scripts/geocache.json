@@ -656,5 +656,42 @@
     "name": "Apac, Northern Region, Uganda"
   },
   "treasury, japan": null,
-  "treasury": null
+  "treasury": null,
+  "houthi rebels, yemen": null,
+  "houthi rebels": null,
+  "houthis before, yemen": null,
+  "houthis before": null,
+  "yields, united states": null,
+  "yields": null,
+  "oil stocks, united states": null,
+  "oil stocks": null,
+  "donald trump, russia": null,
+  "donald trump": null,
+  "human control, united states": null,
+  "human control": null,
+  "ceo, china": null,
+  "ceo": null,
+  "xi-trump, china": null,
+  "xi-trump": null,
+  "eu-canada, united kingdom": null,
+  "eu-canada": null,
+  "brexit britain, united kingdom": null,
+  "brexit britain": null,
+  "emil michael, united states": null,
+  "emil michael": {
+    "lat": 50.6610592,
+    "lng": 6.7993149,
+    "name": "Zahnarzt Michael Tummers, 41, Emil-Fischer-Straße, Euskirchen, Kreis Euskirchen, Nordrhein-Westfalen, 53879, Deutschland"
+  },
+  "mahan air flights, iran": null,
+  "mahan air flights": null,
+  "sept, iran": null,
+  "mahan air, iran": null,
+  "mahan air": null,
+  "warsh, united states": null,
+  "warsh": {
+    "lat": 14.65479,
+    "lng": 43.84538,
+    "name": "الورش, الأكمة, مديرية السلفية, محافظة ريمة, اليمن"
+  }
 }
