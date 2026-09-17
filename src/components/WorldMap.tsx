@@ -44,6 +44,8 @@ type WorldMapProps = {
   onSelect: (regionId: string) => void
   onFocusStory: (itemId: string | null) => void
   onClearPinned: () => void
+  /** Empty map clicked: drop the region and everything opened over it. */
+  onClearSelection: () => void
 }
 
 export function WorldMap({
@@ -59,6 +61,7 @@ export function WorldMap({
   onSelect,
   onFocusStory,
   onClearPinned,
+  onClearSelection,
 }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
   const selected = regions.find((region) => region.regionId === selectedId)
@@ -111,9 +114,10 @@ export function WorldMap({
   const handleMapClick = useCallback(
     (event: MapLayerMouseEvent) => {
       const hit = event.features?.[0]
+      // Pins stop their own clicks, so bare canvas means "never mind".
       if (!hit?.properties) {
         setPopup(null)
-        onFocusStory(null)
+        onClearSelection()
         return
       }
       const { itemId, text } = hit.properties as { itemId?: string; text?: string }
@@ -121,7 +125,7 @@ export function WorldMap({
       setPopup({ itemId, text: text ?? '', lat: event.lngLat.lat, lng: event.lngLat.lng })
       onFocusStory(itemId)
     },
-    [onFocusStory],
+    [onClearSelection, onFocusStory],
   )
 
   // Lines are thin, so tell people they are clickable before they try.
@@ -297,7 +301,15 @@ export function WorldMap({
           </>
         ) : null}
         {spots.map(({ id, publishedAt, spot }) => (
-          <Marker key={id} longitude={spot.lng} latitude={spot.lat} anchor="center" style={{ zIndex: 3 }}>
+          <Marker
+            key={id}
+            longitude={spot.lng}
+            latitude={spot.lat}
+            anchor="center"
+            style={{ zIndex: 3 }}
+            // A dot belongs to the open region, so clicking it must not clear that region.
+            onClick={(event) => event.originalEvent.stopPropagation()}
+          >
             <span
               className={['spot-pin', isMapBright(publishedAt, newestAt) ? 'is-bright' : 'is-dim']
                 .filter(Boolean)

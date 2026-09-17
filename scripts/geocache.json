@@ -698,5 +698,174 @@
     "lat": 64.9002778,
     "lng": -147.8225,
     "name": "Musk Ox, Fairbanks North Star Borough, Alaska, 99775, United States"
-  }
+  },
+  "tech giants, united states": null,
+  "tech giants": null,
+  "elections, sweden": null,
+  "elections": null,
+  "svt, sweden": null,
+  "svt": null,
+  "chair warsh, germany": null,
+  "chair warsh": null,
+  "fed, united states": null,
+  "fed": null,
+  "checkout, united states": null,
+  "checkout": null,
+  "owls, united states": null,
+  "owls": null,
+  "america, united states": null,
+  "america": {
+    "lat": 39.7837304,
+    "lng": -100.445882,
+    "name": "United States"
+  },
+  "fast, united states": null,
+  "fast": null,
+  "cyclical sectors, brazil": null,
+  "cyclical sectors": null,
+  "frankly, italy": null,
+  "frankly": null,
+  "own interests, italy": null,
+  "own interests": null,
+  "own interests', italy": null,
+  "own interests'": null,
+  "fed chair kevin warsh, united states": null,
+  "fed chair kevin warsh": null,
+  "fed chair warsh, united states": null,
+  "fed chair warsh": null,
+  "oil fields, venezuela": null,
+  "oil fields": {
+    "lat": 32.4166445,
+    "lng": -94.8801833,
+    "name": "East Texas Oil Fields, Gregg County, Texas, 75662, United States"
+  },
+  "previous history, venezuela": null,
+  "previous history": null,
+  "ios, united states": null,
+  "ios": null,
+  "specs, united states": null,
+  "specs": null,
+  "mac, united states": null,
+  "mac": null,
+  "specs ar glasses, united states": null,
+  "specs ar glasses": null,
+  "aws, united states": null,
+  "aws": null,
+  "us-korea, south korea": {
+    "lat": 37.3217152,
+    "lng": 126.8308604,
+    "name": "안산시, 경기도, 대한민국"
+  },
+  "cyril ramaphosa, south africa": null,
+  "cyril ramaphosa": null,
+  "mecca, malaysia": null,
+  "mecca": {
+    "lat": 21.420847,
+    "lng": 39.826869,
+    "name": "محافظة مكة المكرمة, منطقة مكة المكرمة, السعودية"
+  },
+  "anwar ibrahim, malaysia": null,
+  "anwar ibrahim": {
+    "lat": 34.225214,
+    "lng": 45.262303,
+    "name": "ندومان الأنوار القديمة, ناودۆمان, ناحية مرکز قضاء خانقين, قضاء خانقین, محافظة ديالى, العراق"
+  },
+  "sandvik, united states": null,
+  "sandvik": {
+    "lat": 58.7876452,
+    "lng": -2.9763807,
+    "name": "Sandwick, South Ronaldsay, Orkney Islands, Alba / Scotland, KW17 2RJ, United Kingdom"
+  },
+  "sek, united states": null,
+  "sek": {
+    "lat": 49.7439047,
+    "lng": 15.3381061,
+    "name": "Česko"
+  },
+  "transdigm group, united states": null,
+  "transdigm group": null,
+  "yaroslavl oil refinery, russia": null,
+  "yaroslavl oil refinery": null,
+  "yaroslavl, russia": {
+    "lat": 57.6263877,
+    "lng": 39.8933705,
+    "name": "Ярославль, Ярославская область, Центральный федеральный округ, 150000, Россия"
+  },
+  "yaroslavl, ukraine": null,
+  "yaroslavl": {
+    "lat": 57.6263877,
+    "lng": 39.8933705,
+    "name": "Ярославль, Ярославская область, Центральный федеральный округ, 150000, Россия"
+  },
+  "oil refinery, ukraine": {
+    "lat": 48.8470126,
+    "lng": 38.3043669,
+    "name": "Лисичанський нафтопереробний завод, Тополівка, Лисичанська міська громада, Сіверськодонецький район, Луганська область, 93312, Україна"
+  },
+  "scmp, russia": null,
+  "scmp": null,
+  "yaroslavl refinery, russia": null,
+  "yaroslavl refinery": null,
+  "makhlouf says nothing, germany": null,
+  "makhlouf says nothing": null,
+  "ukrainian port, russia": null,
+  "ukrainian port": {
+    "lat": 27.0783741,
+    "lng": -82.2458748,
+    "name": "St. Mary's Ukrainian Catholic Church, West Price Boulevard, North Port, Sarasota County, Florida, 34286, United States"
+  },
+  "three injured, russia": null,
+  "three injured": null,
+  "national statistics, united kingdom": null,
+  "national statistics": null,
+  "military deploys aircraft, poland": null,
+  "military deploys aircraft": null,
+  "western ukraine, russia": null,
+  "western ukraine": null,
+  "stability, iran": null,
+  "stability": null,
+  "mideast, united kingdom": null,
+  "mideast": null,
+  "outperform, united states": null,
+  "outperform": null,
+  "houthis, china": null,
+  "houthis": null,
+  "buy, united states": null,
+  "buy": {
+    "lat": 58.4816821,
+    "lng": 41.532956,
+    "name": "Буй, городской округ Буй, Костромская область, Центральный федеральный округ, 157000, Россия"
+  },
+  "ansar allah, saudi arabia": null,
+  "ansar allah": null,
+  "saudi taif, saudi arabia": null,
+  "saudi taif": {
+    "lat": 21.2702801,
+    "lng": 40.4158308,
+    "name": "الطائف, محافظة الطائف, منطقة مكة المكرمة, 26511, السعودية"
+  },
+  "houthis launched drone, yemen": null,
+  "houthis launched drone": null,
+  "nvidia, united states": null,
+  "nvidia": null,
+  "cyber research, united states": null,
+  "cyber research": null,
+  "startups, united states": null,
+  "startups": null,
+  "chornomorsk port, ukraine": null,
+  "chornomorsk port": null,
+  "chornomorsk, ukraine": {
+    "lat": 46.3013422,
+    "lng": 30.6549271,
+    "name": "Чорноморськ, Чорноморська міська громада, Одеський район, Одеська область, 68000-68004, Україна"
+  },
+  "oil refinery, russia": {
+    "lat": 53.4073485,
+    "lng": 55.8817,
+    "name": "Газпром нефтехим Салават, Салават, городской округ Салават, Башкортостан, Приволжский федеральный округ, Россия"
+  },
+  "drone attack shutdown, saudi arabia": null,
+  "drone attack shutdown": null,
+  "ibit, united states": null,
+  "ibit": null
 }

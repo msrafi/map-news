@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MarketDrawer } from './components/MarketDrawer'
 import { NewsPanel } from './components/NewsPanel'
 import { OptionsDrawer } from './components/OptionsDrawer'
@@ -320,20 +320,24 @@ export default function App() {
     markSeen(selected.items.map((item) => item.id))
   }, [markSeen, selected])
 
+  /** Back to the plain world map: no region, no routes, no drawers, nothing pinned. */
+  const clearAll = useCallback(() => {
+    setFocusedStoryId(null)
+    setPinnedStoryId(null)
+    setSelection(null)
+    setTip(null)
+    setSelectedTicker(null)
+    setSelectedStock(null)
+    setMarketOpen(false)
+  }, [])
+
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
-      if (event.key !== 'Escape') return
-      setFocusedStoryId(null)
-      setPinnedStoryId(null)
-      setSelection(null)
-      setTip(null)
-      setSelectedTicker(null)
-      setSelectedStock(null)
-      setMarketOpen(false)
+      if (event.key === 'Escape') clearAll()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  }, [clearAll])
 
   return (
     <div className="app">
@@ -418,6 +422,7 @@ export default function App() {
               setPinnedStoryId(null)
             }}
             onClearPinned={() => setPinnedStoryId(null)}
+            onClearSelection={clearAll}
           />
         </section>
         <NewsPanel
