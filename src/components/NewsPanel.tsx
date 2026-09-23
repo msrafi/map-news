@@ -152,6 +152,11 @@ export function NewsPanel({
                         {format(parseISO(item.publishedAt), 'd MMM, HH:mm')}
                       </time>
                       <span className="news-card__age">{shortAge(item.publishedAt)}</span>
+                      {item.handle ? (
+                        <span className="post-handle" title={item.author}>
+                          {item.handle}
+                        </span>
+                      ) : null}
                       <a
                         href={item.sourceUrl}
                         target="_blank"

@@ -89,6 +89,11 @@ export function MarketDrawer({
                   {format(parseISO(story.item.publishedAt), 'd MMM, HH:mm')}
                 </time>
                 <span className="drawer__age">{shortAge(story.item.publishedAt)}</span>
+                {story.item.handle ? (
+                  <span className="post-handle" title={story.item.author}>
+                    {story.item.handle}
+                  </span>
+                ) : null}
               </span>
               <span className="drawer__text">{story.item.text}</span>
               {/* Inside a button, so the full-size link lives in the tooltip instead. */}

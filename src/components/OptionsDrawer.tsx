@@ -11,6 +11,8 @@ type OptionsDrawerProps = {
 type Post = {
   id: string
   publishedAt: string
+  author: string
+  handle: string
   text: string
   sourceUrl: string
   media?: NewsMedia[]
@@ -28,6 +30,8 @@ function postsOf(trades: TickerTrade[]): Post[] {
       posts.set(item.id, {
         id: item.id,
         publishedAt: item.publishedAt,
+        author: item.author,
+        handle: item.handle,
         text: item.text,
         sourceUrl: item.sourceUrl,
         media: item.media,
@@ -76,7 +80,21 @@ export function OptionsDrawer({ group, onClose }: OptionsDrawerProps) {
                 {format(parseISO(post.publishedAt), 'd MMM, HH:mm')}
               </time>
               <span className="drawer__age">{shortAge(post.publishedAt)}</span>
-              <span className="option-post__when">{formatUpdated(post.publishedAt).relative}</span>
+              {post.handle ? (
+                <span className="post-handle" title={post.author}>
+                  {post.handle}
+                </span>
+              ) : null}
+              <a
+                className="option-post__source"
+                href={post.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Open on X"
+                title={`Open on X · ${formatUpdated(post.publishedAt).relative}`}
+              >
+                ↗
+              </a>
             </div>
 
             <div className="options__contracts">
@@ -88,10 +106,6 @@ export function OptionsDrawer({ group, onClose }: OptionsDrawerProps) {
             <p className="option-post__text">{post.text}</p>
 
             {post.media?.length ? <MediaStrip media={post.media} /> : null}
-
-            <a href={post.sourceUrl} target="_blank" rel="noreferrer">
-              Open on X
-            </a>
           </li>
         ))}
         {posts.length === 0 ? (

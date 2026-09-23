@@ -867,5 +867,672 @@
   "drone attack shutdown, saudi arabia": null,
   "drone attack shutdown": null,
   "ibit, united states": null,
-  "ibit": null
+  "ibit": null,
+  "while the nasdaq, united states": null,
+  "while the nasdaq": null,
+  "history, united states": null,
+  "history": null,
+  "europe', belgium": null,
+  "europe'": {
+    "lat": 51,
+    "lng": 10,
+    "name": "Europe"
+  },
+  "grand traverse county, united states": {
+    "lat": 44.71623,
+    "lng": -85.5522069,
+    "name": "Grand Traverse County, Michigan, United States"
+  },
+  "stable condition, united states": null,
+  "stable condition": null,
+  "covering fy, thailand": null,
+  "covering fy": null,
+  "my opinion, united states": null,
+  "my opinion": null,
+  "dollars, iran": null,
+  "dollars": null,
+  "nearly, iran": null,
+  "nearly": null,
+  "nikkei futures rise, japan": null,
+  "nikkei futures rise": null,
+  "walmart, united states": null,
+  "walmart": null,
+  "saudi embassy, saudi arabia": null,
+  "saudi embassy": null,
+  "hong kong-listed, china": null,
+  "hong kong-listed": null,
+  "hormuz, south korea": null,
+  "hormuz": null,
+  "trump-kim, united states": null,
+  "trump-kim": null,
+  "january-august, indonesia": null,
+  "january-august": null,
+  "houthis, pakistan": null,
+  "odesa, russia": null,
+  "odesa": {
+    "lat": 46.4843023,
+    "lng": 30.7322878,
+    "name": "Одеса, Одеська міська громада, Одеський район, Одеська область, Україна"
+  },
+  "chornomorsk, russia": null,
+  "chornomorsk": {
+    "lat": 46.3013422,
+    "lng": 30.6549271,
+    "name": "Чорноморськ, Чорноморська міська громада, Одеський район, Одеська область, 68000-68004, Україна"
+  },
+  "lublin, poland": {
+    "lat": 51.250559,
+    "lng": 22.5701022,
+    "name": "Lublin, województwo lubelskie, Polska"
+  },
+  "rzeszow, poland": {
+    "lat": 50.013319,
+    "lng": 22.0161677,
+    "name": "Rzeszów, województwo podkarpackie, Polska"
+  },
+  "next plc, united states": null,
+  "next plc": null,
+  "sabina shoal, china": null,
+  "sabina shoal": null,
+  "ibex declines, spain": null,
+  "ibex declines": null,
+  "ukrainian ports, russia": null,
+  "ukrainian ports": null,
+  "reports ifx, russia": null,
+  "reports ifx": null,
+  "lagarde promises, germany": null,
+  "lagarde promises": null,
+  "lagarde says energy, germany": null,
+  "lagarde says energy": null,
+  "nikolski, alaska": {
+    "lat": 52.9910628,
+    "lng": -168.7514771,
+    "name": "Nikolski, Unorganized Borough, Alaska, 99638, United States"
+  },
+  "supervision bowman, united kingdom": null,
+  "supervision bowman": null,
+  "cnp assurances, france": {
+    "lat": 47.477637,
+    "lng": -0.5518763,
+    "name": "CNP Assurances, Boulevard Robert, Saint-Serge - Ney - Chalouère, Angers, Maine-et-Loire, Pays de la Loire, France métropolitaine, 49100, France"
+  },
+  "fraser expected, united states": null,
+  "fraser expected": null,
+  "american, united states": null,
+  "american": {
+    "lat": 39.7837304,
+    "lng": -100.445882,
+    "name": "United States"
+  },
+  "seven-day average, saudi arabia": null,
+  "seven-day average": null,
+  "msnbc, united states": null,
+  "msnbc": null,
+  "nscale ipo, united states": null,
+  "nscale ipo": null,
+  "msft, united states": null,
+  "msft": {
+    "lat": 22.9705351,
+    "lng": 58.299675,
+    "name": "علاية المسفاة, ولاية المضيبي, محافظة شمال الشرقية, عمان"
+  },
+  "amzn googl, united states": null,
+  "amzn googl": null,
+  "meta, united states": {
+    "lat": 38.3126825,
+    "lng": -92.1663259,
+    "name": "Meta, Osage County, Missouri, United States"
+  },
+  "scope, france": null,
+  "scope": {
+    "lat": 44.2833774,
+    "lng": 11.3380997,
+    "name": "Scope, Borzano, Sabbioni, Loiano, Unione dei comuni Savena-Idice, Bologna, Emilia-Romagna, 40050, Italia"
+  },
+  "saudi arabia, saudi arabia": null,
+  "saudi arabia": {
+    "lat": 25.6242618,
+    "lng": 42.3528328,
+    "name": "السعودية"
+  },
+  "gains, united states": null,
+  "gains": null,
+  "completely free, united states": null,
+  "completely free": null,
+  "greenland, denmark": {
+    "lat": 71.7919151,
+    "lng": -38.8397752,
+    "name": "Kongeriget Danmark, Kalaallit Nunaat"
+  },
+  "reuters, denmark": null,
+  "reuters": {
+    "lat": 50.674148,
+    "lng": 9.3506547,
+    "name": "Reuters, Lauterbach (Hessen), Vogelsbergkreis, Hessen, Deutschland"
+  },
+  "greenland, united states": {
+    "lat": 43.0361995,
+    "lng": -70.8328322,
+    "name": "Greenland, Rockingham County, New Hampshire, 03840, United States"
+  },
+  "secure, united states": null,
+  "secure": null,
+  "arctic, denmark": null,
+  "north atlantic, denmark": null,
+  "north atlantic": {
+    "lat": 14.0557499,
+    "lng": -83.7475765,
+    "name": "Costa Caribe Norte, Nicaragua"
+  },
+  "farasan, saudi arabia": {
+    "lat": 16.7379259,
+    "lng": 41.9079778,
+    "name": "محافظة فرسان, منطقة جازان, السعودية"
+  },
+  "joint base andrews, united states": null,
+  "joint base andrews": null,
+  "trump-xi, united states": {
+    "lat": 39.6823264,
+    "lng": -76.602191,
+    "name": "Trump, Baltimore County, Maryland, 21161, United States"
+  },
+  "north korea, united states": null,
+  "north korea": {
+    "lat": 40.3736611,
+    "lng": 127.0870417,
+    "name": "조선민주주의인민공화국"
+  },
+  "friday september, united states": null,
+  "friday september": null,
+  "thursday september, united states": null,
+  "thursday september": null,
+  "sunday globex, united states": null,
+  "sunday globex": null,
+  "wednesday september, united states": null,
+  "wednesday september": null,
+  "tuesday september, united states": null,
+  "tuesday september": null,
+  "vice premier, china": null,
+  "vice premier": null,
+  "shantanu narayen, united states": null,
+  "shantanu narayen": null,
+  "sept, china": null,
+  "cyrela brazil realty, brazil": null,
+  "cyrela brazil realty": null,
+  "white, united states": {
+    "lat": 38.0632329,
+    "lng": -88.1577725,
+    "name": "White County, Illinois, United States"
+  },
+  "joliet refinery, united states": {
+    "lat": 41.4155612,
+    "lng": -88.1826946,
+    "name": "Joliet Refinery, Southwest Frontage Road, Channahon Township, Will County, Illinois, 60410, United States"
+  },
+  "overweight, united states": null,
+  "overweight": null,
+  "pm andy burnham, united kingdom": null,
+  "pm andy burnham": null,
+  "usa, mexico": {
+    "lat": 39.1697626,
+    "lng": -91.8829484,
+    "name": "Mexico, Audrain County, Missouri, 65265, United States"
+  },
+  "ath, united states": {
+    "lat": 39.3575616,
+    "lng": -82.0609557,
+    "name": "Athens County, Ohio, United States"
+  },
+  "gunpoint, united states": null,
+  "gunpoint": {
+    "lat": 51.4987428,
+    "lng": -9.5920399,
+    "name": "Gunpoint, Lowertown, West Cork, County Cork, Munster, Éire / Ireland"
+  },
+  "covington, united states": {
+    "lat": 39.0831712,
+    "lng": -84.5107548,
+    "name": "Covington, Kenton County, Kentucky, United States"
+  },
+  "eu governments, belgium": null,
+  "eu governments": null,
+  "belarus, united states": null,
+  "belarus": {
+    "lat": 54.5975329,
+    "lng": 25.7553845,
+    "name": "Vilnelė / Вілейка, Mickūnų seniūnija, Vilniaus rajono savivaldybė, Vilniaus apskritis, Беларусь, Vilnia / Вільня"
+  },
+  "moscow oil refinery, russia": null,
+  "moscow oil refinery": null,
+  "moscow, russia": {
+    "lat": 55.625578,
+    "lng": 37.6063916,
+    "name": "Москва, Центральный федеральный округ, Россия"
+  },
+  "gazprom neft's moscow refinery, ukraine": null,
+  "gazprom neft's moscow refinery": null,
+  "gazprom neft's moscow, ukraine": null,
+  "gazprom neft's moscow": {
+    "lat": 55.6540953,
+    "lng": 37.732009,
+    "name": "Газпромнефть, 19 с11, улица Перерва, район Марьино, Москва, Центральный федеральный округ, 109369, Россия"
+  },
+  "gex, united states": null,
+  "gex": {
+    "lat": 46.333849,
+    "lng": 6.0577244,
+    "name": "Gex, Ain, Auvergne-Rhône-Alpes, France métropolitaine, 01170, France"
+  },
+  "baltic, russia": null,
+  "baltic": {
+    "lat": 43.760461,
+    "lng": -96.7404105,
+    "name": "Baltic, Sverdrup Township, Minnehaha County, South Dakota, United States"
+  },
+  "arctic, russia": null,
+  "gulf terminals, saudi arabia": null,
+  "gulf terminals": null,
+  "ramping, saudi arabia": null,
+  "ramping": null,
+  "murmansk port, russia": {
+    "lat": 68.9782938,
+    "lng": 33.0668738,
+    "name": "Первая \"Центральная\" проходная ММТП, Портовый проезд, Мурманский морской торговый порт, Зелёный Мыс, Ленинский округ, Мурманск, городской округ Мурманск, Мурманская область, Северо-Западный федеральный округ, 183960, Россия"
+  },
+  "hormuz, saudi arabia": null,
+  "leading economic institutes, germany": null,
+  "leading economic institutes": null,
+  "unconditional ceasefire, ukraine": null,
+  "unconditional ceasefire": null,
+  "diplomacy, ukraine": null,
+  "diplomacy": null,
+  "spaces, united states": null,
+  "spaces": null,
+  "puerto rico, united states": {
+    "lat": 18.2247706,
+    "lng": -66.4858295,
+    "name": "Puerto Rico, United States"
+  },
+  "iran-backed houthis, united kingdom": null,
+  "iran-backed houthis": null,
+  "cnn, united states": null,
+  "cnn": {
+    "lat": -16.5568536,
+    "lng": 15.7867319,
+    "name": "Cunene, Angola"
+  },
+  "cbs, united states": null,
+  "cbs": null,
+  "commit, united states": null,
+  "commit": null,
+  "laguardia, united states": null,
+  "laguardia": null,
+  "very beautiful, united states": null,
+  "very beautiful": null,
+  "heliport, united states": null,
+  "heliport": null,
+  "amazon bedrock, united states": null,
+  "amazon bedrock": null,
+  "military base, united kingdom": null,
+  "military base": {
+    "lat": 37.9617847,
+    "lng": 58.3446308,
+    "name": "Military Base (10th Gorodok), 60/3, Bagtyýarlyk, Bagtyýarlyk etraby, Aşgabat, Türkmenistan"
+  },
+  "dangerous, united states": null,
+  "dangerous": null,
+  "jim acosta, united states": null,
+  "jim acosta": null,
+  "round, united states": {
+    "lat": 30.5085915,
+    "lng": -97.6788056,
+    "name": "Round Rock, Williamson County, Texas, United States"
+  },
+  "october-november, china": null,
+  "october-november": null,
+  "consumer choice, united kingdom": null,
+  "consumer choice": null,
+  "tim cook, united states": {
+    "lat": 41.9610684,
+    "lng": -87.7318725,
+    "name": "Tim Tim's Halal Grill, 4148, West Montrose Avenue, Irving Park, Chicago, Jefferson Township, Cook County, Illinois, 60641, United States"
+  },
+  "protecting regional stability, saudi arabia": null,
+  "protecting regional stability": null,
+  "british interests, saudi arabia": null,
+  "british interests": null,
+  "revolutionary guard warns, iran": null,
+  "revolutionary guard warns": null,
+  "high-density computing deployments, united states": null,
+  "high-density computing deployments": null,
+  "ai factory infrastructure, united states": null,
+  "ai factory infrastructure": null,
+  "foreign-company barriers, india": null,
+  "foreign-company barriers": null,
+  "persian gulf, saudi arabia": null,
+  "persian gulf": null,
+  "meetings with, united states": null,
+  "meetings with": null,
+  "cpus, united states": null,
+  "cpus": null,
+  "memory, united states": null,
+  "memory": {
+    "lat": 52.4799435,
+    "lng": -7.3229516,
+    "name": "Memory, Kilmaganny, The Municipal District of Callan — Thomastown, County Kilkenny, Leinster, Éire / Ireland"
+  },
+  "korean, south korea": null,
+  "korean": {
+    "lat": 36.638392,
+    "lng": 127.6961188,
+    "name": "대한민국"
+  },
+  "north korea, south korea": null,
+  "westinghouse, south korea": null,
+  "westinghouse": null,
+  "nepal, japan": null,
+  "nepal": {
+    "lat": 28.3780464,
+    "lng": 83.9999901,
+    "name": "नेपाल"
+  },
+  "texas power plant, south korea": null,
+  "texas power plant": {
+    "lat": 33.212959,
+    "lng": -97.1470512,
+    "name": "Power Plant (PWRP), 1320, Denton, Denton County, Texas, 76201, United States"
+  },
+  "openai, united states": null,
+  "openai": null,
+  "anthropic, united states": null,
+  "anthropic": null,
+  "texas power plant, united states": {
+    "lat": 32.4520184,
+    "lng": -99.7221869,
+    "name": "West Texas Utilities Company Power Plant (Decomissioned), Abilene, Taylor County, Texas, United States"
+  },
+  "equal weight, united states": null,
+  "equal weight": null,
+  "kremenchuk, russia": null,
+  "kremenchuk": {
+    "lat": 49.0928529,
+    "lng": 33.4308188,
+    "name": "Кременчук, Кременчуцький район, Полтавська область, 39600-39689, Україна"
+  },
+  "defence ministry, russia": null,
+  "defence ministry": null,
+  "kuibyshev refinery, ukraine": null,
+  "kuibyshev refinery": null,
+  "kuibyshev, ukraine": null,
+  "kuibyshev": {
+    "lat": 55.4454258,
+    "lng": 78.3222294,
+    "name": "Куйбышев, городское поселение Куйбышев, Куйбышевский район, Новосибирская область, Сибирский федеральный округ, 632380, Россия"
+  },
+  "crude oil, iran": null,
+  "crude oil": null,
+  "novorossiysk port, russia": null,
+  "novorossiysk port": {
+    "lat": 44.7102335,
+    "lng": 37.8441435,
+    "name": "Новороссийский морской торговый порт, Шесхарис, Восточный район, Новороссийск, городской округ Новороссийск, Краснодарский край, Южный федеральный округ, 353900, Россия"
+  },
+  "black sea, russia": null,
+  "black sea": {
+    "lat": 43.872824,
+    "lng": 33.9938077,
+    "name": "Чорне море - Marea Neagră - Черно море – Karadeniz - შავი ზღვა - Чёрное море"
+  },
+  "all russian citizens, russia": null,
+  "all russian citizens": null,
+  "usmanov, russia": null,
+  "usmanov": null,
+  "smartphone manufacturers, united states": null,
+  "smartphone manufacturers": null,
+  "unga schedule today, united states": null,
+  "unga schedule today": null,
+  "john williams, united states": {
+    "lat": 42.5454086,
+    "lng": -72.6067255,
+    "name": "John Williams, 14, Albany Road, Old Deerfield Village Historic District, Deerfield, Franklin County, Massachusetts, 01342, United States"
+  },
+  "new york tuesday, united states": null,
+  "new york tuesday": null,
+  "confronting iran, united states": null,
+  "confronting iran": null,
+  "cartels, united states": null,
+  "cartels": {
+    "lat": 43.6839522,
+    "lng": 3.3589374,
+    "name": "Cartels, Le Bosc, Lodève, Hérault, Occitanie, France métropolitaine, 34700, France"
+  },
+  "hayom news, israel": null,
+  "hayom news": null,
+  "millions, united states": null,
+  "millions": {
+    "lat": 44.0329416,
+    "lng": -0.1270174,
+    "name": "Millions, Estigarde, Mont-de-Marsan, Landes, Nouvelle-Aquitaine, France métropolitaine, 40240, France"
+  },
+  "spy, united states": null,
+  "spy": {
+    "lat": 50.3312346,
+    "lng": 16.1530176,
+    "name": "Spy, Nové Město nad Metují, okres Náchod, Královéhradecký kraj, 549 01, Česko"
+  },
+  "microsoft, united states": null,
+  "microsoft": null,
+  "enemy aggression, iran": null,
+  "enemy aggression": null,
+  "naval blockade, iran": null,
+  "naval blockade": null,
+  "strait, united states": null,
+  "strait": null,
+  "advance, iran": null,
+  "advance": {
+    "lat": 37.1044958,
+    "lng": -89.9106494,
+    "name": "Advance, Stoddard County, Missouri, United States"
+  },
+  "civilian infrastructure, france": null,
+  "civilian infrastructure": null,
+  "sovereignty, france": null,
+  "sovereignty": null,
+  "unga statements, united states": null,
+  "unga statements": null,
+  "turkey's ceyhan port, türkiye": null,
+  "turkey's ceyhan port": null,
+  "turkey's ceyhan, türkiye": null,
+  "turkey's ceyhan": {
+    "lat": 37.0259117,
+    "lng": 35.8169997,
+    "name": "Ceyhan, Adana, Akdeniz Bölgesi, Türkiye"
+  },
+  "owls cap, united states": null,
+  "owls cap": null,
+  "president trump, united states": null,
+  "president trump": null,
+  "lavrov meets with, russia": null,
+  "lavrov meets with": null,
+  "goals will, russia": null,
+  "goals will": null,
+  "oleksandrivka, russia": {
+    "lat": 50.490827,
+    "lng": 37.57433,
+    "name": "Волчья Александровка, Волоконовский муниципальный округ, Белгородская область, Центральный федеральный округ, Россия"
+  },
+  "donetsk, russia": {
+    "lat": 48.3382864,
+    "lng": 39.9509488,
+    "name": "Донецк, городской округ Донецк, Ростовская область, Южный федеральный округ, Россия"
+  },
+  "lula has, brazil": null,
+  "lula has": null,
+  "indonesian data center ahead, australia": null,
+  "indonesian data center ahead": null,
+  "south pars gas field, iran": null,
+  "south pars gas field": null,
+  "south pars, iran": {
+    "lat": 27.4844526,
+    "lng": 52.6594883,
+    "name": "نیروگاه مرکزی پارس, دهستان عسلویه, بخش مرکزی عسلویه, شهرستان عسلویه, استان بوشهر, ایران"
+  },
+  "power plant, south korea": {
+    "lat": 35.2307335,
+    "lng": 126.8477571,
+    "name": "Power Plant, GIST Cherry Blossom Road, 오룡동, 북구, 광주, 전남광주통합특별시, 61005, 대한민국"
+  },
+  "fitch, australia": null,
+  "fitch": {
+    "lat": 41.6963404,
+    "lng": -83.5907651,
+    "name": "Fitch, Toledo, Lucas County, Ohio, 43613, United States"
+  },
+  "fort trump, poland": null,
+  "fort trump": null,
+  "peace, united kingdom": null,
+  "peace": {
+    "lat": 56.1499273,
+    "lng": -117.7513244,
+    "name": "Municipal District of Peace No. 135, Alberta, T0H 0L0, Canada"
+  },
+  "against israel, united kingdom": null,
+  "against israel": null,
+  "too, united kingdom": null,
+  "too": {
+    "lat": -24.7222438,
+    "lng": -53.7402476,
+    "name": "Toledo, Paraná, Região Sul, Brasil"
+  },
+  "new york city, russia": null,
+  "new york city": {
+    "lat": 40.7127281,
+    "lng": -74.0060152,
+    "name": "New York, United States"
+  },
+  "detect, united kingdom": null,
+  "detect": null,
+  "attribute, united kingdom": null,
+  "attribute": null,
+  "closest ally', united kingdom": null,
+  "closest ally'": null,
+  "strategic military territory, united states": null,
+  "strategic military territory": null,
+  "narsarsuaq, united states": null,
+  "narsarsuaq": {
+    "lat": 61.1555545,
+    "lng": -45.4238591,
+    "name": "Narsarsuaq, Kujalleq, 3923, Kalaallit Nunaat"
+  },
+  "mestersvig, united states": null,
+  "mestersvig": {
+    "lat": 72.2323555,
+    "lng": -23.9196612,
+    "name": "Mestersvig, Kalaallit Nunaat"
+  },
+  "crossfire, united states": null,
+  "crossfire": null,
+  "stopping iranian flights, iran": null,
+  "stopping iranian flights": null,
+  "netanyahu accountable, iran": null,
+  "netanyahu accountable": null,
+  "politics, iran": null,
+  "politics": null,
+  "meet its conditions, iran": null,
+  "meet its conditions": null,
+  "military power, iran": null,
+  "military power": {
+    "lat": 28.3301069,
+    "lng": 36.5846664,
+    "name": "Tabuk Military Base Power Station, تبوك, محافظة تبوك, منطقة تبوك, السعودية"
+  },
+  "new york city, united states": {
+    "lat": 40.7127281,
+    "lng": -74.0060152,
+    "name": "New York, United States"
+  },
+  "apec, united states": null,
+  "apec": null,
+  "transcaucasus, russia": null,
+  "transcaucasus": null,
+  "latam, russia": null,
+  "latam": null,
+  "caribbean, russia": null,
+  "caribbean": {
+    "lat": 18.4,
+    "lng": -75,
+    "name": "Caribbean, Ayiti"
+  },
+  "mount hermon, israel": null,
+  "mount hermon": {
+    "lat": 40.9223725,
+    "lng": -74.9975869,
+    "name": "Mount Hermon, Hope Township, Warren County, New Jersey, United States"
+  },
+  "gulf, united states": {
+    "lat": 29.9665252,
+    "lng": -85.2175889,
+    "name": "Gulf County, Florida, United States"
+  },
+  "palo alto, united states": {
+    "lat": 37.4443293,
+    "lng": -122.1598465,
+    "name": "Palo Alto, Santa Clara County, California, United States"
+  },
+  "zelensky says, ukraine": null,
+  "zelensky says": null,
+  "siberia, ukraine": null,
+  "siberia": {
+    "lat": 45.1685441,
+    "lng": 8.0902162,
+    "name": "Siberia, Verrua Savoia, Torino, Piemonte, 13044, Italia"
+  },
+  "everyone else, ukraine": null,
+  "everyone else": null,
+  "simply saying, ukraine": null,
+  "simply saying": null,
+  "south caucasus, ukraine": null,
+  "south caucasus": {
+    "lat": 42.7175814,
+    "lng": 44.3343776,
+    "name": "Кавказские горы, Хуссар Ирыстон - Южная Осетия, საქართველო"
+  },
+  "central asia, ukraine": null,
+  "central asia": null,
+  "return, ukraine": null,
+  "return": {
+    "lat": 34.6398213,
+    "lng": -82.9954272,
+    "name": "Return, Oconee County, South Carolina, 29675, United States"
+  },
+  "neighbors, ukraine": null,
+  "neighbors": null,
+  "tips, united states": null,
+  "tips": null,
+  "overtime, united states": null,
+  "overtime": null,
+  "senior deductions, united states": null,
+  "senior deductions": null,
+  "reduced snap benefits, united states": null,
+  "reduced snap benefits": null,
+  "reckless external actors, ethiopia": null,
+  "reckless external actors": null,
+  "pride, iran": null,
+  "pride": {
+    "lat": 30.6937955,
+    "lng": -90.9781585,
+    "name": "Pride, East Baton Rouge Parish, Louisiana, United States"
+  },
+  "national dignity, iran": null,
+  "national dignity": null,
+  "hope, iran": null,
+  "hope": {
+    "lat": 33.6670616,
+    "lng": -93.5915665,
+    "name": "Hope, Hempstead County, Arkansas, 71801, United States"
+  },
+  "arrogance, iran": null,
+  "arrogance": null,
+  "inspection, australia": null,
+  "inspection": null
 }
