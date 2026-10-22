@@ -12,7 +12,7 @@ One command. It installs packages if needed, syncs the place list, merges any ne
 npm start
 ```
 
-Then open [http://localhost:5173](http://localhost:5173). Ctrl+C stops both processes.
+It prints [http://localhost:5173](http://localhost:5173) and opens that page once the server is ready. Ctrl+C stops both processes.
 
 If you only want the map against the current `public/news.json`, without watching Downloads:
 
