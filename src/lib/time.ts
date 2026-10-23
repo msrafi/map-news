@@ -39,6 +39,24 @@ export function formatStamp(iso: string): string {
   return format(parseISO(iso), 'd MMM yyyy, HH:mm')
 }
 
+const easternClock = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/New_York',
+  day: 'numeric',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+  timeZoneName: 'short',
+})
+
+/** News-list clock in Eastern time, labeled EST or EDT for that date. */
+export function formatNewsTime(iso: string): string {
+  const parts = easternClock.formatToParts(parseISO(iso))
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? ''
+  return `${value('day')} ${value('month')}, ${value('hour')}:${value('minute')} ${value('timeZoneName')}`
+}
+
 /** Pin-sized age label: "now", "12m", "5h", "3d". */
 export function shortAge(iso: string, now = Date.now()): string {
   const age = Math.max(0, now - parseISO(iso).getTime())

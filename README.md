@@ -71,7 +71,7 @@ Options parsing recognizes compact trade alerts such as `$TDOC 7c @.04`, `$ASTS 
 
 **US stocks** — index, futures, equity-move, and named-company headlines (`src/data/companies.json` maps names like `ORACLE` to `ORCL`, and bare cashtags are read directly) — is a second drawer, opened from its tab in the map's top-left corner. Stock and option posts stay off the map (no pins, routes, or spots) even when they name a city. Both drawers sit side by side when open, and neither is part of the column. Clicking a stock headline opens a tooltip beside it with the full post, its parsed numbers, and a link to the original; Escape or a click outside closes it.
 
-Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.9.1.
+Option alerts and corporate headlines often contain no place name. The extension still collects them and assigns the shared New York market location required by the feed shape; they are displayed in the market drawers rather than treated as geographic news. Reload the unpacked extension after updates and confirm its popup reports version 1.9.2. The extension turns off Chrome's download bubble, so the news files still land in Downloads without the Recent Download History popup. That hides the bubble for other downloads too, until the extension is removed.
 
 ## Pictures
 

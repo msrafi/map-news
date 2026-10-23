@@ -5254,5 +5254,73 @@
   "mid-november, russia": null,
   "mid-november": null,
   "serious condition, china": null,
-  "serious condition": null
+  "serious condition": null,
+  "petroleum, united states": {
+    "lat": 47.0606518,
+    "lng": -108.2769626,
+    "name": "Petroleum County, Montana, United States"
+  },
+  "oil, united states": null,
+  "claude, united states": {
+    "lat": 35.1081103,
+    "lng": -101.362741,
+    "name": "Claude, Armstrong County, Texas, United States"
+  },
+  "energy fuels, united states": null,
+  "energy fuels": null,
+  "times square, united states": null,
+  "times square": null,
+  "disputes between dassault, germany": null,
+  "disputes between dassault": null,
+  "workshare, germany": null,
+  "workshare": null,
+  "poll, japan": null,
+  "poll": {
+    "lat": 50.9121007,
+    "lng": 6.988889,
+    "name": "Poll, Porz, Köln, Nordrhein-Westfalen, 51105, Deutschland"
+  },
+  "fair, united states": {
+    "lat": 29.7457771,
+    "lng": -98.6433561,
+    "name": "Fair Oaks Ranch, Comal County, Texas, United States"
+  },
+  "credible elections, united states": null,
+  "credible elections": null,
+  "stable, japan": null,
+  "cpi, japan": null,
+  "gdp deflator, japan": null,
+  "gdp deflator": null,
+  "kospi drops, south korea": null,
+  "kospi drops": null,
+  "capital, saudi arabia": null,
+  "capital": {
+    "lat": 48.455818,
+    "lng": -123.4733796,
+    "name": "Capital Regional District, British Columbia, Canada"
+  },
+  "line with preliminary estimate, singapore": null,
+  "line with preliminary estimate": null,
+  "us-africa leaders summit, china": null,
+  "us-africa leaders summit": null,
+  "world cup, qatar": null,
+  "world cup": null,
+  "mount vernon, united states": {
+    "lat": 40.9125085,
+    "lng": -73.8386504,
+    "name": "City of Mount Vernon, Westchester County, New York, United States"
+  },
+  "xinjiang despite ongoing controversy, china": null,
+  "xinjiang despite ongoing controversy": null,
+  "statement says, china": null,
+  "statement says": null,
+  "najran region, saudi arabia": {
+    "lat": 18,
+    "lng": 45.666667,
+    "name": "منطقة نجران, السعودية"
+  },
+  "civil defence, saudi arabia": null,
+  "civil defence": null,
+  "near term, japan": null,
+  "near term": null
 }

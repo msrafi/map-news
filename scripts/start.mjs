@@ -41,7 +41,8 @@ function link(url, label = url) {
 }
 
 function localUrl(text) {
-  const match = text.match(/Local:\s+(?:\u001B\[[0-9;]*m)*(https?:\/\/[^\s\u001B]+)/)
+  const ansi = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g')
+  const match = text.replace(ansi, '').match(/Local:\s+(https?:\/\/\S+)/)
   return match?.[1] ?? null
 }
 

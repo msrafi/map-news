@@ -15,12 +15,23 @@ async function startAlarms() {
 }
 
 startAlarms()
+hideDownloadBubble()
 chrome.runtime.onInstalled.addListener(() => {
   startAlarms()
+  hideDownloadBubble()
   // Reloading the extension orphans content scripts in open tabs; refresh to re-inject.
   refreshTimelineTabs()
 })
-chrome.runtime.onStartup.addListener(startAlarms)
+chrome.runtime.onStartup.addListener(() => {
+  startAlarms()
+  hideDownloadBubble()
+})
+
+/** Chrome's download bubble opens on every finished file. Keep it closed for this profile. */
+function hideDownloadBubble() {
+  if (!chrome.downloads.setUiOptions) return
+  chrome.downloads.setUiOptions({ enabled: false }).catch(() => {})
+}
 
 async function autoOn() {
   const { [AUTO_KEY]: auto } = await chrome.storage.local.get(AUTO_KEY)
@@ -127,6 +138,7 @@ async function exportNewItems() {
   if (fresh.length === 0) return 0
 
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+  hideDownloadBubble()
   await chrome.downloads.download({
     url: `data:application/json;base64,${toBase64(JSON.stringify(fresh, null, 2))}`,
     filename: `map-news/news-${stamp}.json`,

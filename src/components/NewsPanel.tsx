@@ -2,7 +2,7 @@ import { format, isToday, isYesterday, parseISO } from 'date-fns'
 import { useEffect } from 'react'
 import { MIN_LINKED_REGIONS } from '../lib/news'
 import { findLocationHits, findRegions } from '../lib/places'
-import { formatStamp, formatUpdated, freshnessOf, latestItem, shortAge } from '../lib/time'
+import { formatNewsTime, formatUpdated, freshnessOf, latestItem, shortAge } from '../lib/time'
 import type { LocationHit, RegionPin } from '../types'
 import { MediaStrip } from './MediaStrip'
 
@@ -147,9 +147,9 @@ export function NewsPanel({
                     <div className="news-card__top">
                       <time
                         dateTime={item.publishedAt}
-                        title={`${formatStamp(item.publishedAt)} · ${item.handle}`}
+                        title={`${formatNewsTime(item.publishedAt)} · ${item.handle}`}
                       >
-                        {format(parseISO(item.publishedAt), 'd MMM, HH:mm')}
+                        {formatNewsTime(item.publishedAt)}
                       </time>
                       <span className="news-card__age">{shortAge(item.publishedAt)}</span>
                       {item.handle ? (

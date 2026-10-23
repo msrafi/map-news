@@ -19,6 +19,14 @@ type SpotRef = { id: string; itemId: string; text: string; publishedAt: string; 
 /** Layers a click can land on, and the headline a hit should surface. */
 const STORY_LAYERS = ['news-link-line', 'news-spot-line']
 
+/** Location pins older than this are left off the map. The news list still has them. */
+const MARKER_MAX_AGE_MS = 15 * 60 * 1000
+
+function isMarkerCurrent(iso: string, now = Date.now()): boolean {
+  const published = Date.parse(iso)
+  return Number.isFinite(published) && now - published <= MARKER_MAX_AGE_MS
+}
+
 type StoryPopup = { itemId: string; text: string; lat: number; lng: number }
 
 /** A story picked in the feed, resolved to the point the map should call out. */
@@ -40,6 +48,8 @@ type WorldMapProps = {
   unseenByRegion: Record<string, number>
   linkedRegionIds: Set<string>
   pinnedStory: PinnedStory | null
+  /** The open story stays selected while its route is drawn heavier. */
+  showConnections: boolean
   mapStyle: MapStyleId
   onSelect: (regionId: string) => void
   onFocusStory: (itemId: string | null) => void
@@ -57,6 +67,7 @@ export function WorldMap({
   unseenByRegion,
   linkedRegionIds,
   pinnedStory,
+  showConnections,
   mapStyle,
   onSelect,
   onFocusStory,
@@ -64,7 +75,12 @@ export function WorldMap({
   onClearSelection,
 }: WorldMapProps) {
   const mapRef = useRef<MapRef>(null)
+  const theme = themeOf(mapStyle)
   const selected = regions.find((region) => region.regionId === selectedId)
+  // Dark maps get a light route; light maps get a dark route with a white edge.
+  const routeCore = theme === 'dark' ? '#f4fbff' : '#142033'
+  const routeHalo = theme === 'dark' ? '#4ad4ff' : '#ffffff'
+  const spotColor = theme === 'dark' ? '#ffe7a3' : '#6b3e00'
   const [popup, setPopup] = useState<StoryPopup | null>(null)
   const newestAt = useMemo(
     () => regions.reduce((latest, region) => (region.latestAt > latest ? region.latestAt : latest), ''),
@@ -143,48 +159,43 @@ export function WorldMap({
     popup && !pinnedStory && drawnStoryIds.has(popup.itemId) ? popup : null
 
   useEffect(() => {
-    // A story picked in the feed frames itself, so leave the camera to that effect.
-    if (!selected || pinnedStory) return
     const map = mapRef.current
     if (!map) return
 
-    // A dateline can sit far from its region pin, so frame both rather than zooming in blind.
-    if (spots.length > 0) {
-      const points = pathCoordinates([selected, ...spots.map(({ spot }) => spot)])
-      const bounds = points.reduce(
-        (box, point) => box.extend(point),
-        new LngLatBounds(points[0], points[0]),
-      )
-      map.fitBounds(bounds, {
-        padding: { top: 90, bottom: 70, left: 340, right: 410 },
-        maxZoom: 7,
-        duration: 800,
+    const connected = [
+      ...links.flatMap((link) => link.regions),
+      ...spots.map(({ spot }) => spot),
+    ]
+    if (showConnections && selected && connected.length > 0) {
+      const points = pathCoordinates([selected, ...connected])
+      const center = points
+        .reduce((box, point) => box.extend(point), new LngLatBounds(points[0], points[0]))
+        .getCenter()
+      map.easeTo({ center: [center.lng, center.lat], duration: 1200 })
+      return
+    }
+
+    // The selected story stays pinned, so return the camera to it once the route step ends.
+    if (pinnedStory) {
+      map.easeTo({
+        center: [pinnedStory.lng, pinnedStory.lat],
+        duration: 1200,
       })
       return
     }
 
-    map.flyTo({
+    if (!selected) return
+    map.easeTo({
       center: [selected.lng, selected.lat],
-      zoom: Math.max(map.getZoom(), 5),
-      duration: 800,
+      duration: 1200,
     })
-  }, [pinnedStory, selected, spots])
-
-  // A story opened from the feed gets the camera and drops its own popup.
-  useEffect(() => {
-    if (!pinnedStory) return
-    mapRef.current?.flyTo({
-      center: [pinnedStory.lng, pinnedStory.lat],
-      zoom: Math.max(mapRef.current.getZoom(), 5),
-      duration: 800,
-    })
-  }, [pinnedStory])
+  }, [links, pinnedStory, selected, showConnections, spots])
 
   return (
     <div
       className={[
         'world-map',
-        `is-${themeOf(mapStyle)}`,
+        `is-${theme}`,
         visiblePopup || pinnedStory ? 'has-popup' : '',
       ]
         .filter(Boolean)
@@ -205,13 +216,23 @@ export function WorldMap({
         <NavigationControl position="bottom-right" showCompass={false} />
         <Source id="news-links" type="geojson" data={linkData}>
           <Layer
+            id="news-link-halo"
+            type="line"
+            layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+            paint={{
+              'line-color': routeHalo,
+              'line-width': showConnections ? 9 : 0,
+              'line-opacity': showConnections ? 1 : 0,
+            }}
+          />
+          <Layer
             id="news-link-line"
             type="line"
             layout={{ 'line-cap': 'round', 'line-join': 'round' }}
             paint={{
-              'line-color': ['get', 'color'],
-              'line-width': selectedId ? 1.8 : 1.2,
-              'line-opacity': ['get', 'opacity'],
+              'line-color': showConnections ? routeCore : ['get', 'color'],
+              'line-width': showConnections ? 4.5 : selectedId ? 1.8 : 1.2,
+              'line-opacity': showConnections ? 1 : ['get', 'opacity'],
             }}
           />
           <Layer
@@ -221,7 +242,7 @@ export function WorldMap({
               'symbol-placement': 'line',
               'symbol-spacing': 90,
               'text-field': '>',
-              'text-size': 14,
+              'text-size': showConnections ? 20 : 14,
               'text-font': ['Noto Sans Bold'],
               'text-rotation-alignment': 'map',
               'text-keep-upright': false,
@@ -229,8 +250,10 @@ export function WorldMap({
               'text-ignore-placement': true,
             }}
             paint={{
-              'text-color': ['get', 'color'],
-              'text-opacity': ['get', 'opacity'],
+              'text-color': showConnections ? routeCore : ['get', 'color'],
+              'text-halo-color': routeHalo,
+              'text-halo-width': showConnections ? 1.5 : 0,
+              'text-opacity': showConnections ? 1 : ['get', 'opacity'],
             }}
           />
         </Source>
@@ -240,11 +263,11 @@ export function WorldMap({
             type="line"
             layout={{ 'line-cap': 'round' }}
             paint={{
-              'line-color': '#e8c45f',
-              'line-width': 2,
-              'line-opacity': ['get', 'opacity'],
+              'line-color': showConnections ? spotColor : '#e8c45f',
+              'line-width': showConnections ? 4.5 : 2,
+              'line-opacity': showConnections ? 1 : ['get', 'opacity'],
               // Round caps on a near-zero dash give a dotted trail.
-              'line-dasharray': [0.1, 2.2],
+              'line-dasharray': showConnections ? [1.5, 1.1] : [0.1, 2.2],
             }}
           />
         </Source>
@@ -300,7 +323,14 @@ export function WorldMap({
             </Popup>
           </>
         ) : null}
-        {spots.map(({ id, publishedAt, spot }) => (
+        {spots
+          .filter(
+            ({ itemId, publishedAt }) =>
+              isMarkerCurrent(publishedAt) ||
+              publishedAt === newestAt ||
+              itemId === pinnedStory?.id,
+          )
+          .map(({ id, publishedAt, spot }) => (
           <Marker
             key={id}
             longitude={spot.lng}
@@ -321,7 +351,15 @@ export function WorldMap({
             </span>
           </Marker>
         ))}
-        {regions.map((region) => {
+        {regions
+          // The newest story and the open region stay on the map until newer news replaces them.
+          .filter(
+            (region) =>
+              isMarkerCurrent(region.latestAt) ||
+              region.latestAt === newestAt ||
+              region.regionId === selectedId,
+          )
+          .map((region) => {
           const unseen = unseenByRegion[region.regionId] ?? 0
           const count = unseen > 0 ? unseen : region.items.length
           const live = unseen > 0 || region.regionId === selectedId

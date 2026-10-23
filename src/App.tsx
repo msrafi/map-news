@@ -11,16 +11,20 @@ import { useSeenNews } from './hooks/useSeenNews'
 import { findMarketStories, storiesForTicker, tickersOf } from './lib/market'
 import {
   combineNews,
-  filterNeedsArchive,
   loadServerArchive,
   mergeIntoArchive,
   readArchive,
   splitLiveItems,
 } from './lib/archive'
-import { buildLinks, filterByTime, groupByRegion, linkColor, loadNews } from './lib/news'
+import { buildLinks, groupByRegion, linkColor, loadNews } from './lib/news'
 import { readMapStyle, writeMapStyle } from './lib/mapStyles'
 import { findOptionStories, groupByTicker } from './lib/options'
-import type { MapStyleId, MarketStory, NewsItem, TimeFilter } from './types'
+import type { MapStyleId, MarketStory, NewsItem } from './types'
+
+type AutoPhase = 'source' | 'connections'
+
+/** The map keeps cycling this many of the newest stories while it waits for more. */
+const ROTATION_SIZE = 5
 
 /** Symbols with a tweet in range lead, newest first; quiet ones keep their saved order. */
 function sortTiles(tiles: SymbolTile[]): SymbolTile[] {
@@ -37,8 +41,8 @@ export default function App() {
   const [archive, setArchive] = useState<NewsItem[]>(() => readArchive())
   const [archiveReady, setArchiveReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [filter, setFilter] = useState<TimeFilter>('today')
   const [mapStyle, setMapStyle] = useState<MapStyleId>(() => readMapStyle())
+  const [mapOnly, setMapOnly] = useState(false)
   // Routes and location pointers belong to map clicks; the market drawer just opens the region.
   const [selection, setSelection] = useState<{ regionId: string; withRoutes: boolean } | null>(null)
   // The stock drawer covers the map, so it stays shut until it is asked for.
@@ -48,8 +52,12 @@ export default function App() {
   const [focusedStoryId, setFocusedStoryId] = useState<string | null>(null)
   // Set only by the feed: the map frames this story and marks its point.
   const [pinnedStoryId, setPinnedStoryId] = useState<string | null>(null)
+  const [rotationCursor, setRotationCursor] = useState(0)
+  const [autoPhase, setAutoPhase] = useState<AutoPhase>('source')
   const [tip, setTip] = useState<StoryTip | null>(null)
   const itemsRef = useRef(items)
+  const mapItemsRef = useRef<NewsItem[]>([])
+  const regionsRef = useRef<ReturnType<typeof groupByRegion>>([])
   const selectedId = selection?.regionId ?? null
   const withRoutes = selection?.withRoutes ?? false
   const { seenIds, markSeen } = useSeenNews()
@@ -126,8 +134,7 @@ export default function App() {
     return () => window.clearInterval(timer)
   }, [])
 
-  const wantArchive =
-    filterNeedsArchive(filter) || selectedTicker !== null || selectedStock !== null || marketOpen
+  const wantArchive = selectedTicker !== null || selectedStock !== null || marketOpen
 
   useEffect(() => {
     if (!wantArchive || archiveReady) return
@@ -148,7 +155,7 @@ export default function App() {
 
   const storedItems = useMemo(() => combineNews(items, archive), [archive, items])
   const catalog = wantArchive ? storedItems : items
-  const visibleItems = useMemo(() => filterByTime(catalog, filter), [catalog, filter])
+  const visibleItems = catalog
   const marketStories = useMemo(() => findMarketStories(visibleItems), [visibleItems])
   const optionStories = useMemo(() => findOptionStories(visibleItems), [visibleItems])
   const tickerGroups = useMemo(() => groupByTicker(optionStories), [optionStories])
@@ -171,6 +178,31 @@ export default function App() {
     return visibleItems.filter((item) => !skip.has(item.id))
   }, [marketStories, optionStories, visibleItems])
   const regions = useMemo(() => groupByRegion(mapItems), [mapItems])
+  // Oldest of the five newest first, so each pass moves toward the latest story.
+  const rotationIds = useMemo(
+    () =>
+      [...mapItems]
+        .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+        .slice(0, ROTATION_SIZE)
+        .reverse()
+        .map((item) => item.id),
+    [mapItems],
+  )
+  const rotationKey = rotationIds.join('|')
+  const rotationIdsRef = useRef(rotationIds)
+  const [trackedRotation, setTrackedRotation] = useState(rotationKey)
+  // A new story changes which five are playing, so start that pass from the oldest.
+  if (trackedRotation !== rotationKey) {
+    setTrackedRotation(rotationKey)
+    setRotationCursor(0)
+    setAutoPhase('source')
+  }
+
+  useEffect(() => {
+    mapItemsRef.current = mapItems
+    regionsRef.current = regions
+    rotationIdsRef.current = rotationIds
+  }, [mapItems, regions, rotationIds])
 
   const unseenByRegion = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -192,27 +224,36 @@ export default function App() {
       selectedId ? allLinks.filter((link) => link.regions.some((region) => region.id === selectedId)) : [],
     [allLinks, selectedId],
   )
+  // A focused story bypasses the broad-feed route cap, so even the oldest item
+  // in an automatic run can show all of its connections.
+  const focusedLinks = useMemo(() => {
+    if (!focusedStoryId) return []
+    const item = mapItems.find((entry) => entry.id === focusedStoryId)
+    return item ? buildLinks([item], null) : []
+  }, [focusedStoryId, mapItems])
   // Colour by position in the region's own list so the map line and its card agree.
   const linkColors = useMemo(() => {
     const colors = new Map<string, string>()
     regionLinks.forEach((link, index) => colors.set(link.id, linkColor(index)))
     return colors
   }, [regionLinks])
-  const links = withRoutes ? regionLinks : []
+  const links = withRoutes ? (focusedStoryId ? focusedLinks : regionLinks) : []
   const spots = useMemo(
     () =>
       selected && withRoutes
         ? selected.items.flatMap((item) =>
-            (item.spots ?? []).map((spot, index) => ({
-              id: `${item.id}-${index}`,
-              itemId: item.id,
-              text: item.text,
-              publishedAt: item.publishedAt,
-              spot,
-            })),
+            focusedStoryId && item.id !== focusedStoryId
+              ? []
+              : (item.spots ?? []).map((spot, index) => ({
+                  id: `${item.id}-${index}`,
+                  itemId: item.id,
+                  text: item.text,
+                  publishedAt: item.publishedAt,
+                  spot,
+                })),
           )
         : [],
-    [selected, withRoutes],
+    [focusedStoryId, selected, withRoutes],
   )
   // The panel is always on screen: a pin narrows it, otherwise it shows the whole feed.
   const panelItems = useMemo(
@@ -320,6 +361,58 @@ export default function App() {
     markSeen(selected.items.map((item) => item.id))
   }, [markSeen, selected])
 
+  // Point the map at the current story in the loop.
+  useEffect(() => {
+    const ids = rotationIdsRef.current
+    const nextId = ids[rotationCursor]
+    if (!nextId) return
+    const item = mapItemsRef.current.find((entry) => entry.id === nextId)
+    const region =
+      regionsRef.current.find(
+        (entry) =>
+          entry.regionId === item?.regionId &&
+          entry.items.some((candidate) => candidate.id === nextId),
+      ) ?? regionsRef.current.find((entry) => entry.items.some((candidate) => candidate.id === nextId))
+    const timer = window.setTimeout(() => {
+      if (!region) {
+        setRotationCursor((index) => (index + 1) % Math.max(ids.length, 1))
+        return
+      }
+      setSelection({ regionId: region.regionId, withRoutes: true })
+      setFocusedStoryId(nextId)
+      setPinnedStoryId(nextId)
+      setSelectedTicker(null)
+      setSelectedStock(null)
+      setMarketOpen(false)
+      setTip(null)
+    }, 0)
+    return () => window.clearTimeout(timer)
+  }, [rotationCursor, rotationKey])
+
+  // After the last of the five, wrap back to the first. A changed set restarts the timer.
+  useEffect(() => {
+    const ids = rotationIdsRef.current
+    const currentId = ids[rotationCursor]
+    const item = mapItemsRef.current.find((entry) => entry.id === currentId)
+    if (!item) return
+
+    const hasConnections = buildLinks([item], null).length > 0 || Boolean(item.spots?.length)
+    const delay = hasConnections ? 5_000 : 10_000
+    const timer = window.setTimeout(() => {
+      if (autoPhase === 'source' && hasConnections) {
+        setAutoPhase('connections')
+        return
+      }
+      setAutoPhase('source')
+      setRotationCursor((index) => {
+        const count = rotationIdsRef.current.length
+        return count === 0 ? 0 : (index + 1) % count
+      })
+    }, delay)
+
+    return () => window.clearTimeout(timer)
+  }, [autoPhase, rotationCursor, rotationKey])
+
   /** Back to the plain world map: no region, no routes, no drawers, nothing pinned. */
   const clearAll = useCallback(() => {
     setFocusedStoryId(null)
@@ -342,23 +435,23 @@ export default function App() {
   return (
     <div className="app">
       <TopBar
-        filter={filter}
-        onFilterChange={(next) => {
-          setFilter(next)
-          setSelection(null)
-          setPinnedStoryId(null)
-        }}
         liveCount={liveCount}
         regionCount={regions.length}
-        linkCount={allLinks.length}
         lastUpdatedAt={lastUpdatedAt}
         mapStyle={mapStyle}
         onMapStyleChange={(next) => {
           setMapStyle(next)
           writeMapStyle(next)
         }}
+        mapOnly={mapOnly}
+        onToggleMapOnly={() =>
+          setMapOnly((value) => {
+            if (!value) setTip(null)
+            return !value
+          })
+        }
       />
-      <main className="stage">
+      <main className={mapOnly ? 'stage is-map-only' : 'stage'}>
         <TickerColumn
           options={optionTiles}
           stocks={stockTiles}
@@ -388,19 +481,21 @@ export default function App() {
             {openTicker ? (
               <OptionsDrawer group={openTicker} onClose={() => setSelectedTicker(null)} />
             ) : null}
-            <MarketDrawer
-              stories={stockStories}
-              ticker={selectedStock}
-              open={marketOpen}
-              onToggle={() => {
-                setMarketOpen((value) => !value)
-                if (marketOpen) setSelectedStock(null)
-              }}
-              onOpenStory={(story, anchor) =>
-                setTip({ item: story.item, details: story.details, contracts: [], anchor })
-              }
-              activeId={tip?.item.id ?? null}
-            />
+            {mapOnly ? null : (
+              <MarketDrawer
+                stories={stockStories}
+                ticker={selectedStock}
+                open={marketOpen}
+                onToggle={() => {
+                  setMarketOpen((value) => !value)
+                  if (marketOpen) setSelectedStock(null)
+                }}
+                onOpenStory={(story, anchor) =>
+                  setTip({ item: story.item, details: story.details, contracts: [], anchor })
+                }
+                activeId={tip?.item.id ?? null}
+              />
+            )}
           </div>
           <WorldMap
             regions={regions}
@@ -411,6 +506,7 @@ export default function App() {
             unseenByRegion={unseenByRegion}
             linkedRegionIds={linkedRegionIds}
             pinnedStory={pinnedStory}
+            showConnections={autoPhase === 'connections'}
             mapStyle={mapStyle}
             onSelect={(regionId) => {
               setFocusedStoryId(null)
