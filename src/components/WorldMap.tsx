@@ -1,4 +1,5 @@
 import { LngLatBounds } from 'maplibre-gl'
+import { isToday, parseISO } from 'date-fns'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Map, {
   Layer,
@@ -19,12 +20,10 @@ type SpotRef = { id: string; itemId: string; text: string; publishedAt: string; 
 /** Layers a click can land on, and the headline a hit should surface. */
 const STORY_LAYERS = ['news-link-line', 'news-spot-line']
 
-/** Location pins older than this are left off the map. The news list still has them. */
-const MARKER_MAX_AGE_MS = 15 * 60 * 1000
-
-function isMarkerCurrent(iso: string, now = Date.now()): boolean {
+/** Pins stay up for anything published today, so older stories from the day can still be opened. */
+function isMarkerCurrent(iso: string): boolean {
   const published = Date.parse(iso)
-  return Number.isFinite(published) && now - published <= MARKER_MAX_AGE_MS
+  return Number.isFinite(published) && isToday(parseISO(iso))
 }
 
 type StoryPopup = { itemId: string; text: string; lat: number; lng: number }

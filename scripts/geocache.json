@@ -5322,5 +5322,144 @@
   "civil defence, saudi arabia": null,
   "civil defence": null,
   "near term, japan": null,
-  "near term": null
+  "near term": null,
+  "shanghai slide over, china": null,
+  "shanghai slide over": null,
+  "active trading, china": null,
+  "active trading": null,
+  "early trade, indonesia": null,
+  "early trade": null,
+  "rises, indonesia": null,
+  "rises": {
+    "lat": 56.2425358,
+    "lng": 25.0661431,
+    "name": "Rises, Pilskalnes pagasts, Aizkraukles novads, LV-5110, Latvija"
+  },
+  "trading, china": null,
+  "boj tightening, japan": null,
+  "boj tightening": null,
+  "umm, united arab emirates": {
+    "lat": 25.5144944,
+    "lng": 55.718292,
+    "name": "أم القيوين, الإمارات العربية المتحدة"
+  },
+  "hong kong with, china": null,
+  "hong kong with": null,
+  "renewed clashes with hezbollah, israel": null,
+  "renewed clashes with hezbollah": null,
+  "military preparing, israel": null,
+  "military preparing": null,
+  "kazakhstan, china": null,
+  "kazakhstan": {
+    "lat": 48.1012954,
+    "lng": 66.7780818,
+    "name": "Қазақстан"
+  },
+  "unifil, france": null,
+  "unifil": null,
+  "judea, israel": {
+    "lat": 31.666667,
+    "lng": 35.166667,
+    "name": "Har Yehuda, مجلس غوش عصيون الاقليمي, منطقة ب, الضفة الغربية, الأراضي الفلسطينية"
+  },
+  "poltava, russia": {
+    "lat": 53.1244578,
+    "lng": 40.0664845,
+    "name": "Полтава, Дубовое, Чаплыгинский муниципальный округ, Липецкая область, Центральный федеральный округ, Россия"
+  },
+  "response, iran": null,
+  "response": null,
+  "smes, japan": null,
+  "smes": null,
+  "improvement until six, china": null,
+  "improvement until six": null,
+  "sept, germany": null,
+  "aug, germany": {
+    "lat": 47.8150585,
+    "lng": 11.5178331,
+    "name": "Aug, Huppenberg, Wackersberg, Landkreis Bad Tölz-Wolfratshausen, Bayern, 83646, Deutschland"
+  },
+  "cognac, france": {
+    "lat": 45.6931647,
+    "lng": -0.3250175,
+    "name": "Cognac, Charente, Nouvelle-Aquitaine, France métropolitaine, 16100, France"
+  },
+  "its goal, japan": null,
+  "its goal": null,
+  "outer space, china": null,
+  "outer space": {
+    "lat": -37.8507889,
+    "lng": 143.9354039,
+    "name": "Outer Space, Meredith, Victoria, 3333, Australia"
+  },
+  "development interests, china": null,
+  "development interests": null,
+  "sheremetyevo airport, russia": null,
+  "sheremetyevo airport": null,
+  "sheremetyevo, russia": null,
+  "sheremetyevo": null,
+  "soon as possible, ukraine": null,
+  "soon as possible": null,
+  "just, united states": null,
+  "just": {
+    "lat": 48.1764917,
+    "lng": 23.291166,
+    "name": "Хуст, Хустська міська громада, Хустський район, Закарпатська область, Україна"
+  },
+  "russian-occupied oleshky, ukraine": null,
+  "russian-occupied oleshky": null,
+  "be established, russia": null,
+  "be established": null,
+  "hormuz, oman": null,
+  "limah, oman": {
+    "lat": 25.9426327,
+    "lng": 56.4226837,
+    "name": "ليماء, ولاية خصب, محافظة مسندم, عمان"
+  },
+  "shaun kelley, united states": null,
+  "shaun kelley": null,
+  "one, united states": null,
+  "one": null,
+  "nov, united states": {
+    "lat": 40.7127281,
+    "lng": -74.0060152,
+    "name": "New York, United States"
+  },
+  "bid, united states": null,
+  "get down, united states": null,
+  "get down": null,
+  "sovereign ratings, venezuela": null,
+  "sovereign ratings": null,
+  "credit provision, brazil": null,
+  "credit provision": null,
+  "financial institutions, brazil": null,
+  "former teahouse, germany": null,
+  "former teahouse": null,
+  "berchtesgaden, germany": {
+    "lat": 47.6330221,
+    "lng": 13.0020051,
+    "name": "Berchtesgaden, Landkreis Berchtesgadener Land, Bayern, Deutschland"
+  },
+  "advertising, brazil": null,
+  "advertising": null,
+  "unsolicited credit offers, brazil": null,
+  "unsolicited credit offers": null,
+  "entry into, united states": null,
+  "entry into": null,
+  "state, saudi arabia": null,
+  "state": null,
+  "wadi al-dawasir, saudi arabia": null,
+  "wadi al-dawasir": null,
+  "economy, ukraine": null,
+  "economy": {
+    "lat": 40.631752,
+    "lng": -80.1938574,
+    "name": "Economy, Beaver County, Pennsylvania, United States"
+  },
+  "najran after potential danger, saudi arabia": null,
+  "najran after potential danger": null,
+  "wadi al-dawasir governorate, saudi arabia": null,
+  "wadi al-dawasir governorate": null,
+  "civil defense says, saudi arabia": null,
+  "civil defense says": null
 }
